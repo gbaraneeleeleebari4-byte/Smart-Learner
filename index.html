@@ -2195,37 +2195,49 @@ go("home");
 setInterval(updateChallengeCountdown, 1000);
 </script>
 <script type="module">
-  // Import the Firebase functions we need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getDatabase, ref, push, onValue, set, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+  const statusEl = document.getElementById("firebase-status");
+  function setStatus(color, text) {
+    if (statusEl) {
+      statusEl.style.background = color;
+      statusEl.textContent = text;
+    }
+  }
 
-  // Your web app's Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyBalfqEksKXbrcfVCqrrWkILx_V7up25Xs",
-    authDomain: "smart-learn-hub-73667.firebaseapp.com",
-    databaseURL: "https://smart-learn-hub-73667-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "smart-learn-hub-73667",
-    storageBucket: "smart-learn-hub-73667.firebasestorage.app",
-    messagingSenderId: "165458065701",
-    appId: "1:165458065701:web:08a1bcfac2ae286b9502cc"
-};
-  };
+  window.addEventListener("error", (e) => {
+    setStatus("#ef4444", "❌ JS error: " + e.message);
+  });
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
+  try {
+    setStatus("#666", "🔵 Loading Firebase modules...");
+    const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js");
+    const { getDatabase, ref, push, onValue, set, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js");
 
-  // Expose the Firebase tools globally so the rest of your app can use them
-  window.firebaseDB = db;
-  window.firebaseRef = ref;
-  window.firebasePush = push;
-  window.firebaseOnValue = onValue;
-  window.firebaseSet = set;
-  window.firebaseTimestamp = serverTimestamp;
+    setStatus("#666", "🔵 Configuring...");
+    const firebaseConfig = {
+      apiKey: "PASTE_YOUR_FULL_API_KEY_HERE",
+      authDomain: "smart-learn-hub-73667.firebaseapp.com",
+      databaseURL: "https://smart-learn-hub-73667-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "smart-learn-hub-73667",
+      storageBucket: "smart-learn-hub-73667.firebasestorage.app",
+      messagingSenderId: "165458065701",
+      appId: "PASTE_YOUR_FULL_APP_ID_HERE"
+    };
 
-  // Small confirmation so you know it loaded
-  window.firebaseReady = true;
-  console.log("✅ Firebase connected to Smart CGPA");
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    window.firebaseDB = db;
+    window.firebaseRef = ref;
+    window.firebasePush = push;
+    window.firebaseOnValue = onValue;
+    window.firebaseSet = set;
+    window.firebaseTimestamp = serverTimestamp;
+    window.firebaseReady = true;
+
+    setStatus("#0ea5a0", "✅ Firebase connected successfully");
+  } catch (err) {
+    setStatus("#ef4444", "❌ Firebase failed: " + err.message);
+  }
 </script>
 </body>
 </html>
