@@ -1597,22 +1597,7 @@ function saveChallengeResult(correct, total, points){
   }
 }
 
-  // Save to Firebase (so all devices can see it)
-  if(window.firebaseDB && window.firebaseRef && window.firebasePush && window.firebaseTimestamp){
-    const scoresRef = window.firebaseRef(window.firebaseDB, "challenge_scores");
-    window.firebasePush(scoresRef, {
-      name: state.name || "Anonymous",
-      points: points,
-      correct: correct,
-      total: total,
-      timestamp: Date.now()
-    }).then(() => {
-      console.log("✅ Score saved to Firebase");
-    }).catch((err) => {
-      console.error("Firebase write failed:", err);
-    });
-  }
-}
+ 
 function updateLiveBoard(){
   const myScore = chal.answers.filter(a => a?.correct).length * 10;
   const me = { name: state.name || "You", score: myScore, you: true };
