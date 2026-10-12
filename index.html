@@ -1,0 +1,2198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#0b1522">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="description" content="Smart CGPA — study, compete, grow.">
+<title>Smart CGPA Plus</title>
+<link rel="manifest" href="data:application/json,%7B%22name%22%3A%22Smart%20CGPA%20Plus%22%2C%22short_name%22%3A%22Smart%20CGPA%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230b1522%22%2C%22theme_color%22%3A%22%230b1522%22%7D">
+<style>
+:root{
+  --bg:#0b1522;--bg2:#0f1c2e;--card:#132135;--card2:#1a2a43;--line:#23354f;
+  --teal:#0ea5a0;--teal2:#14d0c8;--indigo:#6366f1;--indigo2:#818cf8;
+  --gold:#f0b429;--gold2:#fcd34d;--red:#ef4444;--green:#22c55e;--orange:#f97316;
+  --ink:#e6edf7;--muted:#8b9ab3;--shadow:0 12px 34px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+body{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--teal2);outline-offset:2px}
+.shell{max-width:520px;margin:0 auto;padding:16px 16px 24px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:20px}
+.icon-btn{width:42px;height:42px;border-radius:13px;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;font-size:17px;color:var(--ink);transition:.18s;flex-shrink:0}
+.icon-btn:active{transform:scale(.94)}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:15px}
+.logo-mark{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--teal),var(--indigo));display:grid;place-items:center;font-size:18px;font-weight:900;box-shadow:0 8px 20px rgba(14,165,160,.35)}
+.chip-stat{background:var(--card);border:1px solid var(--line);padding:9px 13px;border-radius:13px;font-weight:800;font-size:12px;display:flex;align-items:center;gap:5px}
+.chip-stat.flame{background:linear-gradient(135deg,#f97316,#ef4444);border-color:transparent;box-shadow:0 8px 20px rgba(249,115,22,.35)}
+
+.hero{border-radius:24px;padding:22px;position:relative;overflow:hidden;box-shadow:0 20px 44px rgba(0,0,0,.35);margin-bottom:20px;background:linear-gradient(130deg,#0f2d3a 0%,#123c5a 45%,#1e2f75 100%);animation:riseIn .5s ease}
+.hero:before{content:"";position:absolute;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(14,165,160,.28),transparent 65%);top:-110px;right:-70px}
+.hero:after{content:"";position:absolute;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.25),transparent 65%);bottom:-100px;left:-50px}
+.hero-content{position:relative;z-index:1}
+.hero-tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#7fe3dc;background:rgba(14,165,160,.15);padding:7px 12px;border-radius:20px;margin-bottom:14px}
+.hero h1{font-size:24px;letter-spacing:-.6px;margin:0 0 10px;font-weight:850;line-height:1.2}
+.hero p{font-size:12.5px;line-height:1.6;color:#c1cfda;margin:0 0 16px}
+.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:rgba(0,0,0,.22);border-radius:14px;padding:12px;backdrop-filter:blur(8px)}
+.hstat{text-align:center}
+.hstat .v{font-size:19px;font-weight:900;letter-spacing:-.5px}
+.hstat .v.t{color:var(--teal2)}
+.hstat .v.g{color:var(--gold2)}
+.hstat .v.i{color:var(--indigo2)}
+.hstat .l{font-size:9px;letter-spacing:1.3px;color:#8b9ab3;font-weight:800;margin-top:3px}
+
+.sec{display:flex;align-items:center;justify-content:space-between;margin:24px 4px 12px;font-size:12px;font-weight:850;letter-spacing:1.2px;text-transform:uppercase;color:#b3c1d6}
+.sec .left{display:flex;align-items:center;gap:8px}
+.sec .right{font-size:11px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--teal2);cursor:pointer}
+
+.hrow{display:flex;gap:12px;overflow-x:auto;padding:2px 4px 8px;scroll-snap-type:x mandatory;-ms-overflow-style:none;scrollbar-width:none}
+.hrow::-webkit-scrollbar{display:none}
+.hcard{flex:0 0 152px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px 13px;scroll-snap-align:start;transition:.18s;position:relative;overflow:hidden}
+.hcard:active{transform:scale(.97)}
+.hcard .badge{position:absolute;top:12px;right:12px;font-size:9px;font-weight:900;letter-spacing:1px;color:var(--gold2);background:rgba(240,180,41,.15);padding:4px 8px;border-radius:20px}
+.hcard .icon{width:48px;height:48px;border-radius:14px;background:var(--card2);display:grid;place-items:center;font-size:22px;margin-bottom:12px}
+.hcard h4{margin:0 0 4px;font-size:13px;font-weight:800;letter-spacing:-.2px}
+.hcard .sub{font-size:10px;color:var(--muted);line-height:1.4}
+.hcard .progress{margin-top:12px;height:4px;background:var(--card2);border-radius:20px;overflow:hidden}
+.hcard .progress i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),var(--indigo));border-radius:20px}
+
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px 8px;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px 12px}
+.grid4 .it{display:flex;flex-direction:column;align-items:center;gap:7px;padding:6px 2px;border-radius:14px;transition:.2s}
+.grid4 .it:active{background:rgba(255,255,255,.05);transform:scale(.96)}
+.grid4 .it .ic{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:19px}
+.grid4 .it span{font-size:10px;font-weight:700;color:#c8d3e0;text-align:center;line-height:1.2}
+.it .ic.c1{background:#0f3845;color:#14d0c8}
+.it .ic.c2{background:#2a1e4d;color:#a78bfa}
+.it .ic.c3{background:#3d2410;color:#fbbf24}
+.it .ic.c4{background:#163a2a;color:#4ade80}
+.it .ic.c5{background:#3a1a1e;color:#f87171}
+.it .ic.c6{background:#1a3050;color:#60a5fa}
+.it .ic.c7{background:#2c1e45;color:#c4b5fd}
+.it .ic.c8{background:#3a2e10;color:#fde68a}
+
+.subj{display:grid;grid-template-columns:repeat(3,1fr);gap:16px 6px;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px 10px}
+.subj .sit{display:flex;flex-direction:column;align-items:center;gap:8px;padding:6px 2px;border-radius:14px;transition:.18s;position:relative}
+.subj .sit:active{transform:scale(.95)}
+.subj .sit.selected{background:rgba(14,165,160,.15);outline:2px solid var(--teal)}
+.subj .sit .si{width:56px;height:56px;border-radius:18px;display:grid;place-items:center;font-size:24px;position:relative}
+.subj .sit span{font-size:10px;font-weight:750;color:#c8d3e0;text-align:center;line-height:1.2}
+.sit.chem .si{background:#2a1f45;color:#c9a4ff}
+.sit.bio .si{background:#12392a;color:#4ade80}
+.sit.phy .si{background:#3a1f2a;color:#ff8f9f}
+.sit.mat .si{background:#3a2f10;color:#f5c66b}
+.sit.eng .si{background:#152a45;color:#7bd1ff}
+.sit.tip .si{background:#3a2a10;color:#fbbf24}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;margin-bottom:14px}
+.card h3{font-size:14px;margin:0 0 4px;font-weight:800;letter-spacing:-.2px}
+.card .sub{font-size:11.5px;color:var(--muted);line-height:1.55;margin:6px 0 14px}
+
+.alist{display:grid;gap:8px}
+.act{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:12px}
+.act .aic{width:34px;height:34px;border-radius:11px;background:var(--card2);display:grid;place-items:center;font-size:15px;flex-shrink:0}
+.act .ab{flex:1;min-width:0}
+.act .ab b{display:block;font-size:12px;margin-bottom:2px}
+.act .ab span{font-size:10.5px;color:var(--muted)}
+.act .at{font-size:10px;font-weight:850;padding:4px 9px;border-radius:20px;letter-spacing:.3px}
+.act .at.ok{background:rgba(34,197,94,.15);color:#4ade80}
+.act .at.no{background:rgba(239,68,68,.15);color:#f87171}
+
+.page{display:none;animation:riseIn .3s ease}
+.page.active{display:block}
+@keyframes riseIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.phead{margin:6px 4px 20px}
+.phead .eyebrow{font-size:10px;font-weight:900;letter-spacing:2px;color:var(--teal2);text-transform:uppercase;margin-bottom:7px}
+.phead h1{font-size:24px;letter-spacing:-.6px;margin:0 0 7px;font-weight:850;line-height:1.15}
+.phead p{font-size:12.5px;color:var(--muted);line-height:1.6;margin:0}
+
+.f{margin-bottom:12px}
+.f label{display:block;font-size:11px;font-weight:800;color:#b8c6db;margin-bottom:6px;letter-spacing:.2px}
+.f input,.f select,.f textarea{width:100%;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:12px 13px;font-size:13px;color:var(--ink);font-family:inherit}
+.f input:focus,.f select:focus,.f textarea:focus{border-color:var(--teal);outline:0}
+.f textarea{min-height:80px;resize:vertical}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 18px;border-radius:13px;font-size:13px;font-weight:800;transition:.15s;width:100%}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-p{background:linear-gradient(135deg,var(--teal),#0b8380);color:#fff;box-shadow:0 8px 22px rgba(14,165,160,.3)}
+.btn-g{background:linear-gradient(135deg,var(--green),#16a34a);color:#fff;box-shadow:0 8px 22px rgba(34,197,94,.3)}
+.btn-y{background:linear-gradient(135deg,var(--gold),#c98a0a);color:#2a1c00}
+.btn-r{background:linear-gradient(135deg,#ef4444,#b91c1c);color:#fff}
+.btn-o{background:var(--card2);color:#c8d3e0;border:1px solid var(--line)}
+.btn-sm{padding:9px 14px;font-size:12px;width:auto}
+.brow{display:flex;gap:10px;flex-wrap:wrap}
+
+.chips{display:flex;gap:7px;flex-wrap:wrap}
+.chip{background:var(--card2);border:1px solid var(--line);padding:8px 13px;border-radius:20px;font-size:11px;color:#c8d3e0;font-weight:650;transition:.15s}
+.chip.active{background:linear-gradient(135deg,var(--teal),var(--indigo));color:#fff;border-color:transparent}
+.chip:active{transform:scale(.96)}
+
+.qbar{height:6px;background:var(--card2);border-radius:20px;overflow:hidden;margin-bottom:14px}
+.qbar i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),var(--indigo));transition:width .3s}
+.qmeta{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:12px;font-weight:750}
+.qtext{font-size:19px;line-height:1.45;font-weight:750;margin:14px 0 20px;letter-spacing:-.25px}
+.opts{display:grid;gap:10px}
+.opt{display:flex;align-items:center;gap:12px;padding:15px;background:var(--card);border:1px solid var(--line);border-radius:16px;font-size:13px;text-align:left;transition:.15s;line-height:1.4}
+.opt:active:not(:disabled){transform:scale(.98)}
+.opt .lt{width:32px;height:32px;border-radius:11px;background:var(--card2);display:grid;place-items:center;font-weight:900;font-size:13px;color:#8896b3;flex-shrink:0}
+.opt:hover:not(:disabled){border-color:var(--teal)}
+.opt.correct{border-color:var(--green);background:rgba(34,197,94,.09)}
+.opt.correct .lt{background:var(--green);color:#fff}
+.opt.wrong{border-color:var(--red);background:rgba(239,68,68,.09)}
+.opt.wrong .lt{background:var(--red);color:#fff}
+.opt:disabled{cursor:default}
+.exp{margin-top:16px;padding:16px;background:var(--bg2);border:1px solid var(--line);border-radius:16px;font-size:12px;line-height:1.65;color:#c8d3e0;display:none}
+.exp.show{display:block;animation:riseIn .3s}
+.exp b{color:#e6edf7}
+.oexp{margin:8px 0 0;padding:11px 12px;background:var(--card);border:1px solid var(--line);border-radius:12px;font-size:11px;line-height:1.55}
+.oexp.correct{border-color:rgba(34,197,94,.4);background:rgba(34,197,94,.08)}
+.oexp.wrong{border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.08)}
+.oexp .tl{font-weight:900;font-size:10px;letter-spacing:.5px;margin-bottom:4px}
+.oexp.correct .tl{color:#4ade80}
+.oexp.wrong .tl{color:#f87171}
+
+/* LIVE TIMED MODE */
+.livetimer{background:linear-gradient(135deg,#3a1f05,#1a2530);border:1px solid rgba(240,180,41,.35);border-radius:18px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;gap:14px}
+.livetimer .clock{font-size:26px;font-weight:900;color:var(--gold2);font-variant-numeric:tabular-nums;letter-spacing:-.5px;min-width:78px}
+.livetimer .clock.warn{color:var(--red);animation:pulse .6s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+.livetimer .info{flex:1;font-size:11px;color:#c8d3e0;line-height:1.5}
+.livetimer .bar{height:6px;background:var(--card2);border-radius:20px;overflow:hidden;margin-top:6px}
+.livetimer .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--green),var(--gold),var(--red));border-radius:20px;transition:width .25s linear}
+
+.chal-hero{border-radius:22px;padding:22px;margin-bottom:14px;position:relative;overflow:hidden;background:linear-gradient(135deg,#241a05,#132135,#0a2a2e)}
+.chal-hero:before{content:"";position:absolute;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(240,180,41,.22),transparent 65%);top:-70px;right:-50px}
+.chal-hero .badge-t{display:inline-block;font-size:10px;font-weight:900;letter-spacing:2px;color:var(--gold2);background:rgba(240,180,41,.14);padding:7px 13px;border-radius:20px;margin-bottom:14px}
+.chal-hero h2{font-size:22px;letter-spacing:-.4px;font-weight:900;margin:0 0 10px}
+.chal-hero p{font-size:12.5px;color:#b3c1d6;line-height:1.6;margin:0 0 16px}
+.cd-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0}
+.cd-box{background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:10px 4px;text-align:center}
+.cd-box .n{font-size:21px;font-weight:900;color:var(--gold2);font-variant-numeric:tabular-nums;letter-spacing:-.5px}
+.cd-box .l{font-size:8.5px;letter-spacing:1.5px;color:#8b9ab3;font-weight:850;margin-top:3px}
+
+.timer-wrap{margin-bottom:14px}
+.tbar{height:8px;background:var(--card2);border-radius:20px;overflow:hidden}
+.tbar i{display:block;height:100%;background:linear-gradient(90deg,var(--green),var(--gold),var(--red));border-radius:20px;transition:width .18s linear}
+.tinfo{display:flex;justify-content:space-between;font-size:11.5px;font-weight:800;color:#c8d3e0;margin-bottom:10px}
+.tinfo .secs{color:var(--gold2);font-variant-numeric:tabular-nums}
+.tinfo .secs.warn{color:var(--red);animation:pulse .6s infinite}
+
+.podium{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;align-items:end;margin:20px 0;min-height:200px}
+.pcol{display:flex;flex-direction:column;align-items:center;gap:6px}
+.pav{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;font-size:22px;font-weight:900;color:#fff;border:3px solid;position:relative}
+.pav.first{width:74px;height:74px;font-size:28px;box-shadow:0 0 30px rgba(240,180,41,.5)}
+.crown{position:absolute;top:-26px;font-size:26px;animation:bob 2s infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.pname{font-size:10.5px;font-weight:800;color:#e6edf7;text-align:center;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ppts{font-size:12.5px;font-weight:900;color:var(--gold2);margin-top:2px}
+.pblock{border-radius:12px 12px 0 0;width:100%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:20px;margin-top:8px;color:#2a1c00}
+.pblock.gold{background:linear-gradient(180deg,#f0b429,#c98a0a);height:56px}
+.pblock.silver{background:linear-gradient(180deg,#c0c8d4,#9aa5b8);height:44px;color:#172033}
+.pblock.bronze{background:linear-gradient(180deg,#cd7f32,#a05a1a);height:36px;color:#fff}
+
+.lb-row{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.lb-row.you{border-color:var(--teal);background:linear-gradient(135deg,#0f2a35,#1e1830)}
+.lb-rank{width:34px;font-size:14px;font-weight:900;color:#8896b3;text-align:center;flex-shrink:0}
+.lb-rank.g{color:var(--gold2);font-size:20px}
+.lb-rank.s{color:#c0c8d4;font-size:20px}
+.lb-rank.b{color:#cd7f32;font-size:20px}
+.lb-av{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-weight:900;color:#fff;font-size:14px;flex-shrink:0}
+.lb-info{flex:1;min-width:0}
+.lb-info b{font-size:12px;display:block;margin-bottom:2px}
+.lb-info span{font-size:10.5px;color:var(--muted)}
+.lb-pts{font-size:13.5px;font-weight:900;color:var(--gold2)}
+
+.you-card{background:linear-gradient(135deg,var(--teal),var(--indigo));border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:14px;margin:18px 0;color:#fff;box-shadow:0 10px 26px rgba(14,165,160,.3)}
+.you-card .rk{font-size:32px;font-weight:900;letter-spacing:-1px}
+
+/* FULLSCREEN CHAT */
+.chat-fs{position:fixed;inset:0;background:var(--bg);z-index:100;display:none;flex-direction:column}
+.chat-fs.show{display:flex}
+.chat-fs-head{display:flex;align-items:center;gap:12px;padding:14px 16px;padding-top:calc(14px + env(safe-area-inset-top));background:var(--bg2);border-bottom:1px solid var(--line);flex-shrink:0}
+.chat-fs-head .gavatar{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--teal),var(--indigo));display:grid;place-items:center;font-size:22px;flex-shrink:0}
+.chat-fs-head .ginfo{flex:1;min-width:0}
+.chat-fs-head .ginfo b{display:block;font-size:15px;font-weight:850;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-fs-head .ginfo span{font-size:11px;color:var(--teal2);font-weight:700}
+.chat-fs-body{flex:1;overflow-y:auto;padding:16px;background:linear-gradient(180deg,#0a1420 0%,#0b1522 100%);display:flex;flex-direction:column;gap:10px}
+.chat-fs-input{background:var(--bg2);border-top:1px solid var(--line);padding:10px 12px;padding-bottom:calc(10px + env(safe-area-inset-bottom));display:flex;gap:8px;align-items:flex-end;flex-shrink:0}
+.chat-fs-input textarea{flex:1;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:12px 16px;font-size:14px;resize:none;max-height:120px;min-height:44px;font-family:inherit;color:var(--ink);line-height:1.4}
+.chat-fs-input textarea:focus{border-color:var(--teal);outline:0}
+.chat-fs-input .send{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--teal),#0b8380);color:#fff;display:grid;place-items:center;font-size:18px;flex-shrink:0;transition:.15s}
+.chat-fs-input .send:active{transform:scale(.92)}
+.chat-fs-input .send:disabled{opacity:.4}
+
+/* Message bubbles */
+.msg{max-width:78%;padding:10px 14px;border-radius:16px;font-size:14px;line-height:1.45;word-wrap:break-word;white-space:pre-wrap;position:relative;animation:msgIn .25s ease}
+@keyframes msgIn{from{opacity:0;transform:translateY(6px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+.msg.them{background:var(--card);border:1px solid var(--line);align-self:flex-start;border-bottom-left-radius:5px;color:#e6edf7}
+.msg.me{background:linear-gradient(135deg,#0a8380,#0ea5a0);align-self:flex-end;border-bottom-right-radius:5px;color:#fff}
+.msg .sender{font-size:10.5px;font-weight:850;letter-spacing:.3px;margin-bottom:3px;opacity:.85}
+.msg.me .sender{color:#d3fffb}
+.msg.them .sender{color:var(--teal2)}
+.msg .time{font-size:9.5px;opacity:.7;margin-top:4px;text-align:right}
+.msg.sys{align-self:center;background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.3);color:#c7d2fe;font-size:11px;padding:6px 12px;border-radius:20px;max-width:90%;text-align:center}
+.msg.date-sep{align-self:center;background:rgba(255,255,255,.05);color:var(--muted);font-size:10px;padding:5px 12px;border-radius:20px;font-weight:800;letter-spacing:.5px;max-width:none}
+
+/* Group list */
+.group-item{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;transition:.15s;cursor:pointer}
+.group-item:active{transform:scale(.98);border-color:var(--teal)}
+.group-item .gicon{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;font-size:22px;font-weight:900;color:#fff;flex-shrink:0}
+.group-item .ginfo{flex:1;min-width:0}
+.group-item .ginfo b{font-size:14px;display:block;margin-bottom:4px;font-weight:800}
+.group-item .ginfo span{font-size:11.5px;color:var(--muted);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.group-item .meta{text-align:right;flex-shrink:0}
+.group-item .meta .t{font-size:10px;color:var(--muted);font-weight:700}
+.group-item .meta .code{font-size:10px;color:var(--teal2);font-weight:800;margin-top:4px;font-family:monospace}
+
+.dict-result{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:10px}
+.dict-result .w{font-size:17px;font-weight:850;color:var(--teal2);margin-bottom:4px}
+.dict-result .pos{font-size:11px;font-style:italic;color:var(--muted);margin-bottom:8px;letter-spacing:.3px}
+.dict-result .def{font-size:12.5px;line-height:1.65;color:#dbe3f5;margin-bottom:6px}
+.dict-result .ex{font-size:11.5px;line-height:1.6;color:#8b9ab3;font-style:italic;margin-top:6px;padding-left:10px;border-left:2px solid var(--line)}
+
+.tbl{width:100%;border-collapse:collapse;font-size:11.5px;margin-top:8px}
+.tbl th,.tbl td{text-align:left;padding:10px 6px;border-bottom:1px solid var(--line)}
+.tbl th{color:var(--muted);font-weight:800;font-size:10px;letter-spacing:.5px;text-transform:uppercase}
+.tbl input,.tbl select{width:100%;background:transparent;border:0;padding:4px;font-size:12px}
+
+.mem{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}
+.mtile{height:64px;background:var(--card2);border:1px solid var(--line);border-radius:14px;font-size:22px;color:#4a5b7a;transition:.15s}
+.mtile.lit{background:linear-gradient(135deg,var(--gold),#c98a0a);color:#2a1c00;transform:scale(1.05)}
+.mtile.good{background:var(--green);color:#fff}
+.mtile.bad{background:var(--red);color:#fff}
+
+.colors{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.cbtn{height:78px;border-radius:16px;font-size:13px;color:#fff;font-weight:900;transition:.15s;box-shadow:inset 0 -4px 0 rgba(0,0,0,.15)}
+.cbtn:active{transform:scale(.94)}
+
+.bottom{position:fixed;left:0;right:0;bottom:0;background:rgba(15,28,46,.98);backdrop-filter:blur(16px);border-top:1px solid var(--line);padding:8px 6px calc(8px + env(safe-area-inset-bottom));display:flex;justify-content:space-around;z-index:50}
+.nb{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 8px;border-radius:12px;color:#7d8ba7;font-size:9px;font-weight:850;letter-spacing:.3px;flex:1;transition:.2s}
+.nb .ni{font-size:19px}
+.nb.active{color:var(--teal2)}
+.nb.active .ni{transform:translateY(-1px)}
+
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:60;display:none;opacity:0;transition:opacity .25s}
+.ov.show{display:block;opacity:1}
+.dr{position:fixed;top:0;left:0;bottom:0;width:min(320px,85vw);background:var(--bg2);border-right:1px solid var(--line);z-index:70;transform:translateX(-100%);transition:transform .28s cubic-bezier(.2,.9,.2,1);overflow-y:auto;padding:22px 16px calc(22px + env(safe-area-inset-bottom))}
+.dr.show{transform:translateX(0)}
+.dr-head{display:flex;align-items:center;gap:12px;margin-bottom:22px;padding:0 4px}
+.dr-head .lg{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--teal),var(--indigo));display:grid;place-items:center;font-size:22px;font-weight:900}
+.dr-head h2{font-size:15px;margin:0 0 2px;font-weight:850}
+.dr-head span{font-size:11px;color:var(--muted)}
+.dr-sec{margin:20px 4px 8px;font-size:10px;font-weight:900;letter-spacing:1.8px;color:#6b7896;text-transform:uppercase}
+.dr-it{display:flex;align-items:center;gap:12px;padding:12px;border-radius:14px;color:#c8d3e0;font-size:13px;font-weight:700;width:100%;transition:.15s;text-align:left}
+.dr-it:active{background:rgba(255,255,255,.05)}
+.dr-it.active{background:linear-gradient(135deg,var(--teal),var(--indigo));color:#fff}
+.dr-it .di{width:34px;height:34px;border-radius:11px;background:var(--card2);display:grid;place-items:center;font-size:15px;color:var(--teal2);flex-shrink:0}
+.dr-it.active .di{background:rgba(255,255,255,.2);color:#fff}
+.dr-it .dot{margin-left:auto;width:8px;height:8px;border-radius:50%;background:var(--red)}
+
+.toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%) translateY(20px);background:#1a2740;color:#e6edf7;padding:12px 18px;border-radius:14px;font-size:12.5px;font-weight:600;box-shadow:0 12px 30px rgba(0,0,0,.5);z-index:200;opacity:0;transition:.25s;pointer-events:none;max-width:calc(100vw - 40px);text-align:center;border:1px solid var(--line)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.empty{text-align:center;padding:26px 14px;background:var(--card2);border-radius:16px;color:var(--muted);font-size:12px;line-height:1.6}
+.center{text-align:center}
+.mt{margin-top:14px}.mb{margin-bottom:14px}
+.small{font-size:11px;color:var(--muted);line-height:1.6}
+.divider{height:1px;background:var(--line);margin:14px 0}
+.chart{display:flex;align-items:flex-end;gap:8px;height:130px;padding:10px 4px 0;border-bottom:1px solid var(--line);margin:10px 0}
+.chart .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px;height:100%}
+.chart .col i{width:100%;max-width:34px;min-height:4px;border-radius:7px 7px 3px 3px;background:linear-gradient(180deg,var(--teal2),var(--teal))}
+.chart .col span{font-size:9px;color:var(--muted);font-weight:750}
+
+.tutor-chip{background:var(--card2);border:1px solid var(--line);padding:8px 12px;border-radius:20px;font-size:11px;color:#c8d3e0;font-weight:600}
+</style>
+</head>
+<body>
+
+<div class="ov" id="ov" onclick="closeDrawer()"></div>
+<aside class="dr" id="dr">
+  <div class="dr-head"><div class="lg">S</div><div><h2>Smart CGPA</h2><span>Learn · Compete · Grow</span></div></div>
+  <div class="dr-sec">Study</div>
+  <button class="dr-it active" data-page="home"><span class="di">⌂</span>Home</button>
+  <button class="dr-it" data-page="practice"><span class="di">✎</span>Practice</button>
+  <button class="dr-it" data-page="tutor"><span class="di">✦</span>AI Tutor</button>
+  <button class="dr-it" data-page="library"><span class="di">▣</span>Library</button>
+  <button class="dr-it" data-page="dictionary"><span class="di">📖</span>Dictionary</button>
+  <div class="dr-sec">Compete</div>
+  <button class="dr-it" data-page="challenge"><span class="di">🏆</span>Weekly Challenge</button>
+  <button class="dr-it" data-page="leaderboard"><span class="di">♛</span>Leaderboard</button>
+  <button class="dr-it" data-page="groups"><span class="di">👥</span>Study Groups</button>
+  <div class="dr-sec">Progress</div>
+  <button class="dr-it" data-page="progress"><span class="di">▥</span>My Progress</button>
+  <button class="dr-it" data-page="planner"><span class="di">☷</span>Planner</button>
+  <button class="dr-it" data-page="cgpa"><span class="di">▤</span>CGPA Calculator</button>
+  <button class="dr-it" data-page="games"><span class="di">🎮</span>Brain Games</button>
+  <div class="dr-sec">Account</div>
+  <button class="dr-it" data-page="settings"><span class="di">⚙</span>Settings</button>
+</aside>
+
+<div class="shell">
+  <div class="top">
+    <button class="icon-btn" onclick="openDrawer()">☰</button>
+    <div class="logo"><div class="logo-mark">S</div>Smart CGPA</div>
+    <div class="top-right"><div class="chip-stat flame" id="streakChip">🔥 0</div></div>
+  </div>
+
+  <section class="page active" id="page-home">
+    <div class="hero">
+      <div class="hero-content">
+        <div class="hero-tag">✦ WELCOME BACK</div>
+        <h1 id="heroTitle">Ready to learn, <span id="greet">friend</span>?</h1>
+        <p>Practice, compete, and build habits that stick. Your CGPA and confidence can both grow — one focused session at a time.</p>
+        <div class="hero-stats">
+          <div class="hstat"><div class="v t" id="hStatAnswered">0</div><div class="l">ANSWERED</div></div>
+          <div class="hstat"><div class="v g" id="hStatAccuracy">0%</div><div class="l">ACCURACY</div></div>
+          <div class="hstat"><div class="v i" id="hStatPoints">0</div><div class="l">POINTS</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec"><div class="left">📚 Continue learning</div><div class="right" onclick="go('library')">See all →</div></div>
+    <div class="hrow" id="continueRow"></div>
+
+    <div class="sec"><div class="left">✦ Quick actions</div></div>
+    <div class="grid4">
+      <button class="it" onclick="go('practice')"><span class="ic c1">✎</span><span>Practice</span></button>
+      <button class="it" onclick="go('tutor')"><span class="ic c2">✦</span><span>AI Tutor</span></button>
+      <button class="it" onclick="go('challenge')"><span class="ic c3">🏆</span><span>Challenge</span></button>
+      <button class="it" onclick="go('groups')"><span class="ic c4">👥</span><span>Groups</span></button>
+      <button class="it" onclick="go('dictionary')"><span class="ic c5">📖</span><span>Dictionary</span></button>
+      <button class="it" onclick="startRetryFailed()"><span class="ic c6">↻</span><span>Failed Qs</span></button>
+      <button class="it" onclick="go('cgpa')"><span class="ic c7">▤</span><span>CGPA</span></button>
+      <button class="it" onclick="go('games')"><span class="ic c8">🎮</span><span>Games</span></button>
+    </div>
+
+    <div class="sec"><div class="left">📖 Pick a subject</div></div>
+    <div class="subj" id="subjectGrid"></div>
+
+    <div class="sec"><div class="left">⏱ Recent activity</div><div class="right" onclick="go('progress')">View all</div></div>
+    <div class="alist" id="activityList"></div>
+  </section>
+
+  <section class="page" id="page-practice">
+    <div class="phead">
+      <div class="eyebrow">Practice</div>
+      <h1>Sharpen your knowledge</h1>
+      <p>Pick a subject first, then exam type and mode. Every option gets a meaning explained after you answer.</p>
+    </div>
+    <div class="card">
+      <div class="sec" style="margin-top:0"><div class="left">1 · Subject</div><div class="right" id="pickedSubjectLabel">Chemistry</div></div>
+      <div class="subj" id="practiceSubjectGrid" style="padding:8px 4px"></div>
+
+      <div class="divider"></div>
+      <div class="sec" style="margin-top:0"><div class="left">2 · Exam type</div></div>
+      <div class="chips">
+        <button class="chip active" data-exam="all" onclick="pickExam(this)">All</button>
+        <button class="chip" data-exam="JAMB" onclick="pickExam(this)">JAMB</button>
+        <button class="chip" data-exam="WAEC" onclick="pickExam(this)">WAEC</button>
+        <button class="chip" data-exam="NECO" onclick="pickExam(this)">NECO</button>
+        <button class="chip" data-exam="Post-UTME" onclick="pickExam(this)">Post-UTME</button>
+      </div>
+
+      <div class="divider"></div>
+      <div class="sec" style="margin-top:0"><div class="left">3 · Questions & mode</div></div>
+      <div class="row2">
+        <div class="f"><label>Number of questions</label>
+          <select id="quizCount">
+            <option value="5">5 questions</option>
+            <option value="10" selected>10 questions</option>
+            <option value="20">20 questions</option>
+            <option value="40">40 questions</option>
+            <option value="120">120 questions (full mock)</option>
+          </select>
+        </div>
+        <div class="f"><label>Mode</label>
+          <select id="quizMode">
+            <option value="practice">Practice mode</option>
+            <option value="timed">Timed mode (60s per question)</option>
+          </select>
+        </div>
+      </div>
+      <div class="f"><label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" id="mixSubjects" style="width:auto"> Mix all subjects (only for full 40/120 mock)</label></div>
+      <button class="btn btn-g mt" onclick="startQuiz()">Start Practice →</button>
+    </div>
+  </section>
+
+  <section class="page" id="page-quiz">
+    <div id="liveTimerWrap" style="display:none">
+      <div class="livetimer">
+        <div class="clock" id="liveClock">01:00</div>
+        <div class="info">
+          <div>Timed mode — the round ends when time is up</div>
+          <div class="bar"><i id="liveBar" style="width:100%"></i></div>
+        </div>
+      </div>
+    </div>
+    <div class="qbar"><i id="quizBar" style="width:10%"></i></div>
+    <div class="qmeta"><span id="quizCounter">Question 1 of 10</span><span id="quizScore">Score: 0</span></div>
+    <div class="card">
+      <div class="small mb" id="quizTopic">Subject · Topic</div>
+      <div class="qtext" id="quizQ">Question appears here</div>
+      <div class="opts" id="quizOptions"></div>
+      <div class="exp" id="quizExplain"></div>
+      <div class="brow mt">
+        <button class="btn btn-o btn-sm" onclick="quitQuiz()">Exit</button>
+        <button class="btn btn-p btn-sm" id="nextBtn" onclick="nextQuestion()" disabled>Next →</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" id="page-challenge">
+    <div class="phead">
+      <div class="eyebrow">🏆 Weekly Challenge</div>
+      <h1>Saturday Champions Cup</h1>
+      <p>Free to join. 30 questions, 20 seconds each. Live rank updates after every answer.</p>
+    </div>
+
+    <div id="challengeIntro">
+      <div class="chal-hero">
+        <div class="badge-t">🏆 SATURDAY CHAMPIONS CUP</div>
+        <h2>Compete. Learn. Win.</h2>
+        <p id="challengeStatus">Registration is open. No payment. Opens every Saturday at 8:00 PM.</p>
+        <div class="cd-row">
+          <div class="cd-box"><div class="n" id="cdDays">--</div><div class="l">DAYS</div></div>
+          <div class="cd-box"><div class="n" id="cdHours">--</div><div class="l">HRS</div></div>
+          <div class="cd-box"><div class="n" id="cdMins">--</div><div class="l">MIN</div></div>
+          <div class="cd-box"><div class="n" id="cdSecs">--</div><div class="l">SEC</div></div>
+        </div>
+        <button class="btn btn-y" onclick="registerChallenge()" id="registerBtn">Register Now — Free</button>
+      </div>
+
+      <div class="card">
+        <h3>How it works</h3>
+        <div class="act" style="background:transparent;border:0;padding:8px 0"><div class="aic">1</div><div class="ab"><b>Register free</b><span>No payment. Just tap Register.</span></div></div>
+        <div class="act" style="background:transparent;border:0;padding:8px 0"><div class="aic">2</div><div class="ab"><b>Answer 30 questions</b><span>20 seconds each. Timer bar shrinks live.</span></div></div>
+        <div class="act" style="background:transparent;border:0;padding:8px 0"><div class="aic">3</div><div class="ab"><b>Live ranking</b><span>Your position updates after every answer.</span></div></div>
+        <div class="act" style="background:transparent;border:0;padding:8px 0"><div class="aic">4</div><div class="ab"><b>Crown for the winner</b><span>Gold 🥇, silver 🥈, bronze 🥉.</span></div></div>
+      </div>
+    </div>
+
+    <div id="challengeLive" style="display:none">
+      <div class="card" style="border-color:rgba(240,180,41,.35)">
+        <div class="timer-wrap">
+          <div class="tinfo"><span>Q <span id="chQ">1</span> of <span id="chTotal">30</span></span><span>⭐ <span id="chPts">0</span> pts · Rank <span id="chRank">—</span></span></div>
+          <div class="tbar"><i id="chBar" style="width:100%"></i></div>
+          <div class="tinfo" style="margin-top:8px"><span>⏱ <span class="secs" id="chSecs">20</span>s remaining</span><span id="chScoreLive">0 correct</span></div>
+        </div>
+        <div class="qtext" id="chQText" style="font-size:17px">Loading...</div>
+        <div class="opts" id="chOpts"></div>
+      </div>
+      <div class="card">
+        <h3>⚡ Live standings</h3>
+        <div id="chLiveBoard"></div>
+      </div>
+    </div>
+
+    <div id="challengeResults" style="display:none">
+      <div class="card" style="background:linear-gradient(135deg,#2a1c05,#0f2a2e);text-align:center;border-color:rgba(240,180,41,.35)">
+        <div style="font-size:60px;margin-bottom:6px" id="chTrophy">🏆</div>
+        <h2 style="font-size:22px;margin:0 0 8px" id="chResultTitle">Challenge Complete!</h2>
+        <div style="font-size:44px;font-weight:900;color:var(--gold2);letter-spacing:-2px" id="chFinalPts">0 pts</div>
+        <div class="small mt" id="chFinalRank">Calculating...</div>
+      </div>
+      <div class="card"><h3>Final standings</h3><div id="chFinalBoard" class="mt"></div></div>
+      <button class="btn btn-p mt" onclick="go('leaderboard')">View Leaderboard →</button>
+      <button class="btn btn-o mt" onclick="go('home')">Back to Home</button>
+    </div>
+  </section>
+
+  <section class="page" id="page-leaderboard">
+    <div class="phead">
+      <div class="eyebrow">♛ Leaderboard</div>
+      <h1>Real learners only</h1>
+      <p>Every score is earned on a device — no fake players. Connect an online database later to make this cross-device.</p>
+    </div>
+    <div class="chips mb">
+      <button class="chip active" data-lb="all" onclick="pickLB(this)">All time</button>
+      <button class="chip" data-lb="challenge" onclick="pickLB(this)">Challenge Cup</button>
+    </div>
+    <div class="podium" id="lbPodium"></div>
+    <div class="you-card">
+      <div class="rk" id="yourRank">#—</div>
+      <div style="flex:1"><b style="font-size:14px;display:block;margin-bottom:3px" id="yourName">You</b><span style="font-size:11px;opacity:.9"><span id="yourPts">0</span> points · <span id="yourAcc">0%</span> accuracy · 🔥 <span id="yourStreak">0</span></span></div>
+    </div>
+    <div class="card"><h3>All players</h3><div id="lbFullList" class="mt"></div></div>
+    <button class="btn btn-o btn-sm" onclick="exportLeaderboard()">Export leaderboard JSON ↓</button>
+  </section>
+
+  <section class="page" id="page-groups">
+    <div class="phead">
+      <div class="eyebrow">👥 Study Groups</div>
+      <h1>Learn together</h1>
+      <p>Create a group, share the invite code, and chat about any topic in a full-screen room.</p>
+    </div>
+    <div id="groupsListView">
+      <button class="btn btn-p" onclick="showCreateGroup()">+ Create a new group</button>
+      <button class="btn btn-o mt" onclick="showJoinGroup()">Join with an invite code</button>
+      <div class="sec" style="margin-top:22px"><div class="left">My groups</div></div>
+      <div id="groupsList"></div>
+    </div>
+    <div id="groupCreateView" style="display:none">
+      <div class="card">
+        <h3>Create a group</h3>
+        <p class="sub">Give it a name and choose an emoji. You'll get a code to share.</p>
+        <div class="f"><label>Group name</label><input id="newGroupName" placeholder="e.g. JAMB Chem Squad"></div>
+        <div class="f"><label>Emoji</label>
+          <select id="newGroupEmoji"><option>📚</option><option>🧪</option><option>🧬</option><option>⚡</option><option>📐</option><option>🌍</option><option>💬</option><option>🔥</option></select>
+        </div>
+        <div class="brow"><button class="btn btn-p btn-sm" onclick="createGroup()">Create</button><button class="btn btn-o btn-sm" onclick="hideGroupForms()">Cancel</button></div>
+      </div>
+    </div>
+    <div id="groupJoinView" style="display:none">
+      <div class="card">
+        <h3>Join a group</h3>
+        <p class="sub">Ask a friend for the 6-character invite code.</p>
+        <div class="f"><label>Invite code</label><input id="joinCode" placeholder="e.g. ABC123" style="text-transform:uppercase"></div>
+        <div class="brow"><button class="btn btn-p btn-sm" onclick="joinGroup()">Join</button><button class="btn btn-o btn-sm" onclick="hideGroupForms()">Cancel</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" id="page-dictionary">
+    <div class="phead">
+      <div class="eyebrow">📖 Dictionary</div>
+      <h1>Look up any word</h1>
+      <p>Built-in offline dictionary. Search by word or meaning. Add your own words.</p>
+    </div>
+    <div class="f"><input id="dictSearch" placeholder="Type a word..." oninput="searchDict()" autocomplete="off"></div>
+    <div class="chips mb" id="dictChips"></div>
+    <div id="dictResults"></div>
+    <div class="card mt">
+      <h3>Add your own word</h3>
+      <div class="f"><label>Word</label><input id="newWordWord" placeholder="Word"></div>
+      <div class="f"><label>Part of speech</label><input id="newWordPos" placeholder="noun / verb / adjective"></div>
+      <div class="f"><label>Definition</label><textarea id="newWordDef" placeholder="Meaning..."></textarea></div>
+      <button class="btn btn-p btn-sm" onclick="addCustomWord()">Add to my dictionary</button>
+    </div>
+  </section>
+
+  <section class="page" id="page-tutor">
+    <div class="phead">
+      <div class="eyebrow">✦ AI Tutor</div>
+      <h1>Ask me anything</h1>
+      <p>Paste any multiple-choice question and I'll give the correct answer plus the meaning of every option.</p>
+    </div>
+    <div class="card" id="tutorLock">
+      <h3>Unlock the full AI Tutor</h3>
+      <p class="sub">Unlimited questions. Full textbook knowledge. Explains the meaning of every option (A, B, C, D).</p>
+      <div style="font-size:32px;font-weight:900;color:var(--gold2);margin:12px 0">₦2,500 <span style="font-size:13px;color:var(--muted);font-weight:600">/ one-time</span></div>
+      <button class="btn btn-y" onclick="unlockTutor()">Unlock AI Tutor ✦</button>
+      <button class="btn btn-o mt" onclick="previewTutor()" id="previewBtn">Try 3 free questions</button>
+    </div>
+    <div id="tutorApp" style="display:none">
+      <div class="chips mb">
+        <button class="tutor-chip" onclick="askSuggest('What is photosynthesis?')">Photosynthesis</button>
+        <button class="tutor-chip" onclick="askSuggest('Explain oxidation and reduction')">Redox</button>
+        <button class="tutor-chip" onclick="askSuggest(&quot;Newton's second law of motion&quot;)">Newton's laws</button>
+        <button class="tutor-chip" onclick="askSuggest('Difference between mitosis and meiosis')">Mitosis</button>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <div style="padding:14px;background:var(--bg2);border-bottom:1px solid var(--line);display:flex;gap:8px;align-items:center">
+          <div style="width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,var(--teal),var(--indigo));display:grid;place-items:center;font-size:16px">✦</div>
+          <div><b style="font-size:13px">Study Assistant</b><div class="small">Offline textbook</div></div>
+        </div>
+        <div id="chat" style="height:400px;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px"></div>
+        <div style="padding:10px;background:var(--bg2);border-top:1px solid var(--line);display:flex;gap:8px">
+          <input id="chatInput" placeholder="Ask anything or paste an MCQ..." onkeydown="if(event.key==='Enter')sendChat()" style="flex:1;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:11px 16px;font-size:13px">
+          <button class="btn btn-p btn-sm" onclick="sendChat()" id="sendBtn">Send</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" id="page-library">
+    <div class="phead">
+      <div class="eyebrow">Library</div>
+      <h1>Browse subjects</h1>
+    </div>
+    <div class="f"><input id="libSearch" placeholder="Search..." oninput="renderLibrary()"></div>
+    <div id="libGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px"></div>
+  </section>
+
+  <section class="page" id="page-cgpa">
+    <div class="phead">
+      <div class="eyebrow">Academic Records</div>
+      <h1>CGPA Calculator</h1>
+      <p>5-point and 4-point scales. Blends previous CGPA.</p>
+    </div>
+    <div class="card">
+      <div class="f"><label>Grading scale</label>
+        <select id="cgpaScale" onchange="cgpaScaleChange()">
+          <option value="5">5-point (A=5, B=4, C=3, D=2, E=1, F=0)</option>
+          <option value="4">4-point (A=4, B=3, C=2, D=1, F=0)</option>
+        </select>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="tbl"><thead><tr><th>Course</th><th>Units</th><th>Grade</th><th></th></tr></thead><tbody id="courseRows"></tbody></table>
+      </div>
+      <button class="btn btn-o btn-sm mt" onclick="addCourse()">+ Add course</button>
+      <div class="divider"></div>
+      <div class="row2">
+        <div class="f"><label>Previous CGPA</label><input id="prevCgpa" type="number" step="0.01" min="0" placeholder="e.g. 3.45"></div>
+        <div class="f"><label>Previous units</label><input id="prevUnits" type="number" min="0" placeholder="e.g. 42"></div>
+      </div>
+      <button class="btn btn-p" onclick="calcCgpa()">Calculate CGPA</button>
+      <div class="card" style="background:linear-gradient(135deg,#0f2a3a,#1e1830);margin-top:14px;text-align:center;border-color:rgba(14,165,160,.3)">
+        <div class="small">YOUR CGPA</div>
+        <div style="font-size:46px;font-weight:950;letter-spacing:-2px;background:linear-gradient(135deg,var(--teal2),var(--indigo2));-webkit-background-clip:text;background-clip:text;color:transparent" id="cgpaResult">—</div>
+        <div class="small" id="cgpaMsg">Add courses to begin</div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Target CGPA planner</h3>
+      <div class="row2">
+        <div class="f"><label>Target CGPA</label><input id="targetCgpa" type="number" step="0.01" placeholder="e.g. 4.20"></div>
+        <div class="f"><label>Credits remaining</label><input id="targetUnits" type="number" min="1" placeholder="e.g. 30"></div>
+      </div>
+      <button class="btn btn-o btn-sm" onclick="planTarget()">Check target</button>
+      <div class="small mt" id="targetResult" style="margin-top:12px">Enter your current CGPA and remaining credits.</div>
+    </div>
+  </section>
+
+  <section class="page" id="page-games">
+    <div class="phead">
+      <div class="eyebrow">Brain Games</div>
+      <h1>Train your brain</h1>
+    </div>
+    <div class="card">
+      <h3>🟦 Pattern Detective</h3>
+      <div class="qtext" id="puzzle" style="text-align:center;font-size:22px;padding:14px">Press New</div>
+      <div class="opts" id="patternOpts"></div>
+      <div class="exp" id="patternExp"></div>
+      <button class="btn btn-o btn-sm mt" onclick="newPattern()">New pattern</button>
+    </div>
+    <div class="card">
+      <h3>🧠 Memory Tiles</h3>
+      <div class="mem" id="memBoard"></div>
+      <div class="small" id="memStatus">Press Start.</div>
+      <button class="btn btn-p mt" onclick="startMemory()">Start</button>
+    </div>
+    <div class="card">
+      <h3>➕ Mental Maths Sprint</h3>
+      <div class="qtext" id="mathQ" style="text-align:center;font-size:24px;padding:14px">Press Start</div>
+      <div class="opts" id="mathOpts"></div>
+      <div class="small" id="mathScore" style="margin-top:10px">Score: 0</div>
+      <button class="btn btn-p mt" onclick="startMath()">Start</button>
+    </div>
+    <div class="card">
+      <h3>🎨 Colour Match</h3>
+      <div class="qtext" id="colorTarget" style="text-align:center;font-size:20px;padding:14px">Press Start</div>
+      <div class="colors" id="colorGrid"></div>
+      <div class="small" id="colorScore">Score: 0 · Best: 0</div>
+      <button class="btn btn-p mt" onclick="startColor()">Start</button>
+    </div>
+  </section>
+
+  <section class="page" id="page-progress">
+    <div class="phead"><div class="eyebrow">My Progress</div><h1>Your learning journey</h1></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="card center"><div class="small">Questions</div><div style="font-size:28px;font-weight:900" id="statAnswered">0</div></div>
+      <div class="card center"><div class="small">Accuracy</div><div style="font-size:28px;font-weight:900" id="statAccuracy">0%</div></div>
+      <div class="card center"><div class="small">Points</div><div style="font-size:28px;font-weight:900" id="statPoints">0</div></div>
+      <div class="card center"><div class="small">Streak</div><div style="font-size:28px;font-weight:900" id="statStreak">0d</div></div>
+    </div>
+    <div class="card mt"><h3>By subject</h3><div class="chart" id="subjectChart"></div></div>
+    <div class="card"><h3>Recent rounds</h3><div id="historyList"></div></div>
+  </section>
+
+  <section class="page" id="page-planner">
+    <div class="phead"><div class="eyebrow">Study Planner</div><h1>Plan your week</h1></div>
+    <div class="card">
+      <div class="f"><label>Task</label><input id="taskTitle" placeholder="e.g. Revise cell division"></div>
+      <div class="row2">
+        <div class="f"><label>Subject</label><select id="taskSubject"></select></div>
+        <div class="f"><label>Due date</label><input id="taskDate" type="date"></div>
+      </div>
+      <button class="btn btn-p" onclick="addTask()">Add task</button>
+    </div>
+    <div class="card"><h3>My tasks</h3><div id="taskList"></div></div>
+  </section>
+
+  <section class="page" id="page-settings">
+    <div class="phead"><div class="eyebrow">Settings</div><h1>Your account</h1></div>
+    <div class="card">
+      <h3>Profile</h3>
+      <div class="f"><label>Display name</label><input id="setName" placeholder="Student"></div>
+      <button class="btn btn-p btn-sm" onclick="saveProfile()">Save profile</button>
+    </div>
+    <div class="card">
+      <h3>Subscription</h3>
+      <p class="sub" id="subStatus">Free plan</p>
+      <button class="btn btn-y btn-sm" id="unlockBtn" onclick="unlockTutor()">Unlock AI Tutor ✦</button>
+    </div>
+    <div class="card">
+      <h3>Data</h3>
+      <div class="brow">
+        <button class="btn btn-o btn-sm" onclick="exportData()">Export backup</button>
+        <button class="btn btn-o btn-sm" onclick="resetData()">Reset data</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<nav class="bottom">
+  <button class="nb active" data-page="home" onclick="go('home')"><span class="ni">⌂</span>Home</button>
+  <button class="nb" data-page="practice" onclick="go('practice')"><span class="ni">✎</span>Practice</button>
+  <button class="nb" data-page="challenge" onclick="go('challenge')"><span class="ni">🏆</span>Challenge</button>
+  <button class="nb" data-page="tutor" onclick="go('tutor')"><span class="ni">✦</span>Tutor</button>
+  <button class="nb" data-page="groups" onclick="go('groups')"><span class="ni">👥</span>Groups</button>
+</nav>
+
+<!-- FULLSCREEN CHAT -->
+<div class="chat-fs" id="chatFs">
+  <div class="chat-fs-head">
+    <button class="icon-btn" onclick="closeGroupChat()">←</button>
+    <div class="gavatar" id="chatFsEmoji">📚</div>
+    <div class="ginfo">
+      <b id="chatFsName">Group</b>
+      <span id="chatFsMeta">Tap to see code</span>
+    </div>
+    <button class="icon-btn" onclick="copyGroupCode()" title="Copy code">📋</button>
+  </div>
+  <div class="chat-fs-body" id="chatFsBody"></div>
+  <div class="chat-fs-input">
+    <textarea id="chatFsInput" placeholder="Message" rows="1" oninput="autoGrow(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendGroupMessage()}"></textarea>
+    <button class="send" onclick="sendGroupMessage()" id="chatFsSend">➤</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ======================================================================
+   SMART CGPA PLUS — final build
+   Subject filtering fixed · timed mode counts down · fullscreen chat
+   ====================================================================== */
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(msg){ const t=$("toast"); t.textContent=msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),2400); }
+
+/* ---------------- STATE ---------------- */
+const STORE = "smartCgpa.v8";
+const defaultState = {
+  name:"Student",
+  scale:5,
+  courses:[{name:"BIO 101",credits:3,grade:"A"},{name:"CHM 101",credits:3,grade:"B"}],
+  cgpa:null, prevCgpa:"", prevUnits:"",
+  points:0, answered:0, correct:0, rounds:0, streak:0,
+  subjects:{}, history:[], failed:[],
+  tasks:[],
+  tutorUnlocked:false, tutorPreview:3,
+  bestColor:0,
+  challenge:{ registered:false, bestScore:0, lastScore:null },
+  groups:[],
+  customWords:[],
+  lastSubject:"Chemistry"
+};
+let state = loadState();
+function loadState(){
+  try{ return {...defaultState, ...JSON.parse(localStorage.getItem(STORE)||"{}")}; }
+  catch(e){ return structuredClone(defaultState); }
+}
+function saveState(){ try{ localStorage.setItem(STORE, JSON.stringify(state)); }catch(e){} refreshUI(); }
+
+/* ---------------- SUBJECTS ---------------- */
+const SUBJECTS = {
+  Chemistry:   { icon:"⚗️", cls:"chem", desc:"Matter, reactions, bonding." },
+  Biology:     { icon:"🧬", cls:"bio",  desc:"Cells, genetics, ecology." },
+  Physics:     { icon:"⚡", cls:"phy",  desc:"Motion, energy, waves." },
+  Mathematics: { icon:"📐", cls:"mat",  desc:"Algebra, geometry, calculus." },
+  English:     { icon:"📖", cls:"eng",  desc:"Grammar, vocabulary, comprehension." },
+  "JAMB Tips": { icon:"🏆", cls:"tip",  desc:"Exam strategy and timing." }
+};
+
+/* ---------------- QUESTION BANK ----------------
+   Every question has an explicit subject. Filtering is done strictly by exact
+   subject match (and, when needed, an explicit mix flag) so subject views only
+   ever show their own questions.
+------------------------------------------------- */
+const BASE_QUESTIONS = [
+  /* --- ENGLISH --- */
+  {subject:"English",topic:"Parts of speech",exam:"JAMB",q:"In the sentence 'She ran quickly', the word 'quickly' is an…",options:["Adjective","Adverb","Noun","Pronoun"],a:1,exp:"'Quickly' modifies the verb 'ran', so it is an adverb.",meanings:["Adjectives describe nouns or pronouns.","Correct — an adverb modifies a verb.","Nouns name a person, place or thing.","Pronouns replace nouns."]},
+  {subject:"English",topic:"Synonyms",exam:"WAEC",q:"Choose the word nearest in meaning to 'brief'.",options:["Lengthy","Concise","Unclear","Loud"],a:1,exp:"'Brief' means short and concise.",meanings:["'Lengthy' is the opposite.","Correct — concise.","'Unclear' is about clarity.","'Loud' is about sound."]},
+  {subject:"English",topic:"Antonyms",exam:"JAMB",q:"Choose the word opposite in meaning to 'scarce'.",options:["Rare","Limited","Abundant","Insufficient"],a:2,exp:"'Scarce' means in short supply; 'abundant' means plentiful.",meanings:["'Rare' is similar.","'Limited' is similar.","Correct — abundant.","'Insufficient' is similar."]},
+  {subject:"English",topic:"Concord",exam:"NECO",q:"Choose the correct sentence.",options:["She go daily.","She goes daily.","She going daily.","She gone daily."],a:1,exp:"Third-person singular takes 'goes' in simple present.",meanings:["Incorrect agreement.","Correct — 'goes'.","Needs auxiliary verb.","Not a complete present sentence."]},
+  {subject:"English",topic:"Idioms",exam:"WAEC",q:"The idiom 'once in a blue moon' means…",options:["Very frequently","Very rarely","At midday","Every day"],a:1,exp:"The idiom means very rarely.",meanings:["Not frequent.","Correct — very rarely.","Not about time of day.","Not every day."]},
+  {subject:"English",topic:"Comprehension",exam:"JAMB",q:"An inference is a conclusion that is…",options:["Copied word for word","Reasonably drawn from clues","Unrelated to the text","Always in the title"],a:1,exp:"An inference uses evidence and reasoning.",meanings:["Copying is not inference.","Correct — drawn from evidence.","Must relate to the text.","Titles are not inferences."]},
+  {subject:"English",topic:"Tenses",exam:"WAEC",q:"Choose the correct past tense: 'I ____ to school yesterday.'",options:["go","gone","went","going"],a:2,exp:"'Went' is the simple past of 'go'.",meanings:["'Go' is present.","'Gone' needs 'have'.","Correct — 'went'.","'Going' is present participle."]},
+  {subject:"English",topic:"Vocabulary",exam:"JAMB",q:"'Ubiquitous' means…",options:["Rare","Present everywhere","Ancient","Hidden"],a:1,exp:"Ubiquitous = found everywhere.",meanings:["Rare is opposite.","Correct — everywhere.","Ancient is about time.","Hidden is opposite."]},
+  {subject:"English",topic:"Parts of speech",exam:"WAEC",q:"Which word is a noun?",options:["Beautiful","Beauty","Beautifully","Beautify"],a:1,exp:"'Beauty' is a noun — a quality.",meanings:["'Beautiful' is an adjective.","Correct — 'beauty' is a noun.","'Beautifully' is an adverb.","'Beautify' is a verb."]},
+  {subject:"English",topic:"Punctuation",exam:"JAMB",q:"Choose the correctly punctuated sentence.",options:["Its a beautiful day.","It's a beautiful day.","Its' a beautiful day.","It is' a beautiful day."],a:1,exp:"'It's' is the contraction of 'it is'.",meanings:["'Its' is possessive, not 'it is'.","Correct — 'It's' = 'it is'.","'Its'' is not a valid form.","Wrong apostrophe placement."]},
+  {subject:"English",topic:"Figures of speech",exam:"NECO",q:"'The wind whispered through the trees' is an example of…",options:["Simile","Personification","Metaphor","Hyperbole"],a:1,exp:"Wind is given the human action of whispering.",meanings:["Simile uses 'like' or 'as'.","Correct — personification.","Metaphor says one thing IS another.","Hyperbole is exaggeration."]},
+  {subject:"English",topic:"Active/passive voice",exam:"JAMB",q:"Change to passive: 'The boy kicked the ball.'",options:["The ball was kicked by the boy.","The ball is kicked by the boy.","The boy was kicking the ball.","Kicking the ball was the boy."],a:0,exp:"Passive voice: object + was/were + past participle + by + subject.",meanings:["Correct — past passive.","Wrong tense — 'is' is present.","Still active voice.","Grammatically incorrect."]},
+  {subject:"English",topic:"Direct/reported speech",exam:"WAEC",q:"Report this: She said, 'I am tired.'",options:["She said that she is tired.","She said that she was tired.","She said I was tired.","She says she was tired."],a:1,exp:"Tense shifts back one step in reported speech: 'am' → 'was'.",meanings:["No tense shift.","Correct — 'was tired'.","Wrong pronoun.","Wrong reporting verb tense."]},
+  {subject:"English",topic:"Prepositions",exam:"NECO",q:"Choose the correct preposition: 'She is good ____ mathematics.'",options:["in","at","on","for"],a:1,exp:"'Good at' is the standard collocation for skills.",meanings:["'Good in' is not standard here.","Correct — 'good at'.","'Good on' is not standard for this use.","'Good for' means beneficial to."]},
+  {subject:"English",topic:"Question tags",exam:"JAMB",q:"Add the correct question tag: 'You are coming, ____?'",options:["are you","aren't you","isn't it","do you"],a:1,exp:"Positive statement 'are' → negative tag 'aren't you'.",meanings:["Wrong polarity.","Correct — 'aren't you'.","Wrong pronoun.","Wrong auxiliary."]},
+  {subject:"English",topic:"Sentence types",exam:"WAEC",q:"'What a beautiful day!' is an example of a/an…",options:["Interrogative","Exclamatory","Imperative","Declarative"],a:1,exp:"Exclamatory sentences express strong feeling.",meanings:["Interrogative asks a question.","Correct — exclamatory.","Imperative gives a command.","Declarative states a fact."]},
+  {subject:"English",topic:"Conjunctions",exam:"NECO",q:"Choose the correct conjunction: 'I like tea ____ I prefer coffee.'",options:["and","but","or","so"],a:1,exp:"'But' shows contrast.",meanings:["'And' adds, no contrast.","Correct — 'but' shows contrast.","'Or' offers a choice.","'So' shows result."]},
+  {subject:"English",topic:"Vocabulary",exam:"JAMB",q:"'Candid' means…",options:["Deceitful","Honest and straightforward","Angry","Confused"],a:1,exp:"Candid = truthful and straightforward.",meanings:["Deceitful is opposite.","Correct — honest.","Angry is unrelated.","Confused is unrelated."]},
+  {subject:"English",topic:"Synonyms",exam:"WAEC",q:"Choose the word nearest in meaning to 'abundant'.",options:["Scarce","Plentiful","Weak","Ancient"],a:1,exp:"Abundant = plentiful.",meanings:["Scarce is opposite.","Correct — plentiful.","Weak is unrelated.","Ancient is about time."]},
+  {subject:"English",topic:"Antonyms",exam:"NECO",q:"Choose the word opposite in meaning to 'expand'.",options:["Stretch","Grow","Contract","Widen"],a:2,exp:"Contract is opposite of expand.",meanings:["Stretch is similar.","Grow is similar.","Correct — contract.","Widen is similar."]},
+
+  /* --- CHEMISTRY --- */
+  {subject:"Chemistry",topic:"Atomic structure",exam:"JAMB",q:"The atomic number of an element equals its number of…",options:["Neutrons","Protons","Nucleons","Electron shells"],a:1,exp:"Atomic number = proton number.",meanings:["Neutrons vary between isotopes.","Correct — protons.","Nucleons = protons + neutrons, that is mass number.","Shells are energy levels."]},
+  {subject:"Chemistry",topic:"Atomic structure",exam:"WAEC",q:"Isotopes of the same element have the same number of…",options:["Neutrons","Protons","Nucleons","Mass number"],a:1,exp:"Isotopes have same protons but different neutrons.",meanings:["Neutrons differ.","Correct — same protons.","Nucleons differ.","Mass number differs."]},
+  {subject:"Chemistry",topic:"Chemical bonding",exam:"JAMB",q:"An ionic bond is best described as the attraction between…",options:["Neutral molecules","Oppositely charged ions","Two neutrons","Two nuclei"],a:1,exp:"Ionic bonding is electrostatic attraction between ions.",meanings:["Neutral molecules do not form ions.","Correct — oppositely charged ions.","Neutrons are neutral.","Nuclei repel."]},
+  {subject:"Chemistry",topic:"Chemical bonding",exam:"NECO",q:"A covalent bond involves…",options:["Sharing of electron pairs","Transfer of protons","Sharing of neutrons","Fusion of nuclei"],a:0,exp:"Covalent bonds share electron pairs.",meanings:["Correct — shared pairs.","Protons are not transferred.","Neutrons are not shared.","Nuclear fusion is not a bond."]},
+  {subject:"Chemistry",topic:"Mole concept",exam:"JAMB",q:"How many moles are in 36 g of water? (H=1, O=16)",options:["0.5 mol","1 mol","2 mol","4 mol"],a:2,exp:"Molar mass 18 g/mol; 36 ÷ 18 = 2 mol.",meanings:["0.5 mol = 9 g.","1 mol = 18 g.","Correct — 2 mol.","4 mol = 72 g."]},
+  {subject:"Chemistry",topic:"Gas laws",exam:"WAEC",q:"Boyle's law states that at constant temperature, pressure is…",options:["Directly proportional to volume","Inversely proportional to volume","Equal to volume","Independent of volume"],a:1,exp:"Boyle: P₁V₁ = P₂V₂.",meanings:["Direct is Charles.","Correct — inverse.","Different units.","Pressure changes with volume."]},
+  {subject:"Chemistry",topic:"Acids bases salts",exam:"JAMB",q:"Neutralisation of an acid and base produces…",options:["Salt and water","Oxygen only","Hydrogen only","Metal only"],a:0,exp:"Acid + base → salt + water.",meanings:["Correct — salt + water.","Oxygen is not the product.","Hydrogen is from acid + metal.","Metal is not produced."]},
+  {subject:"Chemistry",topic:"Redox",exam:"WAEC",q:"Oxidation is best defined as…",options:["Gain of electrons","Loss of electrons","Gain of neutrons","Loss of mass"],a:1,exp:"OIL RIG — oxidation is loss of electrons.",meanings:["Gain is reduction.","Correct — loss.","Neutrons are not involved.","Mass alone is not the definition."]},
+  {subject:"Chemistry",topic:"Equilibrium",exam:"JAMB",q:"At dynamic equilibrium, forward and reverse rates are…",options:["Both zero","Equal","Unequal","Infinite"],a:1,exp:"Rates equal, concentrations constant.",meanings:["Reactions continue.","Correct — equal.","Unequal → system shifts.","Rates are finite."]},
+  {subject:"Chemistry",topic:"Organic chemistry",exam:"NECO",q:"Which of these is an alkane?",options:["Ethene (C₂H₄)","Methane (CH₄)","Ethyne (C₂H₂)","Benzene (C₆H₆)"],a:1,exp:"Alkanes have only single C–C bonds.",meanings:["Ethene has C=C — alkene.","Correct — methane.","Ethyne has C≡C.","Benzene is aromatic."]},
+  {subject:"Chemistry",topic:"Periodic table",exam:"JAMB",q:"Down a group, atomic radius generally…",options:["Decreases","Increases","Stays the same","Becomes zero"],a:1,exp:"More shells down a group → larger radius.",meanings:["Decrease is across a period.","Correct — increases.","Not constant.","Never zero."]},
+  {subject:"Chemistry",topic:"Electrolysis",exam:"WAEC",q:"In electrolysis, reduction occurs at the…",options:["Anode","Cathode","Salt bridge","Power supply"],a:1,exp:"Reduction at the cathode.",meanings:["Oxidation at the anode.","Correct — cathode.","Salt bridge balances charge.","Power supply drives the reaction."]},
+  {subject:"Chemistry",topic:"Separation techniques",exam:"JAMB",q:"Which method separates sand and water?",options:["Distillation","Filtration","Chromatography","Sublimation"],a:1,exp:"Filtration separates an insoluble solid from a liquid.",meanings:["Distillation uses boiling points.","Correct — filtration.","Chromatography separates dissolved substances.","Sublimation is solid → gas."]},
+  {subject:"Chemistry",topic:"Rates of reaction",exam:"WAEC",q:"Increasing temperature increases reaction rate mainly because…",options:["Particles move faster with more energetic collisions","Molecules get bigger","Mass increases","Pressure falls"],a:0,exp:"More energetic collisions → faster rate.",meanings:["Correct.","Molecules do not get bigger.","Mass unchanged.","Pressure is not the main reason."]},
+  {subject:"Chemistry",topic:"Solubility",exam:"NECO",q:"A saturated solution is one that…",options:["Has no solute","Cannot dissolve more solute at that temperature","Is always dilute","Contains only water"],a:1,exp:"Saturated = maximum solute at that temperature.",meanings:["Saturated has solute.","Correct — cannot dissolve more.","Saturated ≠ dilute.","Pure water is not saturated."]},
+
+  /* --- BIOLOGY --- */
+  {subject:"Biology",topic:"Cell biology",exam:"JAMB",q:"Which organelle is the main site of aerobic respiration?",options:["Ribosome","Mitochondrion","Golgi apparatus","Lysosome"],a:1,exp:"Mitochondria produce most ATP during aerobic respiration.",meanings:["Ribosomes build proteins.","Correct — mitochondria.","Golgi packages proteins.","Lysosomes digest waste."]},
+  {subject:"Biology",topic:"Cell biology",exam:"WAEC",q:"Which structure controls what enters and leaves a cell?",options:["Cell membrane","Cell wall","Nucleolus","Centriole"],a:0,exp:"Cell membrane is selectively permeable.",meanings:["Correct — selectively permeable.","Cell wall supports.","Nucleolus makes ribosomes.","Centrioles help division."]},
+  {subject:"Biology",topic:"Cell biology",exam:"JAMB",q:"Which organelle is the main site of protein synthesis?",options:["Ribosome","Vacuole","Lysosome","Cell wall"],a:0,exp:"Ribosomes translate mRNA into proteins.",meanings:["Correct — ribosomes.","Vacuoles store.","Lysosomes digest waste.","Cell wall supports."]},
+  {subject:"Biology",topic:"Photosynthesis",exam:"JAMB",q:"Which gas is taken in by green plants during photosynthesis?",options:["Oxygen","Carbon dioxide","Nitrogen","Hydrogen"],a:1,exp:"CO₂ is used with water and light energy.",meanings:["Oxygen is released.","Correct — CO₂.","Nitrogen is not directly used.","Hydrogen is not used."]},
+  {subject:"Biology",topic:"Respiration",exam:"WAEC",q:"The main purpose of cellular respiration is to…",options:["Release usable energy from food","Absorb sunlight","Make soil minerals","Remove water"],a:0,exp:"Respiration releases energy from food.",meanings:["Correct — energy release.","Sunlight is used in photosynthesis.","Minerals come from soil.","Not the purpose."]},
+  {subject:"Biology",topic:"Genetics",exam:"JAMB",q:"Different forms of the same gene are called…",options:["Alleles","Organs","Tissues","Enzymes"],a:0,exp:"Alleles are alternative forms of a gene.",meanings:["Correct — alleles.","Organs are groups of tissues.","Tissues are groups of cells.","Enzymes are catalysts."]},
+  {subject:"Biology",topic:"Ecology",exam:"NECO",q:"In a food chain, green plants are classified as…",options:["Producers","Primary consumers","Decomposers","Parasites"],a:0,exp:"Green plants make their own food.",meanings:["Correct — producers.","Primary consumers eat producers.","Decomposers break down dead matter.","Parasites live on hosts."]},
+  {subject:"Biology",topic:"Transport in animals",exam:"JAMB",q:"Which blood component transports most oxygen?",options:["Platelets","Red blood cells","Plasma proteins","White blood cells"],a:1,exp:"Haemoglobin in RBCs binds oxygen.",meanings:["Platelets help clotting.","Correct — RBCs.","Plasma carries other substances.","WBCs fight infection."]},
+  {subject:"Biology",topic:"Excretion",exam:"WAEC",q:"Which organ removes urea and regulates water?",options:["Kidney","Stomach","Pancreas","Gall bladder"],a:0,exp:"Kidneys filter blood and excrete urea.",meanings:["Correct — kidneys.","Stomach digests.","Pancreas produces enzymes.","Gall bladder stores bile."]},
+  {subject:"Biology",topic:"Reproduction",exam:"JAMB",q:"In humans, fertilisation normally occurs in the…",options:["Oviduct","Bladder","Large intestine","Cervix"],a:0,exp:"Fertilisation in the oviduct.",meanings:["Correct — oviduct.","Bladder stores urine.","Large intestine absorbs water.","Cervix is the neck of the uterus."]},
+  {subject:"Biology",topic:"Transport in plants",exam:"WAEC",q:"Which plant tissue transports water from roots to leaves?",options:["Phloem","Xylem","Epidermis","Cortex"],a:1,exp:"Xylem transports water and minerals.",meanings:["Phloem transports sugars.","Correct — xylem.","Epidermis is the outer layer.","Cortex is under the epidermis."]},
+  {subject:"Biology",topic:"Homeostasis",exam:"NECO",q:"Sweating regulates body temperature mainly by…",options:["Trapping heat","Evaporative cooling","Freezing","Blocking pores"],a:1,exp:"Sweat evaporates and cools the skin.",meanings:["Sweat does not trap heat.","Correct — evaporative cooling.","Not freezing.","Pores stay open."]},
+  {subject:"Biology",topic:"Diseases and immunity",exam:"JAMB",q:"Which organism causes malaria?",options:["Plasmodium","Rhizopus","Lactobacillus","Amoeba"],a:0,exp:"Malaria is caused by Plasmodium.",meanings:["Correct — Plasmodium.","Rhizopus is a mould.","Lactobacillus is a bacterium.","Amoeba is a protist."]},
+  {subject:"Biology",topic:"Classification",exam:"WAEC",q:"The scientific naming of organisms uses…",options:["Genus and species","Family and order","Kingdom and phylum","Class and order"],a:0,exp:"Binomial nomenclature: genus + species.",meanings:["Correct — genus + species.","Family and order are higher ranks.","Kingdom and phylum are ranks.","Class and order are ranks."]},
+
+  /* --- PHYSICS --- */
+  {subject:"Physics",topic:"Measurements",exam:"JAMB",q:"What is the SI unit of force?",options:["Joule","Newton","Watt","Pascal"],a:1,exp:"Force is measured in newtons.",meanings:["Joule is energy.","Correct — newton.","Watt is power.","Pascal is pressure."]},
+  {subject:"Physics",topic:"Measurements",exam:"WAEC",q:"Which quantity is a vector?",options:["Speed","Distance","Mass","Velocity"],a:3,exp:"Velocity has magnitude and direction.",meanings:["Speed is scalar.","Distance is scalar.","Mass is scalar.","Correct — velocity."]},
+  {subject:"Physics",topic:"Motion",exam:"JAMB",q:"The rate of change of velocity is…",options:["Momentum","Acceleration","Impulse","Work"],a:1,exp:"Acceleration = change in velocity ÷ time.",meanings:["Momentum = mass × velocity.","Correct — acceleration.","Impulse = force × time.","Work = force × distance."]},
+  {subject:"Physics",topic:"Newton's laws",exam:"NECO",q:"Newton's first law is also called the law of…",options:["Gravitation","Inertia","Action and reaction","Conservation of charge"],a:1,exp:"First law describes inertia.",meanings:["Gravitation is separate.","Correct — inertia.","Action-reaction is the third law.","Not related."]},
+  {subject:"Physics",topic:"Work energy power",exam:"JAMB",q:"The SI unit of work is the…",options:["Watt","Joule","Newton","Ampere"],a:1,exp:"Work is measured in joules.",meanings:["Watt is power.","Correct — joule.","Newton is force.","Ampere is current."]},
+  {subject:"Physics",topic:"Electricity",exam:"WAEC",q:"The SI unit of electric current is the…",options:["Volt","Ohm","Ampere","Coulomb"],a:2,exp:"Current measured in amperes.",meanings:["Volt measures voltage.","Ohm measures resistance.","Correct — ampere.","Coulomb measures charge."]},
+  {subject:"Physics",topic:"Waves",exam:"JAMB",q:"Distance between two successive crests is the…",options:["Amplitude","Frequency","Wavelength","Period"],a:2,exp:"Wavelength = crest-to-crest.",meanings:["Amplitude is max displacement.","Frequency is cycles per second.","Correct — wavelength.","Period is time for one cycle."]},
+  {subject:"Physics",topic:"Heat",exam:"NECO",q:"Heat flows spontaneously from…",options:["Lower to higher temperature","Higher to lower temperature","Equal temperatures","Cold to all"],a:1,exp:"Heat flows hot → cold.",meanings:["Not spontaneous cold → hot.","Correct — hot to cold.","No net flow at equal temperature.","Cold does not heat a hotter body."]},
+  {subject:"Physics",topic:"Pressure",exam:"JAMB",q:"Pressure is defined as…",options:["Force × area","Force ÷ area","Mass × velocity","Work ÷ time"],a:1,exp:"P = F/A.",meanings:["Product is not pressure.","Correct — force per area.","Mass × velocity = momentum.","Work ÷ time = power."]},
+  {subject:"Physics",topic:"Optics",exam:"WAEC",q:"A convex lens is also called a…",options:["Diverging lens","Converging lens","Plane mirror","Prism"],a:1,exp:"Convex lenses converge parallel rays.",meanings:["Diverging is concave.","Correct — converging.","Plane mirror reflects.","Prism disperses."]},
+  {subject:"Physics",topic:"Radioactivity",exam:"JAMB",q:"Which radiation has the greatest penetrating power?",options:["Alpha","Beta","Gamma","All equal"],a:2,exp:"Gamma rays are highly penetrating.",meanings:["Alpha stopped by paper.","Beta stopped by aluminium.","Correct — gamma.","They differ."]},
+  {subject:"Physics",topic:"Circular motion",exam:"NECO",q:"Centripetal force is directed…",options:["Away from centre","Towards centre","Along the tangent","Upward only"],a:1,exp:"Towards the centre.",meanings:["Outward is centrifugal (apparent).","Correct — towards centre.","Tangential is velocity direction.","Not only upward."]},
+  {subject:"Physics",topic:"Simple machines",exam:"WAEC",q:"Mechanical advantage is…",options:["Load ÷ effort","Effort ÷ load","Load × effort","Effort − load"],a:0,exp:"MA = load ÷ effort.",meanings:["Correct.","Reversed.","Product is not MA.","Difference is not MA."]},
+  {subject:"Physics",topic:"Density",exam:"JAMB",q:"Density is defined as…",options:["Mass × volume","Mass ÷ volume","Volume ÷ mass","Force ÷ area"],a:1,exp:"Density = mass ÷ volume.",meanings:["Product is not density.","Correct — mass per unit volume.","Reversed.","Force ÷ area = pressure."]},
+
+  /* --- MATHEMATICS --- */
+  {subject:"Mathematics",topic:"Number bases",exam:"JAMB",q:"What is 1011₂ in base ten?",options:["9","10","11","12"],a:2,exp:"1011₂ = 8 + 0 + 2 + 1 = 11.",meanings:["9 = 1001₂.","10 = 1010₂.","Correct — 11.","12 = 1100₂."]},
+  {subject:"Mathematics",topic:"Percentages",exam:"WAEC",q:"What is 25% of 240?",options:["40","50","60","80"],a:2,exp:"25% is a quarter. 240 ÷ 4 = 60.",meanings:["40 ≈ 16.7%.","50 ≈ 20.8%.","Correct — 60.","80 is one third."]},
+  {subject:"Mathematics",topic:"Algebra",exam:"JAMB",q:"Solve 3x + 5 = 20.",options:["3","5","7","8"],a:1,exp:"3x = 15 → x = 5.",meanings:["3 → 14.","Correct — 5.","7 → 26.","8 → 29."]},
+  {subject:"Mathematics",topic:"Simultaneous equations",exam:"NECO",q:"If x + y = 9 and x − y = 3, x = ?",options:["3","4","6","9"],a:2,exp:"Add: 2x = 12 → x = 6.",meanings:["x = 3 → x − y = −3.","x = 4 → x − y = −1.","Correct — x = 6, y = 3.","x = 9 → x − y = 9."]},
+  {subject:"Mathematics",topic:"Geometry",exam:"WAEC",q:"Interior angles of a triangle sum to…",options:["90°","180°","270°","360°"],a:1,exp:"Triangle sum = 180°.",meanings:["90° is a right angle.","Correct — 180°.","Not a polygon sum.","360° is a quadrilateral sum."]},
+  {subject:"Mathematics",topic:"Mensuration",exam:"JAMB",q:"Area of a rectangle 8 cm × 5 cm?",options:["13 cm²","26 cm²","40 cm²","80 cm²"],a:2,exp:"8 × 5 = 40 cm².",meanings:["13 is the perimeter.","26 is half the perimeter.","Correct — 40.","80 is double."]},
+  {subject:"Mathematics",topic:"Probability",exam:"NECO",q:"A fair die is rolled once. P(4) = ?",options:["1/2","1/3","1/6","1/4"],a:2,exp:"1 favourable ÷ 6 total outcomes.",meanings:["1/2 is a coin flip.","1/3 is a 3-sided outcome.","Correct — 1/6.","1/4 is a 4-sided outcome."]},
+  {subject:"Mathematics",topic:"Indices",exam:"JAMB",q:"Simplify 2³ × 2².",options:["2⁵","4⁵","2⁶","4⁶"],a:0,exp:"Add powers: 2³ × 2² = 2⁵.",meanings:["Correct — 2⁵.","Base stays 2.","2⁶ would be 2³×2³.","Base stays 2."]},
+  {subject:"Mathematics",topic:"Quadratic equations",exam:"WAEC",q:"Sum of roots of x² − 7x + 10 = 0?",options:["−10","−7","7","10"],a:2,exp:"Sum = −b/a = 7.",meanings:["−10 not the sum.","−7 is −b.","Correct — 7.","10 is the product."]},
+  {subject:"Mathematics",topic:"Statistics",exam:"JAMB",q:"Mean of 4, 6, 8, 10, 12?",options:["6","7","8","9"],a:2,exp:"Sum 40 ÷ 5 = 8.",meanings:["Below middle.","Below mean.","Correct — 8.","Above mean."]},
+  {subject:"Mathematics",topic:"Logarithms",exam:"NECO",q:"log₁₀ 1000 = ?",options:["2","3","4","10"],a:1,exp:"10³ = 1000 → log = 3.",meanings:["2 → 100.","Correct — 3.","4 → 10000.","10 → 10^10."]},
+  {subject:"Mathematics",topic:"Trigonometry",exam:"WAEC",q:"In a right triangle, sin θ equals…",options:["opposite/hypotenuse","adjacent/hypotenuse","opposite/adjacent","hypotenuse/opposite"],a:0,exp:"Sine = opposite ÷ hypotenuse (SOH).",meanings:["Correct — SOH.","That's cosine.","That's tangent.","Reciprocal of sine."]},
+  {subject:"Mathematics",topic:"Surds",exam:"JAMB",q:"Simplify √50.",options:["5√2","2√5","10√5","25√2"],a:0,exp:"√50 = √(25×2) = 5√2.",meanings:["Correct — 5√2.","2√5 = √20.","10√5 = √500.","25√2 = √1250."]},
+  {subject:"Mathematics",topic:"Sequences",exam:"NECO",q:"Next term: 3, 7, 11, 15, ?",options:["17","18","19","20"],a:2,exp:"Common difference 4 → 19.",meanings:["Not 17.","Not 18.","Correct — 19.","Not 20."]},
+
+  /* --- JAMB TIPS --- */
+  {subject:"JAMB Tips",topic:"Time management",exam:"JAMB",q:"In a 180-question, 120-minute JAMB exam, time per question is roughly…",options:["20 sec","40 sec","60 sec","90 sec"],a:1,exp:"7200 sec ÷ 180 = ~40 sec.",meanings:["Too fast.","Correct — 40 sec.","60 sec would total 180 min.","90 sec would total 270 min."]},
+  {subject:"JAMB Tips",topic:"Exam strategy",exam:"JAMB",q:"If a question is taking too long, best to…",options:["Keep trying","Skip and return","Guess and stop","Close eyes"],a:1,exp:"Skip hard questions and return.",meanings:["You may run out of time.","Correct — skip and return.","Guessing is a last resort.","Wastes time."]},
+  {subject:"JAMB Tips",topic:"Preparation",exam:"JAMB",q:"Best long-term JAMB prep is…",options:["Cramming","Consistent daily practice","One topic only","Copying"],a:1,exp:"Spacing beats cramming.",meanings:["Cramming fails.","Correct — consistency.","One topic is not enough.","Copying is useless."]},
+  {subject:"JAMB Tips",topic:"Mock exams",exam:"JAMB",q:"Why take full mock exams?",options:["Waste time","Practise timing and format","Memorise one question","Skip study"],a:1,exp:"Mocks train timing and endurance.",meanings:["Mocks are valuable.","Correct — practise timing.","One question is not enough.","Mocks support study."]},
+  {subject:"JAMB Tips",topic:"Reading questions",exam:"WAEC",q:"When reading a long question, you should FIRST…",options:["Skim for keywords and what is being asked","Copy the whole thing","Skip to the options","Close the paper"],a:0,exp:"Identify what the question asks before options.",meanings:["Correct — find the ask.","Copying wastes time.","Skipping misses the point.","Not productive."]},
+  {subject:"JAMB Tips",topic:"Guessing strategy",exam:"JAMB",q:"If you must guess, the best approach is to…",options:["Pick A every time","Eliminate wrong options first","Leave blank","Pick the longest option"],a:1,exp:"Elimination improves guessing odds.",meanings:["Not strategic.","Correct — eliminate first.","Blank earns zero.","Length is not a signal."]},
+  {subject:"JAMB Tips",topic:"Health during exam",exam:"WAEC",q:"The night before an exam, you should…",options:["Cram all night","Get enough sleep","Skip meals","Study for 12 hours straight"],a:1,exp:"Sleep consolidates memory.",meanings:["Cramming harms recall.","Correct — enough sleep.","Skipping meals harms focus.","Long sessions reduce retention."]},
+  {subject:"JAMB Tips",topic:"Reading comprehension",exam:"NECO",q:"When answering comprehension questions, you should base answers on…",options:["Personal opinion","Evidence in the passage","Outside knowledge only","Other students' answers"],a:1,exp:"Answers should be grounded in the passage.",meanings:["Opinions are not evidence.","Correct — evidence in passage.","Outside knowledge can mislead.","Do not rely on peers."]}
+];
+
+/* Parameterised variants — real distinct questions on the same skill */
+function generateVariants(){
+  const out = [];
+  // Multiplication (Mathematics)
+  for(let a = 2; a <= 19; a++){
+    for(let b = 2; b <= 12; b += 3){
+      const ans = a * b;
+      out.push({subject:"Mathematics",topic:"Multiplication",exam:"JAMB",
+        q:`What is ${a} × ${b}?`,
+        options:[String(ans+2),String(ans-3),String(ans),String(ans+5)],a:2,
+        exp:`${a} × ${b} = ${ans}.`,
+        meanings:["Wrong — off by 2.","Wrong — off by 3.","Correct.","Wrong — off by 5."]});
+    }
+  }
+  // Addition
+  for(let a = 5; a <= 60; a += 5){
+    for(let b = 3; b <= 20; b += 4){
+      const ans = a + b;
+      out.push({subject:"Mathematics",topic:"Addition",exam:"WAEC",
+        q:`What is ${a} + ${b}?`,
+        options:[String(ans+2),String(ans),String(ans-1),String(ans+4)],a:1,
+        exp:`${a} + ${b} = ${ans}.`,
+        meanings:["Wrong.","Correct.","Wrong.","Wrong."]});
+    }
+  }
+  // Percentages
+  for(let pct of [5,10,15,20,25,40,50,75]){
+    for(let n of [40,80,120,160,200,240,360,480]){
+      const ans = pct * n / 100;
+      if(Number.isInteger(ans)){
+        out.push({subject:"Mathematics",topic:"Percentages",exam:"JAMB",
+          q:`What is ${pct}% of ${n}?`,
+          options:[String(ans/2),String(ans),String(Math.round(ans*1.5)),String(ans+10)],a:1,
+          exp:`${pct}% of ${n} = ${ans}.`,
+          meanings:["Half the answer.","Correct.","50% more.","Off by 10."]});
+      }
+    }
+  }
+  // Chemistry moles
+  const molar = [["water (H₂O)",18],["carbon dioxide (CO₂)",44],["sodium chloride (NaCl)",58.5],["glucose (C₆H₁₂O₆)",180]];
+  molar.forEach(([name, m]) => {
+    for(let mult of [1,2,3,4]){
+      const mass = m * mult;
+      out.push({subject:"Chemistry",topic:"Mole concept",exam:"JAMB",
+        q:`How many moles are in ${mass} g of ${name}? (Molar mass = ${m} g/mol)`,
+        options:[String(mult-0.5),String(mult),String(mult+1),String(mult*2)],a:1,
+        exp:`Moles = ${mass} ÷ ${m} = ${mult}.`,
+        meanings:["Wrong.","Correct.","Wrong.","Wrong."]});
+    }
+  });
+  // Biology organelles
+  const orgs = [
+    ["ribosome","protein synthesis","Ribosomes translate mRNA into protein."],
+    ["mitochondrion","aerobic respiration","Mitochondria produce most ATP."],
+    ["chloroplast","photosynthesis","Chloroplasts contain chlorophyll."],
+    ["nucleus","storing DNA","The nucleus holds the cell's genetic material."],
+    ["cell membrane","controlling entry and exit","The membrane is selectively permeable."],
+    ["vacuole","storage","Vacuoles store water and dissolved substances."],
+    ["lysosome","breaking down waste","Lysosomes contain digestive enzymes."],
+    ["Golgi apparatus","packaging proteins","The Golgi packages proteins for transport."]
+  ];
+  orgs.forEach(([org, fn, why], i) => {
+    const wrong = orgs.filter((_,j)=>j!==i).map(o=>o[0]).slice(0,3);
+    out.push({subject:"Biology",topic:"Cell biology",exam:"WAEC",
+      q:`Which organelle is responsible for ${fn}?`,
+      options:[wrong[0],org,wrong[1],wrong[2]],a:1,exp:why,
+      meanings:[`${wrong[0]} is not for ${fn}.`,"Correct.",`${wrong[1]} is not for ${fn}.`,`${wrong[2]} is not for ${fn}.`]});
+  });
+  // Physics units
+  const units = [
+    ["force","newton","N"],["energy","joule","J"],["power","watt","W"],["pressure","pascal","Pa"],
+    ["current","ampere","A"],["voltage","volt","V"],["resistance","ohm","Ω"],["charge","coulomb","C"],
+    ["frequency","hertz","Hz"],["mass","kilogram","kg"]
+  ];
+  units.forEach(([qty, u, sym], i) => {
+    const wrong = units.filter((_,j)=>j!==i).map(x=>x[1]).slice(0,3);
+    out.push({subject:"Physics",topic:"Units",exam:"JAMB",
+      q:`What is the SI unit of ${qty}?`,
+      options:[wrong[0],u,wrong[1],wrong[2]],a:1,
+      exp:`${qty} is measured in ${u} (${sym}).`,
+      meanings:["Wrong unit.","Correct.","Wrong unit.","Wrong unit."]});
+  });
+  // English synonyms
+  const syns = [
+    ["abundant","plentiful"],["brief","concise"],["courage","bravery"],["diligent","hardworking"],
+    ["fragile","delicate"],["huge","enormous"],["rapid","swift"],["obsolete","outdated"],
+    ["vivid","bright"],["weary","tired"],["brave","courageous"],["calm","tranquil"],
+    ["eager","keen"],["gloomy","dismal"],["jovial","cheerful"]
+  ];
+  syns.forEach(([w, s], i) => {
+    const wrong = syns.filter((_,j)=>j!==i).map(p=>p[1]).slice(0,3);
+    out.push({subject:"English",topic:"Synonyms",exam:"WAEC",
+      q:`Choose the word nearest in meaning to '${w}'.`,
+      options:[wrong[0],s,wrong[1],wrong[2]],a:1,
+      exp:`'${w}' means '${s}'.`,
+      meanings:["Different meaning.","Correct.","Different meaning.","Different meaning."]});
+  });
+  // English antonyms
+  const ants = [
+    ["abundant","scarce"],["expand","contract"],["ancient","modern"],
+    ["victory","defeat"],["generous","stingy"],["humble","arrogant"],
+    ["transparent","opaque"],["permanent","temporary"]
+  ];
+  ants.forEach(([w, s], i) => {
+    const wrong = ants.filter((_,j)=>j!==i).map(p=>p[1]).slice(0,3);
+    out.push({subject:"English",topic:"Antonyms",exam:"NECO",
+      q:`Choose the word opposite in meaning to '${w}'.`,
+      options:[wrong[0],s,wrong[1],wrong[2]],a:1,
+      exp:`'${w}' is opposite of '${s}'.`,
+      meanings:["Not the opposite.","Correct.","Not the opposite.","Not the opposite."]});
+  });
+  // Chemistry element symbols
+  const symbols = [["Hydrogen","H"],["Helium","He"],["Lithium","Li"],["Carbon","C"],["Nitrogen","N"],
+    ["Oxygen","O"],["Sodium","Na"],["Magnesium","Mg"],["Aluminium","Al"],["Silicon","Si"],
+    ["Phosphorus","P"],["Sulphur","S"],["Chlorine","Cl"],["Potassium","K"],["Calcium","Ca"],
+    ["Iron","Fe"],["Copper","Cu"],["Zinc","Zn"],["Silver","Ag"],["Gold","Au"]];
+  symbols.forEach(([name, sym], i) => {
+    const wrong = symbols.filter((_,j)=>j!==i).map(s=>s[1]).slice(0,3);
+    out.push({subject:"Chemistry",topic:"Elements and symbols",exam:"JAMB",
+      q:`What is the chemical symbol for ${name}?`,
+      options:[wrong[0],sym,wrong[1],wrong[2]],a:1,
+      exp:`${name} → ${sym}.`,
+      meanings:["Wrong symbol.","Correct.","Wrong symbol.","Wrong symbol."]});
+  });
+  return out;
+}
+const QUESTIONS = [...BASE_QUESTIONS, ...generateVariants()];
+
+/* Pre-compute the pool by subject for fast filtering */
+const QUESTIONS_BY_SUBJECT = {};
+QUESTIONS.forEach(q => {
+  if(!QUESTIONS_BY_SUBJECT[q.subject]) QUESTIONS_BY_SUBJECT[q.subject] = [];
+  QUESTIONS_BY_SUBJECT[q.subject].push(q);
+});
+
+/* ---------------- TUTOR TEXTBOOK ---------------- */
+const TEXTBOOK = [
+  {k:["photosynthesis"],a:"PHOTOSYNTHESIS (BIOLOGY)\n\nGreen plants use light energy (absorbed by chlorophyll) to convert CO₂ and water into glucose and oxygen.\n\nWord equation: carbon dioxide + water → glucose + oxygen (with light and chlorophyll).\n\nOccurs in chloroplasts. Oxygen is a by-product. Glucose is used for respiration, growth, or stored as starch."},
+  {k:["respiration","aerobic","anaerobic"],a:"CELLULAR RESPIRATION (BIOLOGY)\n\nAerobic: glucose + oxygen → carbon dioxide + water + energy. In mitochondria.\n\nAnaerobic: less energy without oxygen. Muscles → lactic acid; yeast → ethanol + CO₂."},
+  {k:["cell","organelle","mitochondria","ribosome","nucleus","chloroplast"],a:"CELL STRUCTURES (BIOLOGY)\n\n• Cell membrane — selective boundary.\n• Nucleus — contains DNA.\n• Mitochondria — aerobic respiration.\n• Ribosomes — protein synthesis.\n• Chloroplasts — photosynthesis (plants).\n• Cell wall — support (plants).\n• Vacuole — storage."},
+  {k:["mitosis","meiosis","cell division"],a:"MITOSIS vs MEIOSIS (BIOLOGY)\n\nMitosis: one division → 2 similar diploid cells. Growth and repair.\nMeiosis: two divisions → 4 varied haploid cells. Produces gametes."},
+  {k:["genetics","allele","genotype","phenotype"],a:"GENETICS (BIOLOGY)\n\nAllele — alternative form of a gene.\nGenotype — allele combination.\nPhenotype — observable trait.\nDominant expressed in heterozygote. Recessive masked.\nMonohybrid Aa × Aa → 1 AA : 2 Aa : 1 aa → 3:1 phenotype ratio."},
+  {k:["ecology","ecosystem","food chain"],a:"ECOLOGY (BIOLOGY)\n\nEcosystem = community + physical environment.\nProducers make own food. Consumers feed on others. Decomposers break down dead matter.\nEnergy decreases at higher trophic levels."},
+  {k:["atomic","isotope","proton","electron"],a:"ATOMIC STRUCTURE (CHEMISTRY)\n\nAtomic number (Z) = protons.\nMass number (A) = protons + neutrons.\nIsotopes have same Z, different neutrons.\nElectrons occupy shells around the nucleus."},
+  {k:["periodic table"],a:"PERIODIC TABLE (CHEMISTRY)\n\nGroups (columns) share outer-electron arrangement.\nPeriods (rows) fill successive shells.\nAcross a period: radius ↓, ionisation ↑, electronegativity ↑.\nDown a group: radius ↑, ionisation ↓."},
+  {k:["bonding","ionic","covalent","metallic"],a:"CHEMICAL BONDING (CHEMISTRY)\n\nIonic — attraction between oppositely charged ions.\nCovalent — sharing of electron pairs.\nMetallic — positive ions in a sea of delocalised electrons."},
+  {k:["mole","avogadro"],a:"MOLE CONCEPT (CHEMISTRY)\n\n1 mole = 6.02 × 10²³ particles.\nMoles = mass ÷ molar mass."},
+  {k:["gas law","boyle","charles","ideal"],a:"GAS LAWS (CHEMISTRY)\n\nBoyle: P₁V₁ = P₂V₂ (T constant).\nCharles: V₁/T₁ = V₂/T₂ (P constant).\nPressure: P₁/T₁ = P₂/T₂ (V constant).\nIdeal: PV = nRT.\nTemperature in kelvin."},
+  {k:["acid","base","ph","neutralisation"],a:"ACIDS AND BASES (CHEMISTRY)\n\nAcid — donates H⁺.\nBase — accepts H⁺.\nAlkali — soluble base producing OH⁻.\npH < 7 acid, 7 neutral, > 7 alkaline.\nNeutralisation: acid + base → salt + water."},
+  {k:["redox","oxidation","reduction"],a:"OXIDATION AND REDUCTION (CHEMISTRY)\n\nOIL RIG — Oxidation Is Loss of electrons; Reduction Is Gain.\nOxidation can also mean gain of oxygen; reduction is the opposite."},
+  {k:["equilibrium","le chatelier"],a:"CHEMICAL EQUILIBRIUM (CHEMISTRY)\n\nForward and reverse rates equal. Concentrations constant.\nLe Chatelier: system shifts to oppose disturbance."},
+  {k:["organic","alkane","alkene"],a:"ORGANIC CHEMISTRY\n\nAlkanes — single C–C bonds (CₙH₂ₙ₊₂).\nAlkenes — at least one C=C (CₙH₂ₙ).\nAlkynes — at least one C≡C.\nAlkenes decolourise bromine water."},
+  {k:["newton","force","f=ma"],a:"NEWTON'S LAWS (PHYSICS)\n\n1st — inertia.\n2nd — F = ma.\n3rd — action and reaction are equal and opposite on different objects."},
+  {k:["motion","velocity","acceleration"],a:"MOTION (PHYSICS)\n\nSpeed = distance/time (scalar).\nVelocity = displacement/time (vector).\nAcceleration = change in velocity/time.\nEquations (constant a): v = u + at; s = ut + ½at²; v² = u² + 2as."},
+  {k:["work","energy","power","joule"],a:"WORK, ENERGY, POWER (PHYSICS)\n\nWork = force × distance. Unit: joule (J).\nKE = ½mv². GPE = mgh.\nPower = work ÷ time. Unit: watt (W).\nEnergy is conserved."},
+  {k:["electricity","ohm","current"],a:"ELECTRICITY (PHYSICS)\n\nCurrent I = Q/t. Unit: ampere (A).\nVoltage V = W/Q. Unit: volt (V).\nOhm's law: V = IR.\nPower: P = VI = I²R = V²/R.\nSeries: same current, resistances add.\nParallel: same voltage, 1/R = Σ 1/Rᵢ."},
+  {k:["wave","wavelength","frequency","sound"],a:"WAVES (PHYSICS)\n\nTransverse — vibration perpendicular to travel.\nLongitudinal — vibration parallel.\nWave speed v = fλ.\nSound needs a medium; light does not."},
+  {k:["optics","reflection","refraction"],a:"LIGHT (PHYSICS)\n\nReflection: angle of incidence = angle of reflection.\nRefraction: light bends as speed changes.\nConvex (converging) lens brings parallel rays to focus."},
+  {k:["simultaneous"],a:"SIMULTANEOUS EQUATIONS (MATHEMATICS)\n\nTwo equations, two unknowns.\nMethods: elimination or substitution.\nExample: x + y = 9, x − y = 3 → x = 6, y = 3."},
+  {k:["quadratic"],a:"QUADRATIC EQUATIONS (MATHEMATICS)\n\nForm ax² + bx + c = 0.\nFormula x = (−b ± √(b² − 4ac)) / (2a).\nDiscriminant determines the nature of the roots."},
+  {k:["percentage"],a:"PERCENTAGES (MATHEMATICS)\n\nPercentage = (part ÷ whole) × 100%.\nExample: 25% of 240 = 0.25 × 240 = 60."},
+  {k:["probability"],a:"PROBABILITY (MATHEMATICS)\n\nP(event) = favourable outcomes ÷ total outcomes.\n0 ≤ P ≤ 1."},
+  {k:["cgpa","gpa","grade point"],a:"CGPA CALCULATION\n\nQuality points = units × grade points.\nGPA = total quality points ÷ total units.\n5-point scale: A=5, B=4, C=3, D=2, E=1, F=0.\n4-point scale: A=4, B=3, C=2, D=1, F=0."},
+  {k:["parts of speech"],a:"PARTS OF SPEECH (ENGLISH)\n\nNoun, pronoun, verb, adjective, adverb, preposition, conjunction, interjection."},
+  {k:["concord"],a:"SUBJECT–VERB AGREEMENT (ENGLISH)\n\nSingular subject → singular verb. Plural subject → plural verb.\nExample: She goes daily. They go daily."},
+  {k:["synonym","antonym"],a:"SYNONYMS AND ANTONYMS (ENGLISH)\n\nSynonym — similar meaning (brief / concise).\nAntonym — opposite meaning (scarce / abundant).\nContext matters — read the whole sentence."}
+];
+
+/* ---------------- DICTIONARY ---------------- */
+const DICTIONARY = [
+  {w:"abundant",pos:"adjective",def:"Existing in large quantities; plentiful.",ex:"Abundant rainfall."},
+  {w:"accelerate",pos:"verb",def:"To increase in speed or rate.",ex:"The car began to accelerate."},
+  {w:"accurate",pos:"adjective",def:"Correct in all details; exact.",ex:"An accurate measurement."},
+  {w:"acid",pos:"noun",def:"A substance that donates hydrogen ions (H⁺) in solution; pH < 7.",ex:"Hydrochloric acid."},
+  {w:"adapt",pos:"verb",def:"To become adjusted to new conditions.",ex:"Plants adapt over generations."},
+  {w:"allele",pos:"noun",def:"Alternative form of a gene at a given locus.",ex:"Eye colour alleles."},
+  {w:"amplitude",pos:"noun",def:"Maximum extent of a vibration from equilibrium.",ex:"Wave amplitude."},
+  {w:"antonym",pos:"noun",def:"A word opposite in meaning to another.",ex:"'Hot' is an antonym of 'cold'."},
+  {w:"atom",pos:"noun",def:"Smallest unit of an element retaining its properties.",ex:"A water molecule has 3 atoms."},
+  {w:"base",pos:"noun",def:"A substance that accepts H⁺; pH > 7.",ex:"Sodium hydroxide is a base."},
+  {w:"biodiversity",pos:"noun",def:"Variety of plant and animal life.",ex:"Rich biodiversity."},
+  {w:"bond",pos:"noun",def:"Force holding atoms together.",ex:"An ionic bond."},
+  {w:"catalyst",pos:"noun",def:"Substance that speeds a reaction without being consumed.",ex:"Enzymes are catalysts."},
+  {w:"cell",pos:"noun",def:"Basic structural and functional unit of life.",ex:"Human cells."},
+  {w:"chlorophyll",pos:"noun",def:"Green pigment in plants that absorbs light.",ex:"Leaves contain chlorophyll."},
+  {w:"chromosome",pos:"noun",def:"DNA-protein structure carrying genetic information.",ex:"Humans have 46."},
+  {w:"combustion",pos:"noun",def:"Burning; rapid reaction with oxygen releasing heat.",ex:"Combustion of methane."},
+  {w:"compound",pos:"noun",def:"Substance of two or more elements chemically combined.",ex:"Water is a compound."},
+  {w:"concord",pos:"noun",def:"Agreement between words in a sentence.",ex:"Subject-verb concord."},
+  {w:"condensation",pos:"noun",def:"Change of gas to liquid.",ex:"Water droplets on cold glass."},
+  {w:"conductor",pos:"noun",def:"Material that allows heat or electricity to pass.",ex:"Copper is a conductor."},
+  {w:"density",pos:"noun",def:"Mass per unit volume.",ex:"Water: 1 g/cm³."},
+  {w:"diffusion",pos:"noun",def:"Net movement from higher to lower concentration.",ex:"Perfume smell spreading."},
+  {w:"dilute",pos:"verb",def:"To make weaker by adding solvent.",ex:"Dilute the acid."},
+  {w:"displacement",pos:"noun",def:"Change in position in a direction; a vector.",ex:"10 km north."},
+  {w:"ecosystem",pos:"noun",def:"Community of organisms plus physical environment.",ex:"A pond."},
+  {w:"electron",pos:"noun",def:"Negatively charged subatomic particle.",ex:"Electrons in shells."},
+  {w:"element",pos:"noun",def:"Pure substance of atoms with the same atomic number.",ex:"Gold."},
+  {w:"emulsion",pos:"noun",def:"Mixture of two liquids, one dispersed as droplets.",ex:"Milk."},
+  {w:"energy",pos:"noun",def:"Capacity to do work; measured in joules (J).",ex:"Solar energy."},
+  {w:"enzyme",pos:"noun",def:"Biological catalyst speeding reactions in living things.",ex:"Amylase digests starch."},
+  {w:"equilibrium",pos:"noun",def:"State where opposing processes are balanced.",ex:"Dynamic equilibrium."},
+  {w:"evaporation",pos:"noun",def:"Change of liquid to vapour at the surface.",ex:"Water evaporates."},
+  {w:"excretion",pos:"noun",def:"Removal of metabolic waste from an organism.",ex:"Kidneys excrete urea."},
+  {w:"fertilisation",pos:"noun",def:"Fusion of male and female gametes.",ex:"Forms a zygote."},
+  {w:"force",pos:"noun",def:"Interaction that changes motion or shape; in newtons (N).",ex:"Net force causes acceleration."},
+  {w:"frequency",pos:"noun",def:"Cycles per second; measured in hertz (Hz).",ex:"440 Hz."},
+  {w:"friction",pos:"noun",def:"Force opposing motion between surfaces.",ex:"Tyres and road."},
+  {w:"gamete",pos:"noun",def:"Sex cell fusing with another in reproduction.",ex:"Sperm and egg."},
+  {w:"gene",pos:"noun",def:"DNA section coding for a specific protein or trait.",ex:"Gene for eye colour."},
+  {w:"genotype",pos:"noun",def:"Genetic makeup of an organism.",ex:"Aa is a genotype."},
+  {w:"gravity",pos:"noun",def:"Force of attraction between masses.",ex:"~9.8 m/s² on Earth."},
+  {w:"habitat",pos:"noun",def:"Natural home or environment of an organism.",ex:"A forest."},
+  {w:"hormone",pos:"noun",def:"Chemical messenger affecting target cells.",ex:"Insulin."},
+  {w:"hydrocarbon",pos:"noun",def:"Compound of only carbon and hydrogen.",ex:"Methane."},
+  {w:"hypothesis",pos:"noun",def:"Proposed explanation for further investigation.",ex:"Tested by experiment."},
+  {w:"inertia",pos:"noun",def:"Tendency to resist change in motion.",ex:"Heavier objects have more inertia."},
+  {w:"inference",pos:"noun",def:"Conclusion drawn from evidence and reasoning.",ex:"Wet ground implies rain."},
+  {w:"isotope",pos:"noun",def:"Atoms of the same element with different neutrons.",ex:"Carbon-12 and carbon-14."},
+  {w:"lever",pos:"noun",def:"Simple machine with a rigid bar pivoting at a point.",ex:"A seesaw."},
+  {w:"mass",pos:"noun",def:"Amount of matter; measured in kilograms (kg).",ex:"5 kg mass."},
+  {w:"metabolism",pos:"noun",def:"Chemical processes maintaining life.",ex:"Includes breakdown and building."},
+  {w:"mixture",pos:"noun",def:"Substances physically combined, not bonded.",ex:"Air."},
+  {w:"molecule",pos:"noun",def:"Two or more atoms chemically bonded.",ex:"O₂."},
+  {w:"momentum",pos:"noun",def:"Mass × velocity; a vector.",ex:"p = mv."},
+  {w:"neuron",pos:"noun",def:"Specialised nerve cell transmitting impulses.",ex:"Carries signals."},
+  {w:"neutron",pos:"noun",def:"Neutral subatomic particle in the nucleus.",ex:"No charge."},
+  {w:"nutrient",pos:"noun",def:"Substance providing nourishment essential for life.",ex:"Vitamins."},
+  {w:"osmosis",pos:"noun",def:"Net movement of water through a selectively permeable membrane.",ex:"Root hair water uptake."},
+  {w:"oxidation",pos:"noun",def:"Loss of electrons; also gain of oxygen.",ex:"Rusting iron."},
+  {w:"pH",pos:"noun",def:"Scale 0–14 of acidity/alkalinity.",ex:"Lemon juice has low pH."},
+  {w:"phenotype",pos:"noun",def:"Observable characteristics from genotype and environment.",ex:"Brown eyes."},
+  {w:"photosynthesis",pos:"noun",def:"Light-driven process making food from CO₂ and water.",ex:"Releases oxygen."},
+  {w:"plasma",pos:"noun",def:"Liquid part of blood carrying cells and dissolved substances.",ex:"Transports nutrients."},
+  {w:"pollination",pos:"noun",def:"Transfer of pollen from anther to stigma.",ex:"Bees help."},
+  {w:"pressure",pos:"noun",def:"Force per unit area; in pascals (Pa).",ex:"P = F/A."},
+  {w:"probability",pos:"noun",def:"Measure of how likely an event is.",ex:"Between 0 and 1."},
+  {w:"protein",pos:"noun",def:"Large molecule of amino acids essential for growth.",ex:"Meat, beans."},
+  {w:"proton",pos:"noun",def:"Positively charged subatomic particle.",ex:"Defines atomic number."},
+  {w:"radiation",pos:"noun",def:"Energy transmitted as waves or particles.",ex:"Sunlight."},
+  {w:"reactant",pos:"noun",def:"Substance that undergoes change in a reaction.",ex:"H₂ and O₂."},
+  {w:"reduction",pos:"noun",def:"Gain of electrons.",ex:"Complementary to oxidation."},
+  {w:"reproduction",pos:"noun",def:"Production of new individuals.",ex:"Sexual or asexual."},
+  {w:"respiration",pos:"noun",def:"Releasing energy from food in cells.",ex:"Aerobic uses oxygen."},
+  {w:"solute",pos:"noun",def:"Substance dissolved in a solution.",ex:"Salt in water."},
+  {w:"solvent",pos:"noun",def:"Substance that dissolves a solute.",ex:"Water."},
+  {w:"species",pos:"noun",def:"Group able to interbreed and produce fertile offspring.",ex:"Lions."},
+  {w:"speed",pos:"noun",def:"Rate of covering distance; a scalar.",ex:"Speed = distance/time."},
+  {w:"stoichiometry",pos:"noun",def:"Quantitative relationships in chemical reactions.",ex:"Uses balanced equations."},
+  {w:"sublimation",pos:"noun",def:"Direct change from solid to gas.",ex:"Dry ice."},
+  {w:"synonym",pos:"noun",def:"Word with similar meaning to another.",ex:"'Big' → 'large'."},
+  {w:"temperature",pos:"noun",def:"Measure of how hot or cold; in °C or K.",ex:"Affects rate."},
+  {w:"tissue",pos:"noun",def:"Group of similar cells performing a function.",ex:"Muscle tissue."},
+  {w:"transpiration",pos:"noun",def:"Loss of water vapour from leaves via stomata.",ex:"Creates transpiration pull."},
+  {w:"vacuole",pos:"noun",def:"Cell organelle for storage.",ex:"Large in plants."},
+  {w:"valency",pos:"noun",def:"Combining power of an atom.",ex:"Na: +1."},
+  {w:"velocity",pos:"noun",def:"Rate of change of displacement; a vector.",ex:"Displacement/time."},
+  {w:"voltage",pos:"noun",def:"Electric potential difference; in volts (V).",ex:"220 V."},
+  {w:"wavelength",pos:"noun",def:"Distance between points in phase on a wave.",ex:"In metres."},
+  {w:"work",pos:"noun",def:"Transfer of energy when force moves an object.",ex:"W = F × d."},
+  {w:"xylem",pos:"noun",def:"Plant tissue transporting water upward.",ex:"Hollow tubes."},
+  {w:"yield",pos:"noun",def:"Amount of product obtained.",ex:"85% yield."},
+  {w:"zygote",pos:"noun",def:"Cell formed by fusion of gametes.",ex:"Divides to form an embryo."}
+];
+
+/* ---------------- REFRESH UI ---------------- */
+function refreshUI(){
+  const hour = new Date().getHours();
+  const name = state.name && state.name !== "Student" ? state.name.split(" ")[0] : "friend";
+  $("greet").textContent = name;
+  $("hStatAnswered").textContent = state.answered;
+  $("hStatAccuracy").textContent = state.answered ? Math.round(state.correct/state.answered*100)+"%" : "0%";
+  $("hStatPoints").textContent = state.points;
+  $("streakChip").innerHTML = "🔥 " + (state.streak||0);
+  $("statAnswered").textContent = state.answered;
+  $("statAccuracy").textContent = state.answered ? Math.round(state.correct/state.answered*100)+"%" : "0%";
+  $("statPoints").textContent = state.points;
+  $("statStreak").textContent = (state.streak||0) + "d";
+  $("setName").value = state.name || "";
+  $("subStatus").textContent = state.tutorUnlocked ? "Premium — AI Tutor unlocked" : "Free plan";
+  $("unlockBtn").style.display = state.tutorUnlocked ? "none" : "inline-flex";
+  renderContinue();
+  renderActivity();
+  renderSubjectGrids();
+  renderProgress();
+  renderTasks();
+  renderLibrary();
+  renderGroups();
+  applyTutorUnlock();
+  updateChallengeCountdown();
+  renderLeaderboard();
+  renderDictChips();
+}
+function renderContinue(){
+  const items = ["Chemistry","Biology","Physics","Mathematics","English"];
+  $("continueRow").innerHTML = items.map(name => {
+    const d = SUBJECTS[name];
+    const p = state.subjects[name] || {answered:0,correct:0};
+    const pct = p.answered ? Math.round(p.correct/p.answered*100) : 0;
+    return `<div class="hcard" onclick="quickStart('${esc(name)}')">
+      <span class="badge">${p.answered} Qs</span>
+      <div class="icon">${d.icon}</div>
+      <h4>${esc(name)}</h4>
+      <div class="sub">${esc(d.desc)}</div>
+      <div class="progress"><i style="width:${pct}%"></i></div>
+    </div>`;
+  }).join("");
+}
+function renderActivity(){
+  const recent = state.history.slice(0,5);
+  if(!recent.length){ $("activityList").innerHTML = '<div class="empty">No activity yet. Start practising to see your progress here.</div>'; return; }
+  $("activityList").innerHTML = recent.map(h => {
+    const parts = (h.score||"").split("/").map(Number);
+    const ok = parts[0] >= (parts[1]||1)*0.6;
+    return `<div class="act"><div class="aic">${ok?"✓":"✗"}</div><div class="ab"><b>${esc(h.subject)} · ${esc(h.topic||"Mixed")}</b><span>${esc(h.date)} · ${esc(h.score)} · +${h.points} pts</span></div><span class="at ${ok?"ok":"no"}">${ok?"Good":"Review"}</span></div>`;
+  }).join("");
+}
+function renderSubjectGrids(){
+  const html = Object.entries(SUBJECTS).map(([name,d]) =>
+    `<button class="sit ${d.cls} ${state.lastSubject === name ? "selected" : ""}" data-subject="${esc(name)}" onclick="selectSubject('${esc(name)}')"><span class="si">${d.icon}</span><span>${esc(name)}</span></button>`
+  ).join("");
+  $("subjectGrid").innerHTML = html;
+  $("practiceSubjectGrid").innerHTML = html;
+  const label = $("pickedSubjectLabel");
+  if(label) label.textContent = state.lastSubject || "Chemistry";
+}
+function selectSubject(subject){
+  state.lastSubject = subject;
+  saveState();
+  toast("Selected " + subject);
+}
+function quickStart(subject){
+  state.lastSubject = subject;
+  saveState();
+  go("practice");
+  toast("Selected " + subject + " — tap Start Practice");
+}
+
+/* ---------------- ROUTER ---------------- */
+function go(page){
+  state._currentPage = page;
+  document.querySelectorAll(".page").forEach(p => p.classList.toggle("active", p.id === "page-" + page));
+  document.querySelectorAll(".nb").forEach(b => b.classList.toggle("active", b.dataset.page === page));
+  document.querySelectorAll(".dr-it").forEach(b => b.classList.toggle("active", b.dataset.page === page));
+  closeDrawer();
+  window.scrollTo({top:0, behavior:"smooth"});
+  if(page === "leaderboard") renderLeaderboard();
+  if(page === "challenge") updateChallengeCountdown();
+  if(page === "dictionary") { $("dictSearch").value=""; searchDict(); }
+  if(page === "groups") { $("chatFs").classList.remove("show"); renderGroups(); }
+}
+document.querySelectorAll("[data-page]").forEach(b => b.onclick = () => go(b.dataset.page));
+function openDrawer(){ $("dr").classList.add("show"); $("ov").classList.add("show"); }
+function closeDrawer(){ $("dr").classList.remove("show"); $("ov").classList.remove("show"); }
+
+/* ---------------- QUIZ ----------------
+   Subject filter is strict: pool = QUESTIONS_BY_SUBJECT[subject].
+   Timed mode: each question has a 60-second limit. Round ends when time expires.
+------------------------------------------------- */
+let quiz = { list:[], index:0, answers:[], mode:"practice", subject:"", started:false };
+let selectedExam = "all";
+let quizTimerId = null;
+let quizTimeLeft = 60;
+const PER_QUESTION_SECONDS = 60;
+
+function pickExam(btn){
+  document.querySelectorAll("[data-exam]").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  selectedExam = btn.dataset.exam;
+}
+function startQuiz(){
+  const mix = $("mixSubjects").checked;
+  const subject = state.lastSubject || "Chemistry";
+  const count = Number($("quizCount").value);
+  const mode = $("quizMode").value;
+
+  // Strict subject filtering — English shows English, Chemistry shows Chemistry
+  let pool;
+  if(mix && count >= 40){
+    // Explicit mix only when user checks the box AND requests a large round
+    pool = QUESTIONS.filter(q => selectedExam === "all" || q.exam === selectedExam);
+  } else {
+    pool = (QUESTIONS_BY_SUBJECT[subject] || []).filter(q => selectedExam === "all" || q.exam === selectedExam);
+    if(pool.length < count){
+      // Not enough with the exam filter — fall back to all questions for the subject
+      pool = (QUESTIONS_BY_SUBJECT[subject] || []).slice();
+    }
+  }
+  if(!pool.length){ toast("No questions available for this selection."); return; }
+
+  pool = pool.map(q => ({...q, options:[...q.options], meanings:[...(q.meanings||[])]}));
+  for(let i = pool.length-1; i > 0; i--){ const j = Math.floor(Math.random()*(i+1)); [pool[i],pool[j]]=[pool[j],pool[i]]; }
+  const list = pool.slice(0, Math.min(count, pool.length));
+  if(!list.length){ toast("No questions available."); return; }
+
+  quiz = { list, index:0, answers:[], mode, subject: mix && count >= 40 ? "Mixed" : subject, started:true };
+  go("quiz");
+  renderQuestion();
+  if(mode === "timed") startQuizTimer();
+  else stopQuizTimer();
+}
+function startRetryFailed(){
+  if(!state.failed.length){ toast("No failed questions yet."); return; }
+  const pool = state.failed.map(id => QUESTIONS[id]).filter(Boolean);
+  if(!pool.length){ toast("Retry queue is empty."); return; }
+  quiz = { list: pool, index:0, answers:[], mode:"practice", subject:"Retry", started:true };
+  go("quiz");
+  renderQuestion();
+  stopQuizTimer();
+}
+
+/* Timed mode helpers */
+function startQuizTimer(){
+  stopQuizTimer();
+  quizTimeLeft = PER_QUESTION_SECONDS;
+  $("liveTimerWrap").style.display = "block";
+  updateQuizTimerUI();
+  quizTimerId = setInterval(() => {
+    if(!quiz.started) return;
+    quizTimeLeft--;
+    updateQuizTimerUI();
+    if(quizTimeLeft <= 0){
+      // Time expired — auto submit as wrong if not answered, then move on
+      if(!quiz.answers[quiz.index]){
+        const q = quiz.list[quiz.index];
+        quiz.answers[quiz.index] = { pick:-1, correct:false, timedOut:true };
+        document.querySelectorAll("#quizOptions .opt").forEach((b,i) => {
+          b.disabled = true;
+          if(i === q.a) b.classList.add("correct");
+        });
+        $("quizExplain").innerHTML = `<b>⏱ Time up for this question.</b><p style="margin:8px 0">Correct answer: ${esc(q.options[q.a])}. ${esc(q.exp)}</p>`;
+        $("quizExplain").classList.add("show");
+        $("nextBtn").disabled = false;
+      }
+      stopQuizTimer();
+    }
+  }, 1000);
+}
+function stopQuizTimer(){
+  if(quizTimerId){ clearInterval(quizTimerId); quizTimerId = null; }
+  $("liveTimerWrap").style.display = "none";
+}
+function updateQuizTimerUI(){
+  const m = Math.floor(Math.max(0, quizTimeLeft) / 60);
+  const s = Math.max(0, quizTimeLeft) % 60;
+  const clock = $("liveClock");
+  clock.textContent = String(m).padStart(2,"0") + ":" + String(s).padStart(2,"0");
+  clock.classList.toggle("warn", quizTimeLeft <= 10);
+  $("liveBar").style.width = (Math.max(0, quizTimeLeft) / PER_QUESTION_SECONDS * 100) + "%";
+}
+
+function renderQuestion(){
+  const q = quiz.list[quiz.index];
+  if(!q){ finishQuiz(); return; }
+  $("quizBar").style.width = ((quiz.index+1)/quiz.list.length*100)+"%";
+  $("quizCounter").textContent = `Question ${quiz.index+1} of ${quiz.list.length}`;
+  const ok = quiz.answers.filter(a => a?.correct).length;
+  $("quizScore").textContent = `Score: ${ok}`;
+  $("quizTopic").textContent = `${q.subject} · ${q.topic} · ${q.exam}`;
+  $("quizQ").textContent = q.q;
+  $("quizOptions").innerHTML = q.options.map((o,i) =>
+    `<button class="opt" onclick="answer(${i})"><span class="lt">${"ABCD"[i]}</span><span>${esc(o)}</span></button>`).join("");
+  $("quizExplain").classList.remove("show");
+  $("quizExplain").innerHTML = "";
+  $("nextBtn").disabled = true;
+  $("nextBtn").textContent = quiz.index === quiz.list.length-1 ? "Finish round" : "Next question →";
+  // Timed mode: reset per-question timer on each new question
+  if(quiz.mode === "timed"){
+    quizTimeLeft = PER_QUESTION_SECONDS;
+    updateQuizTimerUI();
+    if(!quizTimerId) startQuizTimer();
+  }
+}
+function answer(pick){
+  if(quiz.answers[quiz.index]) return;
+  const q = quiz.list[quiz.index];
+  const correct = pick === q.a;
+  quiz.answers[quiz.index] = { pick, correct };
+  document.querySelectorAll("#quizOptions .opt").forEach((b,i) => {
+    b.disabled = true;
+    if(i === q.a) b.classList.add("correct");
+    else if(i === pick) b.classList.add("wrong");
+  });
+  const meanings = q.options.map((o,i) => {
+    const meaning = (q.meanings && q.meanings[i]) || "";
+    return `<div class="oexp ${i===q.a?"correct":"wrong"}"><div class="tl">${"ABCD"[i]}. ${esc(o)} — ${i===q.a?"✓ CORRECT":"✗ NOT CORRECT"}</div><div>${esc(meaning)}</div></div>`;
+  }).join("");
+  $("quizExplain").innerHTML = `<b>${correct?"✓ Correct!":"✗ The correct answer is " + "ABCD"[q.a] + "."}</b><p style="margin:8px 0">${esc(q.exp)}</p><b style="font-size:11px;letter-spacing:.5px;color:#8b9ab3">MEANING OF EACH OPTION</b>${meanings}`;
+  $("quizExplain").classList.add("show");
+  $("nextBtn").disabled = false;
+  const ok = quiz.answers.filter(a => a?.correct).length;
+  $("quizScore").textContent = `Score: ${ok}`;
+  // In timed mode, stop the timer until the user taps Next
+  if(quiz.mode === "timed") stopQuizTimer();
+}
+function nextQuestion(){
+  if(!quiz.answers[quiz.index]) return;
+  quiz.index++;
+  if(quiz.index >= quiz.list.length) finishQuiz();
+  else {
+    renderQuestion();
+    if(quiz.mode === "timed") startQuizTimer();
+  }
+}
+function quitQuiz(){
+  quiz.started = false;
+  stopQuizTimer();
+  go("home");
+}
+function finishQuiz(){
+  stopQuizTimer();
+  const total = quiz.list.length;
+  const correct = quiz.answers.filter(a => a?.correct).length;
+  const answered = quiz.answers.filter(Boolean).length;
+  const points = correct*10 + Math.max(0, answered-correct)*2;
+  state.answered += answered;
+  state.correct += correct;
+  state.points += points;
+  state.rounds++;
+  state.streak = state.streak ? state.streak : 1;
+  quiz.list.forEach((q,i) => {
+    const a = quiz.answers[i]; if(!a) return;
+    if(!state.subjects[q.subject]) state.subjects[q.subject] = {answered:0,correct:0};
+    state.subjects[q.subject].answered++;
+    if(a.correct) state.subjects[q.subject].correct++;
+    else { const qid = QUESTIONS.indexOf(q); if(qid >= 0 && !state.failed.includes(qid)) state.failed.push(qid); }
+  });
+  state.history.unshift({
+    date: new Date().toLocaleDateString(),
+    subject: quiz.subject,
+    topic: quiz.list[0]?.topic || "Mixed",
+    score: correct + "/" + total,
+    points
+  });
+  state.history = state.history.slice(0, 40);
+  saveState();
+  toast(`Round complete! ${correct}/${total} correct · +${points} points`);
+  go("home");
+}
+
+/* ---------------- WEEKLY CHALLENGE ---------------- */
+let chal = { active:false, index:0, list:[], answers:[], timer:null, timeLeft:20 };
+
+function registerChallenge(){
+  state.challenge.registered = true;
+  saveState();
+  toast("You are registered. Challenge opens Saturday at 8:00 PM.");
+  $("challengeStatus").innerHTML = "✅ You are registered. A countdown to the next Saturday 8:00 PM is running below.";
+}
+function nextSaturday8PM(from = new Date()){
+  const d = new Date(from);
+  const days = (6 - d.getDay() + 7) % 7;
+  d.setDate(d.getDate() + days);
+  d.setHours(20, 0, 0, 0);
+  if(d <= from) d.setDate(d.getDate() + 7);
+  return d;
+}
+function updateChallengeCountdown(){
+  const now = new Date();
+  const next = nextSaturday8PM(now);
+  const diff = next - now;
+  const s = Math.max(0, Math.floor(diff/1000));
+  const d = Math.floor(s/86400);
+  const h = Math.floor((s%86400)/3600);
+  const m = Math.floor((s%3600)/60);
+  const sec = s%60;
+  if($("cdDays")){
+    $("cdDays").textContent = String(d).padStart(2,"0");
+    $("cdHours").textContent = String(h).padStart(2,"0");
+    $("cdMins").textContent = String(m).padStart(2,"0");
+    $("cdSecs").textContent = String(sec).padStart(2,"0");
+  }
+  const isSat = now.getDay() === 6;
+  const mins = now.getHours()*60 + now.getMinutes();
+  const live = isSat && mins >= 1200 && mins < 1230;
+  const btn = $("registerBtn");
+  if(!btn) return;
+  if(live && state.challenge.registered){
+    btn.textContent = "Challenge is LIVE — Start Now ⚡";
+    btn.onclick = startChallenge;
+    $("challengeStatus").innerHTML = "🔴 LIVE NOW — tap Start to join. 30 questions, 20 seconds each.";
+  } else if(state.challenge.registered){
+    btn.textContent = "You are registered ✓";
+    btn.onclick = () => toast("You are registered. Come back Saturday at 8 PM.");
+  } else {
+    btn.textContent = "Register Now — Free";
+    btn.onclick = registerChallenge;
+  }
+}
+function startChallenge(){
+  const pool = QUESTIONS.slice();
+  for(let i=pool.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [pool[i],pool[j]]=[pool[j],pool[i]]; }
+  const list = pool.slice(0, Math.min(30, pool.length));
+  chal = { active:true, index:0, list, answers:[], timer:null, timeLeft:20 };
+  $("challengeIntro").style.display = "none";
+  $("challengeLive").style.display = "block";
+  $("challengeResults").style.display = "none";
+  $("chTotal").textContent = list.length;
+  renderChallengeQuestion();
+}
+function renderChallengeQuestion(){
+  const q = chal.list[chal.index];
+  if(!q){ finishChallenge(); return; }
+  $("chQ").textContent = chal.index + 1;
+  $("chQText").textContent = q.q;
+  $("chOpts").innerHTML = q.options.map((o,i) =>
+    `<button class="opt" onclick="challengeAnswer(${i})"><span class="lt">${"ABCD"[i]}</span><span>${esc(o)}</span></button>`
+  ).join("");
+  const okCount = chal.answers.filter(a => a?.correct).length;
+  $("chPts").textContent = okCount * 10;
+  $("chScoreLive").textContent = okCount + " correct";
+  chal.timeLeft = 20;
+  updateChTimerUI();
+  if(chal.timer) clearInterval(chal.timer);
+  chal.timer = setInterval(() => {
+    chal.timeLeft--;
+    updateChTimerUI();
+    if(chal.timeLeft <= 0){
+      clearInterval(chal.timer);
+      if(!chal.answers[chal.index]) chal.answers[chal.index] = { pick:-1, correct:false, timeout:true };
+      advanceChallenge();
+    }
+  }, 1000);
+  updateLiveBoard();
+}
+function updateChTimerUI(){
+  $("chBar").style.width = (chal.timeLeft / 20) * 100 + "%";
+  $("chSecs").textContent = chal.timeLeft;
+  $("chSecs").classList.toggle("warn", chal.timeLeft <= 5);
+}
+function challengeAnswer(pick){
+  if(chal.answers[chal.index]) return;
+  const q = chal.list[chal.index];
+  const correct = pick === q.a;
+  chal.answers[chal.index] = { pick, correct };
+  document.querySelectorAll("#chOpts .opt").forEach((b,i) => {
+    b.disabled = true;
+    if(i === q.a) b.classList.add("correct");
+    else if(i === pick) b.classList.add("wrong");
+  });
+  const okCount = chal.answers.filter(a => a?.correct).length;
+  $("chPts").textContent = okCount * 10;
+  $("chScoreLive").textContent = okCount + " correct";
+  if(chal.timer) clearInterval(chal.timer);
+  setTimeout(advanceChallenge, 1200);
+}
+function advanceChallenge(){
+  chal.index++;
+  if(chal.index >= chal.list.length) finishChallenge();
+  else renderChallengeQuestion();
+}
+function getRealPlayers(){
+  const all = [];
+  try {
+    const hist = JSON.parse(localStorage.getItem("smartCgpaChallenge.v1") || "[]");
+    hist.forEach(h => all.push({ name: h.name, score: h.points, correct: h.correct, total: h.total }));
+  } catch(e){}
+  return all;
+}
+function saveChallengeResult(correct, total, points){
+  try {
+    const key = "smartCgpaChallenge.v1";
+    const all = JSON.parse(localStorage.getItem(key) || "[]");
+    all.push({ name: state.name || "You", correct, total, points, date:new Date().toISOString() });
+    localStorage.setItem(key, JSON.stringify(all.slice(-200)));
+  } catch(e){}
+}
+function updateLiveBoard(){
+  const myScore = chal.answers.filter(a => a?.correct).length * 10;
+  const me = { name: state.name || "You", score: myScore, you: true };
+  const real = getRealPlayers();
+  const bestByName = {};
+  real.forEach(p => { if(!bestByName[p.name] || bestByName[p.name].score < p.score) bestByName[p.name] = p; });
+  const others = Object.values(bestByName).filter(p => p.name !== (state.name||"You"));
+  const players = [me, ...others];
+  players.sort((a,b) => b.score - a.score);
+  $("chRank").textContent = "#" + (players.findIndex(p => p.you) + 1);
+  $("chLiveBoard").innerHTML = players.slice(0, 8).map((p,i) => lbRow(p, i)).join("");
+}
+function lbRow(p, i){
+  const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : "";
+  const rankCls = i === 0 ? "g" : i === 1 ? "s" : i === 2 ? "b" : "";
+  const av = (p.name || "S").charAt(0).toUpperCase();
+  const colors = ["#0ea5a0","#6366f1","#22c55e","#f0b429","#ef4444","#22d3ee","#f97316"];
+  const color = colors[(p.name||"S").charCodeAt(0) % colors.length];
+  return `<div class="lb-row ${p.you?"you":""}">
+    <div class="lb-rank ${rankCls}">${medal || ("#"+(i+1))}</div>
+    <div class="lb-av" style="background:${color}">${esc(av)}</div>
+    <div class="lb-info"><b>${esc(p.name)}${p.you?" (you)":""}</b><span>${p.correct!=null?p.correct+"/"+p.total+" correct":""}</span></div>
+    <div class="lb-pts">${p.score}</div>
+  </div>`;
+}
+function finishChallenge(){
+  if(chal.timer) clearInterval(chal.timer);
+  chal.active = false;
+  const correct = chal.answers.filter(a => a?.correct).length;
+  const total = chal.list.length;
+  const points = correct * 10;
+  state.points += points;
+  state.answered += chal.answers.filter(Boolean).length;
+  state.correct += correct;
+  if(points > (state.challenge.bestScore || 0)) state.challenge.bestScore = points;
+  saveChallengeResult(correct, total, points);
+  saveState();
+
+  const me = { name: state.name || "You", score: points, correct, total, you: true };
+  const real = getRealPlayers();
+  const bestByName = {};
+  real.forEach(p => { if(!bestByName[p.name] || bestByName[p.name].score < p.score) bestByName[p.name] = p; });
+  const others = Object.values(bestByName).filter(p => p.name !== (state.name||"You"));
+  const players = [me, ...others];
+  players.sort((a,b) => b.score - a.score);
+  const rank = players.findIndex(p => p.you) + 1;
+
+  $("challengeLive").style.display = "none";
+  $("challengeResults").style.display = "block";
+  $("chFinalPts").textContent = points + " pts";
+  $("chFinalRank").textContent = `Rank #${rank} of ${players.length} player${players.length>1?"s":""} on this device`;
+  $("chTrophy").textContent = rank === 1 ? "👑" : rank <= 3 ? "🏆" : "🎖️";
+  $("chResultTitle").textContent = rank === 1 ? "You won!" : rank <= 3 ? `You placed #${rank}` : "Challenge complete";
+  $("chFinalBoard").innerHTML = players.map((p,i) => lbRow(p, i)).join("");
+}
+
+/* ---------------- LEADERBOARD ---------------- */
+let lbMode = "all";
+function pickLB(btn){
+  document.querySelectorAll("[data-lb]").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  lbMode = btn.dataset.lb;
+  renderLeaderboard();
+}
+function getLeaderboardPlayers(){
+  const myName = state.name || "You";
+  const myPts = state.points;
+  const myAcc = state.answered ? Math.round(state.correct/state.answered*100) : 0;
+  const myStreak = state.streak || 0;
+  if(lbMode === "challenge"){
+    const real = getRealPlayers();
+    const bestByName = {};
+    real.forEach(p => {
+      const score = p.points;
+      if(!bestByName[p.name] || bestByName[p.name].score < score){
+        bestByName[p.name] = { name: p.name, score, correct: p.correct, total: p.total };
+      }
+    });
+    const list = Object.values(bestByName);
+    if(!list.some(p => p.name === myName)){
+      list.push({ name: myName, score: state.challenge.bestScore || 0, correct:0, total:0 });
+    }
+    list.sort((a,b) => b.score - a.score);
+    return list.map(p => ({...p, you: p.name === myName, acc: myAcc, streak: myStreak }));
+  }
+  return [{ name: myName, score: myPts, acc: myAcc, streak: myStreak, you:true }];
+}
+function renderLeaderboard(){
+  const players = getLeaderboardPlayers();
+  const [f, s, t] = players;
+  const av = (name) => (name||"S").charAt(0).toUpperCase();
+  const colors = ["#0ea5a0","#6366f1","#22c55e","#f0b429","#ef4444","#22d3ee","#f97316"];
+  const color = (name) => colors[(name||"S").charCodeAt(0) % colors.length];
+  const pcol = (p, idx) => {
+    if(!p) return "<div></div>";
+    const cls = idx === 0 ? "first" : "";
+    const border = idx === 0 ? "#f0b429" : idx === 1 ? "#c0c8d4" : "#cd7f32";
+    return `<div class="pcol">
+      <div class="pav ${cls}" style="background:${color(p.name)};border-color:${border}">
+        ${idx === 0 ? '<div class="crown">👑</div>' : ''}${esc(av(p.name))}
+      </div>
+      <div class="pname">${esc(p.name)}${p.you?" (you)":""}</div>
+      <div class="ppts">${p.score} pts</div>
+      <div class="pblock ${idx===0?"gold":idx===1?"silver":"bronze"}">#${idx+1}</div>
+    </div>`;
+  };
+  $("lbPodium").innerHTML = (s ? pcol(s,1) : "<div></div>") + (f ? pcol(f,0) : "<div></div>") + (t ? pcol(t,2) : "<div></div>");
+  const myIdx = players.findIndex(p => p.you);
+  const my = players[myIdx] || { score: state.points, name: state.name || "You" };
+  $("yourRank").textContent = "#" + (myIdx + 1);
+  $("yourName").textContent = my.name;
+  $("yourPts").textContent = my.score;
+  $("yourAcc").textContent = (my.acc || 0) + "%";
+  $("yourStreak").textContent = my.streak || 0;
+  if(!players.length){
+    $("lbFullList").innerHTML = '<div class="empty">No scores yet.</div>';
+    return;
+  }
+  $("lbFullList").innerHTML = players.map((p,i) => lbRow(p, i)).join("");
+}
+function exportLeaderboard(){
+  const players = getLeaderboardPlayers();
+  const blob = new Blob([JSON.stringify({ exportedAt:new Date().toISOString(), mode:lbMode, players }, null, 2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a"); a.href = url; a.download = "smart-cgpa-leaderboard.json"; a.click();
+  URL.revokeObjectURL(url);
+  toast("Leaderboard exported");
+}
+
+/* ---------------- GROUPS + FULLSCREEN CHAT ---------------- */
+function renderGroups(){
+  const list = state.groups || [];
+  if(!list.length){
+    $("groupsList").innerHTML = '<div class="empty">No groups yet. Create one or join with an invite code.</div>';
+    return;
+  }
+  $("groupsList").innerHTML = list.map(g => {
+    const last = g.messages && g.messages.length ? g.messages[g.messages.length-1] : null;
+    const preview = last ? `${last.from}: ${last.text.slice(0,44)}${last.text.length>44?"…":""}` : "No messages yet";
+    const time = last ? new Date(last.at).toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"}) : "";
+    return `<div class="group-item" onclick="openGroupChat('${esc(g.id)}')">
+      <div class="gicon" style="background:linear-gradient(135deg,var(--teal),var(--indigo))">${esc(g.emoji || "📚")}</div>
+      <div class="ginfo"><b>${esc(g.name)}</b><span>${esc(preview)}</span></div>
+      <div class="meta"><div class="t">${time}</div><div class="code">${esc(g.code)}</div></div>
+    </div>`;
+  }).join("");
+}
+function showCreateGroup(){ $("groupsListView").style.display="none"; $("groupCreateView").style.display="block"; $("groupJoinView").style.display="none"; }
+function showJoinGroup(){ $("groupsListView").style.display="none"; $("groupJoinView").style.display="block"; $("groupCreateView").style.display="none"; }
+function hideGroupForms(){ $("groupsListView").style.display="block"; $("groupCreateView").style.display="none"; $("groupJoinView").style.display="none"; }
+function genCode(){ return Math.random().toString(36).slice(2,8).toUpperCase(); }
+function createGroup(){
+  const name = $("newGroupName").value.trim();
+  if(!name){ toast("Enter a group name."); return; }
+  const emoji = $("newGroupEmoji").value;
+  const id = "g_" + Date.now();
+  const code = genCode();
+  state.groups.push({ id, name, emoji, code, messages:[{ from:"System", text:`Group "${name}" created. Invite code: ${code}`, at:Date.now() }], createdAt:Date.now() });
+  $("newGroupName").value = "";
+  saveState();
+  hideGroupForms();
+  renderGroups();
+  toast(`Group created. Invite code: ${code}`);
+}
+function joinGroup(){
+  const code = ($("joinCode").value || "").trim().toUpperCase();
+  if(!code){ toast("Enter an invite code."); return; }
+  if((state.groups||[]).some(g => g.code === code)){ toast("You are already in this group."); return; }
+  let found = null;
+  try {
+    const pool = JSON.parse(localStorage.getItem("smartCgpaGroupPool.v1") || "[]");
+    found = pool.find(g => g.code === code);
+  } catch(e){}
+  if(!found){
+    found = { id:"g_join_"+code, name:"Group " + code, emoji:"💬", code, messages:[] };
+  }
+  state.groups.push({ ...found, messages: [...(found.messages||[]), { from:"System", text:`Joined group "${found.name}" with code ${code}.`, at:Date.now() }] });
+  try {
+    const pool = JSON.parse(localStorage.getItem("smartCgpaGroupPool.v1") || "[]");
+    if(!pool.some(g => g.code === code)){ pool.push(found); localStorage.setItem("smartCgpaGroupPool.v1", JSON.stringify(pool)); }
+  } catch(e){}
+  $("joinCode").value = "";
+  saveState();
+  hideGroupForms();
+  renderGroups();
+  toast("Joined group " + found.name);
+}
+let currentGroupId = null;
+function openGroupChat(id){
+  const g = state.groups.find(x => x.id === id);
+  if(!g) return;
+  currentGroupId = id;
+  $("chatFsEmoji").textContent = g.emoji || "📚";
+  $("chatFsName").textContent = g.name;
+  $("chatFsMeta").textContent = "Tap 📋 to copy code · " + g.code;
+  renderGroupMessages();
+  $("chatFs").classList.add("show");
+  $("chatFsInput").focus();
+}
+function closeGroupChat(){
+  currentGroupId = null;
+  $("chatFs").classList.remove("show");
+  renderGroups();
+}
+function renderGroupMessages(){
+  const g = state.groups.find(x => x.id === currentGroupId);
+  if(!g) return;
+  const body = $("chatFsBody");
+  const msgs = g.messages || [];
+  if(!msgs.length){
+    body.innerHTML = '<div class="msg sys">No messages yet. Say hello! 👋</div>';
+    return;
+  }
+  let html = "";
+  let lastDate = "";
+  msgs.forEach(m => {
+    const d = new Date(m.at);
+    const dateStr = d.toLocaleDateString();
+    if(dateStr !== lastDate){
+      html += `<div class="msg date-sep">${esc(dateStr)}</div>`;
+      lastDate = dateStr;
+    }
+    if(m.from === "System"){
+      html += `<div class="msg sys">${esc(m.text)}</div>`;
+    } else {
+      const mine = m.from === (state.name || "You");
+      const time = d.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
+      html += `<div class="msg ${mine?"me":"them"}">${mine?"":`<div class="sender">${esc(m.from)}</div>`}${esc(m.text)}<div class="time">${time}</div></div>`;
+    }
+  });
+  body.innerHTML = html;
+  body.scrollTop = body.scrollHeight;
+}
+function sendGroupMessage(){
+  const g = state.groups.find(x => x.id === currentGroupId);
+  if(!g) return;
+  const input = $("chatFsInput");
+  const text = input.value.trim();
+  if(!text) return;
+  g.messages.push({ from: state.name || "You", text, at: Date.now() });
+  input.value = "";
+  autoGrow(input);
+  saveState();
+  renderGroupMessages();
+}
+function autoGrow(el){
+  el.style.height = "auto";
+  el.style.height = Math.min(120, el.scrollHeight) + "px";
+}
+function copyGroupCode(){
+  const g = state.groups.find(x => x.id === currentGroupId);
+  if(!g) return;
+  const code = g.code;
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(code).then(() => toast("Code copied: " + code)).catch(() => toast("Code: " + code));
+  } else {
+    toast("Code: " + code);
+  }
+}
+
+/* ---------------- DICTIONARY ---------------- */
+function renderDictChips(){
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+  $("dictChips").innerHTML = letters.map(l => `<button class="chip" onclick="$('dictSearch').value='${l}';searchDict()">${l}</button>`).join("");
+}
+function searchDict(){
+  const q = ($("dictSearch").value || "").trim().toLowerCase();
+  if(!q){ $("dictResults").innerHTML = '<div class="empty">Type a word above, or use the letter buttons to browse.</div>'; return; }
+  const all = [...DICTIONARY, ...(state.customWords || [])];
+  const matches = all.filter(d => d.w.toLowerCase().includes(q) || d.def.toLowerCase().includes(q));
+  if(!matches.length){
+    $("dictResults").innerHTML = '<div class="empty">No match found. Add this word below.</div>';
+    return;
+  }
+  $("dictResults").innerHTML = matches.slice(0, 30).map(d =>
+    `<div class="dict-result"><div class="w">${esc(d.w)}</div><div class="pos">${esc(d.pos||"")}</div><div class="def">${esc(d.def)}</div>${d.ex?`<div class="ex">"${esc(d.ex)}"</div>`:""}</div>`
+  ).join("");
+}
+function addCustomWord(){
+  const w = $("newWordWord").value.trim();
+  const pos = $("newWordPos").value.trim() || "—";
+  const def = $("newWordDef").value.trim();
+  if(!w || !def){ toast("Enter a word and its definition."); return; }
+  if(!state.customWords) state.customWords = [];
+  state.customWords.push({ w, pos, def, ex:"", custom:true });
+  $("newWordWord").value = ""; $("newWordPos").value = ""; $("newWordDef").value = "";
+  saveState();
+  searchDict();
+  toast("Word added to your dictionary.");
+}
+
+/* ---------------- TUTOR ---------------- */
+function tutorAnswer(text){
+  const lower = text.toLowerCase();
+  const mcqRe = /([A-D])[.)]\s*([^\n]+?)(?=\s+[A-D][.)]\s|\s*$)/g;
+  const isMCQ = /(^|\s)A[.)]\s/i.test(text) && /(^|\s)B[.)]\s/i.test(text);
+  if(isMCQ){
+    const opts = []; let m;
+    while((m = mcqRe.exec(text)) !== null) opts.push({ letter:m[1], text:m[2].trim() });
+    const stem = text.replace(/\s*[A-D][.)].*$/s, "").trim().toLowerCase();
+    let matched = null;
+    for(const q of QUESTIONS){
+      const words = q.q.toLowerCase().split(/\W+/).filter(w => w.length > 3);
+      const hits = words.filter(w => stem.includes(w)).length;
+      if(hits >= Math.max(2, Math.floor(words.length * 0.55))){ matched = q; break; }
+    }
+    let correctLetter = null;
+    if(matched){
+      const corrText = matched.options[matched.a].toLowerCase();
+      const idx = opts.findIndex(o => o.text.toLowerCase().includes(corrText) || corrText.includes(o.text.toLowerCase()));
+      if(idx >= 0) correctLetter = opts[idx].letter;
+    }
+    const optionLines = opts.map(o => {
+      let meaning = "";
+      if(matched && correctLetter === o.letter) meaning = (matched.meanings && matched.meanings[matched.a]) || matched.exp;
+      else {
+        for(const tb of TEXTBOOK){ if(tb.k.some(k => o.text.toLowerCase().includes(k))){ meaning = tb.a.split("\n")[0]; break; } }
+      }
+      if(!meaning) meaning = "Different concept from the correct answer. Compare its exact wording with the question.";
+      return `${o.letter}. ${o.text}\n   Meaning: ${meaning}\n   ${correctLetter === o.letter ? "✓ Correct answer" : "✗ Not correct"}`;
+    }).join("\n\n");
+    const header = correctLetter
+      ? `CORRECT ANSWER: ${correctLetter}) ${opts.find(o=>o.letter===correctLetter).text}\n\nWhy: ${matched.exp}\n\n`
+      : `I found an MCQ but couldn't confidently match it. Here is the meaning of each option so you can reason through it.\n\n`;
+    return header + "MEANING OF EACH OPTION\n\n" + optionLines;
+  }
+  const scored = TEXTBOOK.map(tb => ({ tb, score: tb.k.reduce((s,k) => s + (lower.includes(k) ? 2 : 0), 0) })).sort((a,b) => b.score - a.score);
+  if(scored[0] && scored[0].score > 0) return scored[0].tb.a;
+  return `I don't have a full entry for that exact question yet. Try:\n\n• Naming the subject — Chemistry, Biology, Physics, Mathematics, English.\n• Pasting a multiple-choice question with options A–D. I'll give the answer and explain the meaning of every option.\n• Asking about a specific topic such as "photosynthesis", "Boyle's law", "redox", "mitosis", "Newton's laws".`;
+}
+function applyTutorUnlock(){
+  $("tutorLock").style.display = state.tutorUnlocked ? "none" : "block";
+  $("tutorApp").style.display = state.tutorUnlocked ? "block" : "none";
+}
+function unlockTutor(){ state.tutorUnlocked = true; saveState(); applyTutorUnlock(); toast("AI Tutor unlocked ✦"); }
+function previewTutor(){
+  if(state.tutorPreview > 0){
+    state.tutorPreview--;
+    state.tutorUnlocked = true;
+    saveState(); applyTutorUnlock();
+    toast(`Free preview enabled. ${state.tutorPreview} preview(s) left.`);
+  } else toast("Preview used. Please unlock to continue.");
+}
+function askSuggest(q){ $("chatInput").value = q; sendChat(); }
+function sendChat(){
+  const text = $("chatInput").value.trim();
+  if(!text) return;
+  addBubble(text, "user");
+  $("chatInput").value = "";
+  const btn = $("sendBtn"); btn.disabled = true; btn.textContent = "…";
+  setTimeout(() => {
+    try { addBubble(tutorAnswer(text), "ai"); }
+    catch(e){ addBubble("Sorry, something went wrong. Try a shorter question.", "ai"); }
+    finally { btn.disabled = false; btn.textContent = "Send"; }
+  }, 30);
+}
+function addBubble(text, kind){
+  const b = document.createElement("div");
+  b.className = "msg " + (kind === "user" ? "me" : "them");
+  b.textContent = text;
+  $("chat").appendChild(b);
+  $("chat").scrollTop = $("chat").scrollHeight;
+}
+
+/* ---------------- LIBRARY ---------------- */
+function renderLibrary(){
+  const q = ($("libSearch").value || "").toLowerCase();
+  $("libGrid").innerHTML = Object.entries(SUBJECTS).filter(([name]) => name.toLowerCase().includes(q))
+    .map(([name,d]) => `<div class="card" onclick="quickStart('${esc(name)}')" style="cursor:pointer;margin:0">
+      <div style="font-size:28px;margin-bottom:8px">${d.icon}</div>
+      <b style="font-size:13px">${esc(name)}</b>
+      <div class="small" style="margin-top:4px">${esc(d.desc)}</div>
+    </div>`).join("");
+}
+
+/* ---------------- CGPA ---------------- */
+function gradePoints(g, scale){
+  const m5 = {A:5,B:4,C:3,D:2,E:1,F:0}, m4 = {A:4,B:3,C:2,D:1,F:0};
+  return (scale === 4 ? m4 : m5)[g] ?? 0;
+}
+function renderCourses(){
+  if(!state.courses) state.courses = [];
+  $("courseRows").innerHTML = state.courses.map((c,i) => `
+    <tr>
+      <td><input value="${esc(c.name)}" onchange="updateCourse(${i},'name',this.value)" placeholder="Code"></td>
+      <td><input type="number" value="${esc(c.credits)}" onchange="updateCourse(${i},'credits',this.value)" style="width:60px"></td>
+      <td><select onchange="updateCourse(${i},'grade',this.value)">${["A","B","C","D","E","F"].map(g => `<option ${c.grade===g?"selected":""}>${g}</option>`).join("")}</select></td>
+      <td><button onclick="removeCourse(${i})" style="color:var(--red);font-size:16px">×</button></td>
+    </tr>`).join("");
+  $("cgpaScale").value = String(state.scale);
+  $("prevCgpa").value = state.prevCgpa || "";
+  $("prevUnits").value = state.prevUnits || "";
+}
+function updateCourse(i, key, val){ if(key === "credits") val = Number(val); state.courses[i][key] = val; state.cgpa = null; saveState(); renderCourses(); }
+function addCourse(){ state.courses.push({name:"",credits:3,grade:"A"}); saveState(); renderCourses(); }
+function removeCourse(i){ state.courses.splice(i,1); saveState(); renderCourses(); }
+function cgpaScaleChange(){ state.scale = Number($("cgpaScale").value); state.cgpa = null; saveState(); renderCourses(); }
+function calcCgpa(){
+  const valid = state.courses.filter(c => String(c.name).trim() && Number(c.credits) > 0);
+  const units = valid.reduce((s,c) => s + Number(c.credits), 0);
+  const quality = valid.reduce((s,c) => s + Number(c.credits) * gradePoints(c.grade, state.scale), 0);
+  if(!units){ toast("Add at least one course with units."); return; }
+  const pC = Number($("prevUnits").value) || 0;
+  const pG = Number($("prevCgpa").value) || 0;
+  const cgpa = (quality + pG*pC) / (units + pC);
+  state.cgpa = cgpa;
+  state.prevCgpa = $("prevCgpa").value;
+  state.prevUnits = $("prevUnits").value;
+  saveState();
+  $("cgpaResult").textContent = cgpa.toFixed(2);
+  $("cgpaMsg").textContent = cgpa >= state.scale*0.8 ? "Excellent — keep it up."
+    : cgpa >= state.scale*0.6 ? "Solid. Focus on weaker courses."
+    : "A starting point. Improve one topic at a time.";
+  toast("CGPA calculated.");
+}
+function planTarget(){
+  const t = Number($("targetCgpa").value);
+  const f = Number($("targetUnits").value);
+  const p = Number(state.prevUnits) || 0;
+  if(state.cgpa == null){ $("targetResult").textContent = "Calculate CGPA first."; return; }
+  if(!f || t < 0 || t > state.scale){ $("targetResult").textContent = "Enter a valid target."; return; }
+  const totalU = p + state.courses.filter(c => c.name && c.credits > 0).reduce((s,c) => s + Number(c.credits), 0);
+  const req = (t * (totalU + f) - state.cgpa * totalU) / f;
+  if(req > state.scale) $("targetResult").textContent = `Requires average ${req.toFixed(2)} — above the maximum ${state.scale}. Try a nearer target.`;
+  else if(req <= 0) $("targetResult").textContent = "Target already within reach. Keep your habits.";
+  else $("targetResult").textContent = `Aim for about ${req.toFixed(2)} across ${f} remaining credits.`;
+}
+
+/* ---------------- TASKS ---------------- */
+function addTask(){
+  const title = $("taskTitle").value.trim();
+  if(!title){ toast("Write a task first."); return; }
+  state.tasks.push({ id: Date.now(), title, subject: $("taskSubject").value, date: $("taskDate").value, done:false });
+  $("taskTitle").value = "";
+  saveState();
+  renderTasks();
+  toast("Task added");
+}
+function renderTasks(){
+  $("taskList").innerHTML = state.tasks.length
+    ? state.tasks.map(t => `<div class="act"><input type="checkbox" ${t.done?"checked":""} onchange="toggleTask(${t.id})" style="width:18px;height:18px;accent-color:var(--teal)"><div class="ab"><b style="${t.done?"text-decoration:line-through;opacity:.6":""}">${esc(t.title)}</b><span>${esc(t.subject)}${t.date?" · "+esc(t.date):""}</span></div><button onclick="removeTask(${t.id})" style="color:var(--red);font-size:16px">×</button></div>`).join("")
+    : '<div class="empty">No tasks yet.</div>';
+}
+function toggleTask(id){ const t = state.tasks.find(x => x.id === id); if(t) t.done = !t.done; saveState(); }
+function removeTask(id){ state.tasks = state.tasks.filter(x => x.id !== id); saveState(); }
+
+/* ---------------- PROGRESS ---------------- */
+function renderProgress(){
+  const names = Object.keys(SUBJECTS).slice(0, 6);
+  const max = Math.max(1, ...names.map(n => state.subjects[n]?.answered || 0));
+  $("subjectChart").innerHTML = names.map(n => {
+    const v = state.subjects[n]?.answered || 0;
+    return `<div class="col"><i style="height:${Math.max(4, v/max*100)}%"></i><span>${n.slice(0,6)}</span></div>`;
+  }).join("");
+  $("historyList").innerHTML = state.history.length
+    ? state.history.slice(0,10).map(h => `<div class="act"><div class="aic">📖</div><div class="ab"><b>${esc(h.subject)}</b><span>${esc(h.date)} · ${esc(h.score)}</span></div><span class="at ok">+${h.points}</span></div>`).join("")
+    : '<div class="empty">No rounds yet.</div>';
+}
+
+/* ---------------- GAMES ---------------- */
+const patterns = [
+  {q:"3 · 6 · 9 · 12 · ?", a:15, opts:[14,15,16,18], why:"Add 3 each time."},
+  {q:"1 · 4 · 9 · 16 · ?", a:25, opts:[20,24,25,36], why:"Squares: 1², 2², 3², 4², 5²."},
+  {q:"2 · 4 · 8 · 16 · ?", a:32, opts:[24,30,32,34], why:"Multiply by 2."},
+  {q:"20 · 18 · 16 · 14 · ?", a:12, opts:[10,11,12,13], why:"Subtract 2."},
+  {q:"1 · 1 · 2 · 3 · 5 · ?", a:8, opts:[7,8,9,10], why:"Fibonacci."},
+  {q:"5 · 10 · 20 · 40 · ?", a:80, opts:[60,70,80,100], why:"Double."},
+  {q:"100 · 90 · 81 · 72.9 · ?", a:65.61, opts:[65,65.61,66,70], why:"Multiply by 0.9."}
+];
+let curPattern = null;
+function newPattern(){
+  curPattern = patterns[Math.floor(Math.random()*patterns.length)];
+  $("puzzle").textContent = curPattern.q;
+  $("patternExp").classList.remove("show");
+  $("patternOpts").innerHTML = [...curPattern.opts].sort(()=>Math.random()-.5).map(n =>
+    `<button class="opt" onclick="checkPattern(${n})"><span class="lt">${n}</span></button>`).join("");
+}
+function checkPattern(pick){
+  const ok = pick === curPattern.a;
+  $("patternExp").innerHTML = `<b>${ok?"✓ Correct!":"✗ Not quite."}</b><p>${esc(curPattern.why)} Answer: ${curPattern.a}</p>`;
+  $("patternExp").classList.add("show");
+}
+newPattern();
+
+let memLevel = 3, memSeq = [], memIdx = 0, memBusy = false;
+function drawBoard(){
+  $("memBoard").innerHTML = [0,1,2,3,4,5,6,7,8].map(i =>
+    `<button class="mtile" onclick="tapTile(${i})" data-i="${i}">●</button>`).join("");
+}
+function startMemory(){ memLevel = 3; nextMemory(); }
+function nextMemory(){
+  memSeq = []; memIdx = 0;
+  for(let i=0;i<memLevel;i++){
+    let n = Math.floor(Math.random()*9);
+    if(i && n === memSeq[i-1]) n = (n+1)%9;
+    memSeq.push(n);
+  }
+  drawBoard(); memBusy = true;
+  $("memStatus").textContent = "Watch closely...";
+  let j = 0;
+  const t = setInterval(() => {
+    if(j>0){ const prev = document.querySelector(`.mtile[data-i="${memSeq[j-1]}"]`); if(prev) prev.classList.remove("lit"); }
+    if(j < memSeq.length){ const b = document.querySelector(`.mtile[data-i="${memSeq[j]}"]`); if(b) b.classList.add("lit"); j++; }
+    else { clearInterval(t); memBusy = false; $("memStatus").textContent = "Your turn — tap in order."; }
+  }, 620);
+}
+function tapTile(i){
+  if(memBusy || !memSeq.length) return;
+  const b = document.querySelector(`.mtile[data-i="${i}"]`);
+  if(i === memSeq[memIdx]){
+    b.classList.add("good"); memIdx++;
+    if(memIdx === memSeq.length){
+      $("memStatus").textContent = `Great! Next: ${memLevel+1} tiles.`;
+      memLevel = Math.min(9, memLevel+1);
+      setTimeout(nextMemory, 800);
+    }
+  } else {
+    b.classList.add("bad");
+    $("memStatus").textContent = "Not quite. Trying again.";
+    memSeq = [];
+    setTimeout(nextMemory, 900);
+  }
+}
+drawBoard();
+
+let mathScore = 0, curMath = null;
+function startMath(){ mathScore = 0; $("mathScore").textContent = "Score: 0"; newMath(); }
+function newMath(){
+  const ops = ["+","−","×"];
+  const op = ops[Math.floor(Math.random()*ops.length)];
+  let a = 1 + Math.floor(Math.random()*20), b = 1 + Math.floor(Math.random()*15);
+  let ans;
+  if(op === "+") ans = a+b;
+  else if(op === "−"){ if(a<b)[a,b]=[b,a]; ans = a-b; }
+  else ans = a*b;
+  curMath = { ans };
+  $("mathQ").textContent = `${a} ${op} ${b} = ?`;
+  const opts = new Set([ans]);
+  while(opts.size < 4) opts.add(Math.max(0, ans + Math.floor(Math.random()*13) - 6));
+  $("mathOpts").innerHTML = [...opts].sort(()=>Math.random()-.5).map(n =>
+    `<button class="opt" onclick="answerMath(${n})"><span class="lt">${n}</span></button>`).join("");
+}
+function answerMath(pick){
+  if(pick === curMath.ans){ mathScore++; $("mathScore").textContent = `Score: ${mathScore}`; toast("Correct! +1"); }
+  else toast(`Answer was ${curMath.ans}`);
+  setTimeout(newMath, 500);
+}
+
+const colors = [
+  {name:"Red",hex:"#ef4444"},{name:"Blue",hex:"#3b82f6"},{name:"Green",hex:"#22c55e"},
+  {name:"Yellow",hex:"#eab308"},{name:"Purple",hex:"#8b5cf6"},{name:"Orange",hex:"#f97316"}
+];
+let colorScore = 0, colorTarget = null;
+function startColor(){ colorScore = 0; renderColorScore(); newColorRound(); }
+function renderColorScore(){ $("colorScore").textContent = `Score: ${colorScore} · Best: ${state.bestColor||0}`; }
+function newColorRound(){
+  const shuffled = [...colors].sort(()=>Math.random()-.5).slice(0,4);
+  colorTarget = shuffled[Math.floor(Math.random()*shuffled.length)];
+  $("colorTarget").innerHTML = `Tap the tile that is <b>${colorTarget.name}</b>`;
+  $("colorGrid").innerHTML = shuffled.map(c =>
+    `<button class="cbtn" onclick="tapColor('${c.name}')" style="background:${c.hex}">${c.name}</button>`).join("");
+}
+function tapColor(name){
+  if(name === colorTarget.name){
+    colorScore++;
+    if(colorScore > (state.bestColor||0)){ state.bestColor = colorScore; saveState(); }
+    renderColorScore(); newColorRound();
+  } else {
+    colorScore = 0; renderColorScore();
+    $("colorTarget").innerHTML = `Wrong — reset. Tap <b>${colorTarget.name}</b>`;
+  }
+}
+renderColorScore();
+
+/* ---------------- SETTINGS ---------------- */
+function saveProfile(){ state.name = $("setName").value.trim() || "Student"; saveState(); renderLeaderboard(); toast("Profile saved"); }
+function exportData(){
+  const blob = new Blob([JSON.stringify({app:"Smart CGPA", version:8, exportedAt:new Date().toISOString(), state}, null, 2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a"); a.href = url; a.download = "smart-cgpa-backup.json"; a.click();
+  URL.revokeObjectURL(url);
+  toast("Backup exported");
+}
+function resetData(){
+  if(confirm("Delete all Smart CGPA data on this device?")){
+    localStorage.removeItem(STORE);
+    state = structuredClone(defaultState);
+    saveState();
+    renderCourses();
+    toast("Data reset");
+  }
+}
+
+/* ---------------- SERVICE WORKER (offline) ---------------- */
+(function registerSW(){
+  if(!("serviceWorker" in navigator)) return;
+  const sw = `self.addEventListener('install',e=>self.skipWaiting());
+self.addEventListener('activate',e=>e.waitUntil(self.clients.claim()));
+self.addEventListener('fetch',e=>{
+  if(e.request.method!=='GET')return;
+  e.respondWith(caches.open('cg-v1').then(c=>c.match(e.request).then(r=>r||fetch(e.request).then(res=>{if(res.ok)c.put(e.request,res.clone());return res;}).catch(()=>c.match(e.request)))));
+});`;
+  try {
+    const url = URL.createObjectURL(new Blob([sw], {type:"application/javascript"}));
+    navigator.serviceWorker.register(url).catch(()=>{});
+  } catch(e){}
+})();
+
+/* ---------------- BOOT ---------------- */
+renderCourses();
+renderLibrary();
+renderDictChips();
+refreshUI();
+go("home");
+setInterval(updateChallengeCountdown, 1000);
+</script>
+</body>
+</html>
