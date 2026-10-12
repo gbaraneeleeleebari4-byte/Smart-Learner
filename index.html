@@ -387,13 +387,11 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
       <div class="divider"></div>
       <div class="sec" style="margin-top:0"><div class="left">2 · Exam type</div></div>
-      <div class="chips">
-        <button class="chip active" data-exam="all" onclick="pickExam(this)">All</button>
-        <button class="chip" data-exam="JAMB" onclick="pickExam(this)">JAMB</button>
-        <button class="chip" data-exam="WAEC" onclick="pickExam(this)">WAEC</button>
-        <button class="chip" data-exam="NECO" onclick="pickExam(this)">NECO</button>
-        <button class="chip" data-exam="Post-UTME" onclick="pickExam(this)">Post-UTME</button>
-      </div>
+      <div class="chips mb">
+  <button class="chip active" data-lb="all" onclick="pickLB(this)">All time</button>
+  <button class="chip" data-lb="week" onclick="pickLB(this)">This Week</button>
+  <button class="chip" data-lb="challenge" onclick="pickLB(this)">Challenge Cup</button>
+</div>
 
       <div class="divider"></div>
       <div class="sec" style="margin-top:0"><div class="left">3 · Questions & mode</div></div>
