@@ -1692,6 +1692,20 @@ function pickLB(btn){
 
   return [{ name: myName, score: Math.max(myPts, myEntryFromFB), acc: myAcc, streak: myStreak, you:true }];
 }
+  // Reads live scores from Firebase and re-renders the leaderboard whenever they change
+function startFirebaseLeaderboardListener(){
+  if(!window.firebaseDB || !window.firebaseRef || !window.firebaseOnValue){
+    console.warn("Firebase not ready — leaderboard stays local");
+    return;
+  }
+  const scoresRef = window.firebaseRef(window.firebaseDB, "challenge_scores");
+  window.firebaseOnValue(scoresRef, (snapshot) => {
+    const data = snapshot.val() || {};
+    // data is an object: { key1: {name, points, correct, total, timestamp}, key2: {...} }
+    window.firebaseScoresCache = Object.values(data);
+    renderLeaderboard();
+  });
+}
 function renderLeaderboard(){
   const players = getLeaderboardPlayers();
   const [f, s, t] = players;
