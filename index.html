@@ -1664,11 +1664,11 @@ function pickLB(btn){
   const myAcc = state.answered ? Math.round(state.correct/state.answered*100) : 0;
   const myStreak = state.streak || 0;
 
-  // Cache of scores pulled from Firebase
+  // Scores pulled from Firebase (kept updated by the listener)
   const firebaseScores = window.firebaseScoresCache || [];
 
   if(lbMode === "week"){
-    // Only scores from this week (Sunday 00:00 to now)
+    // Only scores from this week (Sunday 00:00 onward)
     const now = new Date();
     const day = now.getDay();
     const startOfWeek = new Date(now);
@@ -1678,7 +1678,7 @@ function pickLB(btn){
 
     const list = firebaseScores
       .filter(p => (p.timestamp || 0) >= weekStartMs)
-      .map(p => ({ name: p.name, score: p.points, you: p.name === myName, acc: myAcc, streak: myStreak }));
+      .map(p => ({ name: p.name, score: p.points, correct: p.correct, total: p.total, you: p.name === myName, acc: myAcc, streak: myStreak }));
 
     if(!list.some(p => p.you)){
       list.push({ name: myName, score: state.challenge.bestScore || 0, correct:0, total:0, you:true, acc: myAcc, streak: myStreak });
@@ -1704,25 +1704,11 @@ function pickLB(btn){
   }
 
   // All time — merge local state with any Firebase data for this player
-  const myEntryFromFB = firebaseScores
+  const myBestFromFB = firebaseScores
     .filter(p => p.name === myName)
-    .reduce((max, p) => p.points > max ? p.points : max, myPts);
+    .reduce((max, p) => p.points > max ? p.points : max, 0);
 
-  return [{ name: myName, score: Math.max(myPts, myEntryFromFB), acc: myAcc, streak: myStreak, you:true }];
-}
-  // Reads live scores from Firebase and re-renders the leaderboard whenever they change
-function startFirebaseLeaderboardListener(){
-  if(!window.firebaseDB || !window.firebaseRef || !window.firebaseOnValue){
-    console.warn("Firebase not ready — leaderboard stays local");
-    return;
-  }
-  const scoresRef = window.firebaseRef(window.firebaseDB, "challenge_scores");
-  window.firebaseOnValue(scoresRef, (snapshot) => {
-    const data = snapshot.val() || {};
-    // data is an object: { key1: {name, points, correct, total, timestamp}, key2: {...} }
-    window.firebaseScoresCache = Object.values(data);
-    renderLeaderboard();
-  });
+  return [{ name: myName, score: Math.max(myPts, myBestFromFB), acc: myAcc, streak: myStreak, you:true }];
 }
 function renderLeaderboard(){
   const players = getLeaderboardPlayers();
