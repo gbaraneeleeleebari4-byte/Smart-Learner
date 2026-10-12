@@ -1640,18 +1640,41 @@ function pickLB(btn){
   lbMode = btn.dataset.lb;
   renderLeaderboard();
 }
-function getLeaderboardPlayers(){
+ function getLeaderboardPlayers(){
   const myName = state.name || "You";
   const myPts = state.points;
   const myAcc = state.answered ? Math.round(state.correct/state.answered*100) : 0;
   const myStreak = state.streak || 0;
+
+  // Cache of scores pulled from Firebase
+  const firebaseScores = window.firebaseScoresCache || [];
+
+  if(lbMode === "week"){
+    // Only scores from this week (Sunday 00:00 to now)
+    const now = new Date();
+    const day = now.getDay();
+    const startOfWeek = new Date(now);
+    startOfWeek.setDate(now.getDate() - day);
+    startOfWeek.setHours(0,0,0,0);
+    const weekStartMs = startOfWeek.getTime();
+
+    const list = firebaseScores
+      .filter(p => (p.timestamp || 0) >= weekStartMs)
+      .map(p => ({ name: p.name, score: p.points, you: p.name === myName, acc: myAcc, streak: myStreak }));
+
+    if(!list.some(p => p.you)){
+      list.push({ name: myName, score: state.challenge.bestScore || 0, correct:0, total:0, you:true, acc: myAcc, streak: myStreak });
+    }
+    list.sort((a,b) => b.score - a.score);
+    return list;
+  }
+
   if(lbMode === "challenge"){
-    const real = getRealPlayers();
     const bestByName = {};
-    real.forEach(p => {
-      const score = p.points;
-      if(!bestByName[p.name] || bestByName[p.name].score < score){
-        bestByName[p.name] = { name: p.name, score, correct: p.correct, total: p.total };
+    firebaseScores.forEach(p => {
+      const name = p.name;
+      if(!bestByName[name] || bestByName[name].score < p.points){
+        bestByName[name] = { name, score: p.points, correct: p.correct, total: p.total, timestamp: p.timestamp };
       }
     });
     const list = Object.values(bestByName);
@@ -1661,7 +1684,13 @@ function getLeaderboardPlayers(){
     list.sort((a,b) => b.score - a.score);
     return list.map(p => ({...p, you: p.name === myName, acc: myAcc, streak: myStreak }));
   }
-  return [{ name: myName, score: myPts, acc: myAcc, streak: myStreak, you:true }];
+
+  // All time — merge local state with any Firebase data for this player
+  const myEntryFromFB = firebaseScores
+    .filter(p => p.name === myName)
+    .reduce((max, p) => p.points > max ? p.points : max, myPts);
+
+  return [{ name: myName, score: Math.max(myPts, myEntryFromFB), acc: myAcc, streak: myStreak, you:true }];
 }
 function renderLeaderboard(){
   const players = getLeaderboardPlayers();
