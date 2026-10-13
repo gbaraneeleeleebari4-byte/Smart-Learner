@@ -1836,27 +1836,73 @@ function createGroup(){
 function joinGroup(){
   const code = ($("joinCode").value || "").trim().toUpperCase();
   if(!code){ toast("Enter an invite code."); return; }
-  if((state.groups||[]).some(g => g.code === code)){ toast("You are already in this group."); return; }
-  let found = null;
-  try {
-    const pool = JSON.parse(localStorage.getItem("smartCgpaGroupPool.v1") || "[]");
-    found = pool.find(g => g.code === code);
-  } catch(e){}
-  if(!found){
-    found = { id:"g_join_"+code, name:"Group " + code, emoji:"💬", code, messages:[] };
+  if((state.groups || []).some(g => g.code === code)){
+    toast("You are already in this group.");
+    return;
   }
-  state.groups.push({ ...found, messages: [...(found.messages||[]), { from:"System", text:`Joined group "${found.name}" with code ${code}.`, at:Date.now() }] });
-  try {
-    const pool = JSON.parse(localStorage.getItem("smartCgpaGroupPool.v1") || "[]");
-    if(!pool.some(g => g.code === code)){ pool.push(found); localStorage.setItem("smartCgpaGroupPool.v1", JSON.stringify(pool)); }
-  } catch(e){}
+
+  // Search Firestore for a group with this code
+  if(!window.firestoreDB || !window.fsCollection || !window.fsQuery || !window.fsGetDocs){
+    // Fallback to local storage if Firestore isn't ready
+    let found = null;
+    try {
+      const pool = JSON.parse(localStorage.getItem("smartCgpaGroupPool.v1") || "[]");
+      found = pool.find(g => g.code === code);
+    } catch(e){}
+    if(!found){
+      toast("Firestore not ready. Try again in a moment.");
+      return;
+    }
+    addGroupLocally(found);
+    return;
+  }
+
+  const groupsRef = window.fsCollection(window.firestoreDB, "groups");
+  const q = window.fsQuery(groupsRef, window.fsWhere("code", "==", code));
+
+  window.fsGetDocs(q).then((snapshot) => {
+    if(snapshot.empty){
+      toast("No group found with that code.");
+      return;
+    }
+    let found = null;
+    snapshot.forEach((doc) => {
+      if(!found) found = { ...doc.data(), id: doc.id };
+    });
+
+    if(found){
+      const groupEntry = {
+        id: found.id || ("g_" + Date.now()),
+        name: found.name || ("Group " + code),
+        emoji: found.emoji || "💬",
+        code: code,
+        createdBy: found.createdBy || "Unknown",
+        messages: [{ from:"System", text:`Joined group "${found.name}" with code ${code}.`, at:Date.now() }]
+      };
+      state.groups.push(groupEntry);
+      $("joinCode").value = "";
+      saveState();
+      hideGroupForms();
+      renderGroups();
+      toast(`Joined group "${found.name}"`);
+    }
+  }).catch((err) => {
+    console.error("Firestore join failed:", err);
+    toast("Could not join group. Check your internet.");
+  });
+}
+
+function addGroupLocally(found){
+  state.groups.push({
+    ...found,
+    messages: [{ from:"System", text:`Joined group "${found.name}" with code ${found.code}.`, at:Date.now() }]
+  });
   $("joinCode").value = "";
   saveState();
   hideGroupForms();
   renderGroups();
-  toast("Joined group " + found.name);
+  toast(`Joined group "${found.name}"`);
 }
-let currentGroupId = null;
 function openGroupChat(id){
   const g = state.groups.find(x => x.id === id);
   if(!g) return;
