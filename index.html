@@ -1482,9 +1482,9 @@ function updateChallengeCountdown(){
     $("cdMins").textContent = String(m).padStart(2,"0");
     $("cdSecs").textContent = String(sec).padStart(2,"0");
   }
-  const isSat = true;  // TEST MODE
+  const isSat = now.getDay() === 6;
 const mins = now.getHours()*60 + now.getMinutes();
-const live = true;   // TEST MODE
+const live = isSat && mins >= 1200 && mins < 1230;
   const btn = $("registerBtn");
   if(!btn) return;
   if(live && state.challenge.registered){
