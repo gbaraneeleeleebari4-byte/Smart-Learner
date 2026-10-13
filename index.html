@@ -1714,7 +1714,7 @@ function pickLB(btn){
 
   return [{ name: myName, score: Math.max(myPts, myBestFromFB), acc: myAcc, streak: myStreak, you:true }];
 }
-  // Listens to Firebase and updates the leaderboard live
+
 // Listens to Firestore and updates the leaderboard live
 function startFirebaseLeaderboardListener(){
   if(!window.firestoreDB || !window.fsCollection || !window.fsOnSnapshot){
