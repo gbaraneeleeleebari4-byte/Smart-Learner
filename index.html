@@ -1578,22 +1578,22 @@ function saveChallengeResult(correct, total, points){
     localStorage.setItem(key, JSON.stringify(all.slice(-200)));
   } catch(e){}
 
-  // Save to Firebase so all devices can see it
-  if(window.firebaseDB && window.firebaseRef && window.firebasePush){
-    const scoresRef = window.firebaseRef(window.firebaseDB, "challenge_scores");
-    window.firebasePush(scoresRef, {
+  // Save to Firestore
+  if(window.firestoreDB && window.fsCollection && window.fsAddDoc){
+    const scoresRef = window.fsCollection(window.firestoreDB, "challenge_scores");
+    window.fsAddDoc(scoresRef, {
       name: state.name || "Anonymous",
       points: points,
       correct: correct,
       total: total,
       timestamp: Date.now()
     }).then(() => {
-      console.log("✅ Score saved to Firebase");
+      console.log("✅ Score saved to Firestore");
     }).catch((err) => {
-      console.error("Firebase write failed:", err);
+      console.error("Firestore write failed:", err);
     });
   } else {
-    console.warn("Firebase not ready — score saved locally only");
+    console.warn("Firestore not ready — score saved locally only");
   }
 }
 
