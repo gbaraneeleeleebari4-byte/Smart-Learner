@@ -1587,10 +1587,10 @@ function saveChallengeResult(correct, total, points){
       correct: correct,
       total: total,
       timestamp: Date.now()
-    }).then(() => {
-      console.log("✅ Score saved to Firestore");
+        }).then(() => {
+      alert("✅ Score sent to Firestore!");
     }).catch((err) => {
-      console.error("Firestore write failed:", err);
+      alert("❌ Firestore write failed: " + err.message);
     });
   } else {
     console.warn("Firestore not ready — score saved locally only");
