@@ -1801,12 +1801,37 @@ function createGroup(){
   const emoji = $("newGroupEmoji").value;
   const id = "g_" + Date.now();
   const code = genCode();
-  state.groups.push({ id, name, emoji, code, messages:[{ from:"System", text:`Group "${name}" created. Invite code: ${code}`, at:Date.now() }], createdAt:Date.now() });
+
+  const newGroup = {
+    id, name, emoji, code,
+    createdBy: state.name || "You",
+    createdAt: Date.now(),
+    messages: [{ from:"System", text:`Group "${name}" created. Invite code: ${code}`, at:Date.now() }]
+  };
+
+  // Save locally (existing behaviour)
+  state.groups.push(newGroup);
   $("newGroupName").value = "";
   saveState();
   hideGroupForms();
   renderGroups();
   toast(`Group created. Invite code: ${code}`);
+
+  // Save to Firestore so others can find and join
+  if(window.firestoreDB && window.fsCollection && window.fsAddDoc){
+    const groupsRef = window.fsCollection(window.firestoreDB, "groups");
+    window.fsAddDoc(groupsRef, {
+      name: name,
+      emoji: emoji,
+      code: code,
+      createdBy: state.name || "You",
+      createdAt: Date.now()
+    }).then(() => {
+      console.log("✅ Group saved to Firestore");
+    }).catch((err) => {
+      console.error("Firestore group save failed:", err);
+    });
+  }
 }
 function joinGroup(){
   const code = ($("joinCode").value || "").trim().toUpperCase();
