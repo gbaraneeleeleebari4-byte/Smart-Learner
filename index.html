@@ -1915,10 +1915,14 @@ function openGroupChat(id){
   renderGroupMessages();
   $("chatFs").classList.add("show");
   $("chatFsInput").focus();
+
+  // Start listening to Firestore for messages in this group
+  startMessageListener(g);
 }
 function closeGroupChat(){
   currentGroupId = null;
   $("chatFs").classList.remove("show");
+  stopMessageListener();
   renderGroups();
 }
 function renderGroupMessages(){
