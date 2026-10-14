@@ -2541,6 +2541,129 @@ setInterval(updateChallengeCountdown, 1000);
 
     setStatus("#666", "🔵 Connecting to Firestore...");
     const app = initializeApp(firebaseConfig);
+    /* =====================================================
+   FIREBASE AUTHENTICATION
+   ===================================================== */
+let auth;
+let authMode = 'login'; // 'login' or 'signup'
+
+// Wait for Firebase to be ready, then set up auth
+window.addEventListener('load', () => {
+  if (typeof firebase !== 'undefined' && firebase.apps.length > 0) {
+    auth = firebase.auth();
+    
+    // Listen for login/logout changes
+    auth.onAuthStateChanged((user) => {
+      const loginScreen = document.getElementById('loginScreen');
+      if (user) {
+        // User is logged in — hide the login screen
+        if (loginScreen) loginScreen.style.display = 'none';
+        
+        // Save their name to the app state
+        state.name = user.displayName || user.email.split('@')[0];
+        state.userId = user.uid;
+        saveState();
+        console.log('✅ Logged in as:', state.name);
+      } else {
+        // User is logged out — show the login screen
+        if (loginScreen) loginScreen.style.display = 'flex';
+        console.log('🔒 Not logged in');
+      }
+    });
+  }
+});
+
+// Toggle between "Sign In" and "Create Account" mode
+function toggleAuthMode(mode) {
+  authMode = mode;
+  const form = document.getElementById('emailForm');
+  const submitBtn = document.getElementById('authSubmitBtn');
+  const toggleText = document.getElementById('authToggleText');
+  const toggleBtn = document.getElementById('authToggleBtn');
+  
+  if (!form) return;
+  form.style.display = 'block';
+  
+  if (mode === 'signup') {
+    submitBtn.textContent = 'Create Account';
+    toggleText.textContent = 'Already have an account?';
+    toggleBtn.textContent = 'Sign in';
+    toggleBtn.setAttribute('onclick', "toggleAuthMode('login')");
+  } else {
+    submitBtn.textContent = 'Sign In';
+    toggleText.textContent = "Don't have an account?";
+    toggleBtn.textContent = 'Create one';
+    toggleBtn.setAttribute('onclick', "toggleAuthMode('signup')");
+  }
+}
+
+// Show error messages
+function showAuthError(msg) {
+  const el = document.getElementById('authError');
+  if (el) {
+    el.textContent = msg;
+    el.style.display = 'block';
+    setTimeout(() => { el.style.display = 'none'; }, 5000);
+  }
+}
+
+// Handle Sign In OR Sign Up button tap
+async function handleAuthSubmit() {
+  const email = document.getElementById('authEmail').value.trim();
+  const password = document.getElementById('authPassword').value;
+  const btn = document.getElementById('authSubmitBtn');
+  
+  if (!email || !password) return showAuthError('Please enter email and password.');
+  if (authMode === 'signup' && password.length < 6) return showAuthError('Password must be at least 6 characters.');
+  
+  const originalText = btn.textContent;
+  btn.textContent = 'Please wait...';
+  btn.disabled = true;
+  
+  try {
+    if (authMode === 'signup') {
+      await auth.createUserWithEmailAndPassword(email, password);
+    } else {
+      await auth.signInWithEmailAndPassword(email, password);
+    }
+    console.log('✅ Auth successful');
+  } catch (error) {
+    console.error(error);
+    let msg = 'Something went wrong. Please try again.';
+    if (error.code === 'auth/user-not-found') msg = 'No account found. Try creating one.';
+    if (error.code === 'auth/wrong-password') msg = 'Wrong password. Please try again.';
+    if (error.code === 'auth/email-already-in-use') msg = 'That email is already registered. Try signing in.';
+    if (error.code === 'auth/invalid-email') msg = 'That email address is not valid.';
+    if (error.code === 'auth/weak-password') msg = 'Password is too weak. Use 6+ characters.';
+    showAuthError(msg);
+  } finally {
+    btn.textContent = originalText;
+    btn.disabled = false;
+  }
+}
+
+// Google Sign In
+async function handleGoogleLogin() {
+  if (!auth) {
+    // If firebase auth isn't ready yet, wait a moment
+    setTimeout(handleGoogleLogin, 500);
+    return;
+  }
+  const provider = new firebase.auth.GoogleAuthProvider();
+  try {
+    await auth.signInWithPopup(provider);
+    console.log('✅ Google sign-in successful');
+  } catch (error) {
+    console.error(error);
+    if (error.code === 'auth/popup-closed-by-user') return;
+    showAuthError('Google sign-in failed. Make sure your domain is authorized in Firebase.');
+  }
+}
+
+// Sign Out
+function handleLogout() {
+  if (auth) auth.signOut();
+}
     const db = getFirestore(app);
 
     // Expose Firestore tools for the rest of the app
