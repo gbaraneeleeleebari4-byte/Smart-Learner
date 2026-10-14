@@ -2493,6 +2493,16 @@ setInterval(updateChallengeCountdown, 1000);
 });
 <script type="module">
   const statusEl = document.getElementById("firebase-status");
+      // Catch all errors and display them
+    window.addEventListener('error', (e) => {
+      setStatus("#ef4444", "❌ ERROR: " + e.message);
+      console.error("Error at line:", e.lineno, ":", e.message);
+    });
+    
+    window.addEventListener('unhandledrejection', (e) => {
+      setStatus("#ef4444", "❌ PROMISE ERROR: " + e.reason);
+      console.error("Promise error:", e.reason);
+    });
   function setStatus(color, text) {
     if (statusEl) {
       statusEl.style.background = color;
