@@ -2487,6 +2487,10 @@ go("home");
   startFirebaseLeaderboardListener();
 setInterval(updateChallengeCountdown, 1000);
 </script>
+  window.addEventListener('error', (e) => {
+  setStatus("#ef4444", "❌ Error: " + e.message);
+  console.error(e.error);
+});
 <script type="module">
   const statusEl = document.getElementById("firebase-status");
   function setStatus(color, text) {
