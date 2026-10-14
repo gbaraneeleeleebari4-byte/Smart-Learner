@@ -1925,6 +1925,53 @@ function closeGroupChat(){
   stopMessageListener();
   renderGroups();
 }
+// Store the Firestore listener so we can stop it later
+let currentMessageListener = null;
+
+function startMessageListener(group){
+  stopMessageListener();
+
+  if(!window.firestoreDB || !window.fsCollection || !window.fsQuery || !window.fsWhere || !window.fsOnSnapshot){
+    console.warn("Firestore not ready — no live messages");
+    return;
+  }
+
+  const messagesRef = window.fsCollection(window.firestoreDB, "messages");
+  const q = window.fsQuery(messagesRef, window.fsWhere("groupId", "==", group.id));
+
+  currentMessageListener = window.fsOnSnapshot(q, (snapshot) => {
+    const messages = [];
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      messages.push({
+        from: data.from || "Someone",
+        text: data.text || "",
+        at: data.at || Date.now()
+      });
+    });
+
+    messages.sort((a, b) => (a.at || 0) - (b.at || 0));
+
+    const localGroup = state.groups.find(x => x.id === group.id);
+    if(localGroup){
+      localGroup.messages = messages;
+      saveState();
+      if(currentGroupId === group.id){
+        renderGroupMessages();
+      }
+    }
+  }, (err) => {
+    console.error("Message listener error:", err);
+  });
+}
+
+function stopMessageListener(){
+  if(currentMessageListener){
+    try { currentMessageListener(); } catch(e){}
+    currentMessageListener = null;
+  }
+}
+  
 function renderGroupMessages(){
   const g = state.groups.find(x => x.id === currentGroupId);
   if(!g) return;
