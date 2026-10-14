@@ -2491,25 +2491,149 @@ setInterval(updateChallengeCountdown, 1000);
 <script type="module">
   const statusEl = document.getElementById("firebase-status");
       // Catch all errors and display them
+        function setStatus(color, text) {
+      if (statusEl) {
+        statusEl.style.background = color;
+        statusEl.textContent = text;
+      }
+    }
+
     window.addEventListener('error', (e) => {
       setStatus("#ef4444", "❌ ERROR: " + e.message);
-      console.error("Error at line:", e.lineno, ":", e.message);
+      console.error("Error:", e.message);
     });
-    
-    window.addEventListener('unhandledrejection', (e) => {
-      setStatus("#ef4444", "❌ PROMISE ERROR: " + e.reason);
-      console.error("Promise error:", e.reason);
-    });
-  function setStatus(color, text) {
-    if (statusEl) {
-      statusEl.style.background = color;
-      statusEl.textContent = text;
-    }
-  }
 
-  window.addEventListener("error", (e) => {
-    setStatus("#ef4444", "❌ JS error: " + e.message);
-  });
+    window.addEventListener('unhandledrejection', (e) => {
+      setStatus("#ef4444", "❌ PROMISE: " + e.reason);
+      console.error("Promise:", e.reason);
+    });
+
+    async function initFirebase() {
+      try {
+        setStatus("#666", "🔵 Loading Firebase...");
+        const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js");
+        const { getFirestore, collection, addDoc, onSnapshot, query, orderBy, where, getDocs, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js");
+        const { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signOut } = await import("https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js");
+        
+        setStatus("#666", "🔵 Configuring...");
+        const firebaseConfig = {
+          apiKey: "AIzaSyBalfqEksKXbrcfVCqrrWkILx_V7up25Xs",
+          authDomain: "smart-learn-hub-73667.firebaseapp.com",
+          databaseURL: "https://smart-learn-hub-73667-default-rtdb.europe-west1.firebasedatabase.app",
+          projectId: "smart-learn-hub-73667",
+          storageBucket: "smart-learn-hub-73667.firebasestorage.app",
+          messagingSenderId: "165458065701",
+          appId: "1:165458065701:web:08a1bcfac2ae286b9502cc"
+        };
+
+        setStatus("#666", "🔵 Connecting to Firestore...");
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        window.firestoreDB = db;
+        window.fsCollection = collection;
+        window.fsAddDoc = addDoc;
+        window.fsOnSnapshot = onSnapshot;
+        window.fsQuery = query;
+        window.fsOrderBy = orderBy;
+        window.fsWhere = where;
+        window.fsGetDocs = getDocs;
+        window.fsServerTimestamp = serverTimestamp;
+        window.firebaseReady = true;
+
+        // Set up Auth
+        let auth;
+        let authMode = 'login';
+        auth = getAuth(app);
+
+        function exposeAuthFunctions() {
+          window.handleGoogleLogin = handleGoogleLogin;
+          window.toggleAuthMode = toggleAuthMode;
+          window.handleAuthSubmit = handleAuthSubmit;
+          window.handleLogout = handleLogout;
+          window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+          window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+          window.signInWithPopup = signInWithPopup;
+          window.GoogleAuthProvider = GoogleAuthProvider;
+          window.signOut = signOut;
+        }
+
+        async function handleGoogleLogin() {
+          if (!auth) return;
+          const provider = new GoogleAuthProvider();
+          try { await signInWithPopup(auth, provider); } 
+          catch (error) { console.error(error); }
+        }
+
+        function toggleAuthMode(mode) {
+          authMode = mode;
+          const form = document.getElementById('emailForm');
+          const submitBtn = document.getElementById('authSubmitBtn');
+          const toggleText = document.getElementById('authToggleText');
+          const toggleBtn = document.getElementById('authToggleBtn');
+          if (!form) return;
+          form.style.display = 'block';
+          if (mode === 'signup') {
+            submitBtn.textContent = 'Create Account';
+            toggleText.textContent = 'Already have an account?';
+            toggleBtn.textContent = 'Sign in';
+            toggleBtn.onclick = () => toggleAuthMode('login');
+          } else {
+            submitBtn.textContent = 'Sign In';
+            toggleText.textContent = "Don't have an account?";
+            toggleBtn.textContent = 'Create one';
+            toggleBtn.onclick = () => toggleAuthMode('signup');
+          }
+        }
+
+        async function handleAuthSubmit() {
+          const email = document.getElementById('authEmail').value.trim();
+          const password = document.getElementById('authPassword').value;
+          const btn = document.getElementById('authSubmitBtn');
+          if (!email || !password) return alert('Please enter email and password.');
+          if (authMode === 'signup' && password.length < 6) return alert('Password must be at least 6 characters.');
+          btn.textContent = 'Please wait...';
+          btn.disabled = true;
+          try {
+            if (authMode === 'signup') await createUserWithEmailAndPassword(auth, email, password);
+            else await signInWithEmailAndPassword(auth, email, password);
+          } catch (error) {
+            alert('Error: ' + error.message);
+          } finally {
+            btn.textContent = authMode === 'signup' ? 'Create Account' : 'Sign In';
+            btn.disabled = false;
+          }
+        }
+
+        function handleLogout() { if (auth) signOut(auth); }
+
+        onAuthStateChanged(auth, (user) => {
+          const loginScreen = document.getElementById('loginScreen');
+          if (user) {
+            if (loginScreen) loginScreen.style.display = 'none';
+            state.name = user.displayName || user.email.split('@')[0];
+            state.userId = user.uid;
+            saveState();
+          } else {
+            if (loginScreen) loginScreen.style.display = 'flex';
+          }
+        });
+
+        exposeAuthFunctions();
+
+        // Attach button listeners now that everything is ready
+        document.getElementById('googleLoginBtn').onclick = handleGoogleLogin;
+        document.getElementById('createAccountBtn').onclick = () => toggleAuthMode('signup');
+        document.getElementById('authToggleBtn').onclick = () => toggleAuthMode(authMode === 'login' ? 'signup' : 'login');
+        document.getElementById('authSubmitBtn').onclick = handleAuthSubmit;
+
+        setStatus("#0ea5a0", "✅ Firestore connected successfully");
+      } catch (err) {
+        setStatus("#ef4444", "❌ Failed: " + err.message);
+        console.error(err);
+      }
+    }
+
+    initFirebase();
 
   try {
     setStatus("#666", "🔵 Loading Firebase modules...");
