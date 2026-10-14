@@ -2541,7 +2541,141 @@ setInterval(updateChallengeCountdown, 1000);
 
     setStatus("#666", "🔵 Connecting to Firestore...");
     const app = initializeApp(firebaseConfig);
-     
+         const db = getFirestore(app);
+    window.firestoreDB = db;
+    window.fsCollection = collection;
+    window.fsAddDoc = addDoc;
+    window.fsOnSnapshot = onSnapshot;
+    window.fsQuery = query;
+    window.fsOrderBy = orderBy;
+    window.fsWhere = where;
+    window.fsGetDocs = getDocs;
+    window.fsServerTimestamp = serverTimestamp;
+    window.firebaseReady = true;
+
+    /* =====================================================
+       FIREBASE AUTHENTICATION (Modern v9+ Syntax)
+       ===================================================== */
+    let auth;
+    let authMode = 'login';
+
+    async function setupAuth() {
+      if (typeof app === 'undefined') {
+        setTimeout(setupAuth, 300);
+        return;
+      }
+      
+      const { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signOut } = await import("https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js");
+      
+      auth = getAuth(app);
+      
+      window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+      window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+      window.GoogleAuthProvider = GoogleAuthProvider;
+      window.signInWithPopup = signInWithPopup;
+      window.signOut = signOut;
+
+      onAuthStateChanged(auth, (user) => {
+        const loginScreen = document.getElementById('loginScreen');
+        if (user) {
+          if (loginScreen) loginScreen.style.display = 'none';
+          state.name = user.displayName || user.email.split('@')[0];
+          state.userId = user.uid;
+          saveState();
+          console.log('✅ Logged in as:', state.name);
+        } else {
+          if (loginScreen) loginScreen.style.display = 'flex';
+          console.log('🔒 Not logged in');
+        }
+      });
+      
+      console.log("✅ Auth system ready");
+    }
+    setupAuth();
+
+    function toggleAuthMode(mode) {
+      authMode = mode;
+      const form = document.getElementById('emailForm');
+      const submitBtn = document.getElementById('authSubmitBtn');
+      const toggleText = document.getElementById('authToggleText');
+      const toggleBtn = document.getElementById('authToggleBtn');
+      
+      if (!form) return;
+      form.style.display = 'block';
+      
+      if (mode === 'signup') {
+        submitBtn.textContent = 'Create Account';
+        toggleText.textContent = 'Already have an account?';
+        toggleBtn.textContent = 'Sign in';
+        toggleBtn.setAttribute('onclick', "toggleAuthMode('login')");
+      } else {
+        submitBtn.textContent = 'Sign In';
+        toggleText.textContent = "Don't have an account?";
+        toggleBtn.textContent = 'Create one';
+        toggleBtn.setAttribute('onclick', "toggleAuthMode('signup')");
+      }
+    }
+
+    function showAuthError(msg) {
+      const el = document.getElementById('authError');
+      if (el) {
+        el.textContent = msg;
+        el.style.display = 'block';
+        setTimeout(() => { el.style.display = 'none'; }, 5000);
+      }
+    }
+
+    async function handleAuthSubmit() {
+      const email = document.getElementById('authEmail').value.trim();
+      const password = document.getElementById('authPassword').value;
+      const btn = document.getElementById('authSubmitBtn');
+      
+      if (!email || !password) return showAuthError('Please enter email and password.');
+      if (authMode === 'signup' && password.length < 6) return showAuthError('Password must be at least 6 characters.');
+      
+      const originalText = btn.textContent;
+      btn.textContent = 'Please wait...';
+      btn.disabled = true;
+      
+      try {
+        if (authMode === 'signup') {
+          await window.createUserWithEmailAndPassword(auth, email, password);
+        } else {
+          await window.signInWithEmailAndPassword(auth, email, password);
+        }
+      } catch (error) {
+        console.error(error);
+        let msg = 'Something went wrong. Please try again.';
+        if (error.code === 'auth/user-not-found') msg = 'No account found. Try creating one.';
+        if (error.code === 'auth/wrong-password') msg = 'Wrong password. Please try again.';
+        if (error.code === 'auth/email-already-in-use') msg = 'That email is already registered. Try signing in.';
+        if (error.code === 'auth/invalid-email') msg = 'That email address is not valid.';
+        if (error.code === 'auth/weak-password') msg = 'Password is too weak. Use 6+ characters.';
+        showAuthError(msg);
+      } finally {
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }
+    }
+
+    async function handleGoogleLogin() {
+      if (!auth) {
+        setTimeout(handleGoogleLogin, 500);
+        return;
+      }
+      const provider = new window.GoogleAuthProvider();
+      try {
+        await window.signInWithPopup(auth, provider);
+      } catch (error) {
+        console.error(error);
+        if (error.code === 'auth/popup-closed-by-user') return;
+        showAuthError('Google sign-in failed. Make sure your domain is authorized in Firebase.');
+      }
+    }
+
+    function handleLogout() {
+      if (auth) window.signOut(auth);
+    }
 
     setStatus("#0ea5a0", "✅ Firestore connected successfully");
   } catch (err) {
