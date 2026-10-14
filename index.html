@@ -2104,7 +2104,10 @@ function sendGroupMessage(){
   if(!text) return;
 
   // Save locally first, so the sender sees their own message instantly
-  g.messages.push({ from: state.name || "You", fromId: getDeviceId(), text, at: Date.now() });
+    const user = auth && auth.currentUser;
+    const senderName = user ? (user.displayName || user.email.split('@')[0]) : (state.name || "Anonymous");
+    const senderId = user ? user.uid : getDeviceId();
+    g.messages.push({ from: senderName, fromId: senderId, text: text, at: Date.now() });
   input.value = "";
   autoGrow(input);
   saveState();
