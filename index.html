@@ -2560,7 +2560,7 @@ setInterval(updateChallengeCountdown, 1000);
         // Set up Auth
         let auth;
         let authMode = 'login';
-        auth = getAuth(app);
+        window.auth = getAuth(app);
 
         function exposeAuthFunctions() {
           window.handleGoogleLogin = handleGoogleLogin;
