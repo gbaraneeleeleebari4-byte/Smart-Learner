@@ -2556,11 +2556,9 @@ setInterval(updateChallengeCountdown, 1000);
         window.fsGetDocs = getDocs;
         window.fsServerTimestamp = serverTimestamp;
         window.firebaseReady = true;
-
-        // Set up Auth
-        let auth;
-        let authMode = 'login';
-        window.auth = getAuth(app);
+    // Set up Auth
+    window.auth = getAuth(app);
+    let authMode = 'login';
 
         function exposeAuthFunctions() {
           window.handleGoogleLogin = handleGoogleLogin;
