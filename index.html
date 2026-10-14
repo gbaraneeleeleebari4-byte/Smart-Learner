@@ -2117,12 +2117,12 @@ function sendGroupMessage(){
   if(window.firestoreDB && window.fsCollection && window.fsAddDoc){
     const messagesRef = window.fsCollection(window.firestoreDB, "messages");
    window.fsAddDoc(messagesRef, {
-  groupId: g.id,
-  groupCode: g.code,
-  from: state.name || "You",
-  fromId: getDeviceId(),
-  text: text,
-  at: Date.now()
+      groupId: g.id,
+    groupCode: g.code,
+    from: senderName,
+    fromId: senderId,
+    text: text,
+    at: Date.now()
 }) .then(() => {
       console.log("✅ Message saved to Firestore");
     }).catch((err) => {
