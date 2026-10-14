@@ -2788,42 +2788,7 @@ async function handleAuthSubmit() {
   try {
     if (authMode === 'signup') {
       await window.createUserWithEmailAndPassword(auth, email, password);
-    } else {
-      await window.signInWithEmailAndPassword(auth, email, password);
-    }
-  } catch (error) {
-    console.error(error);
-    let msg = 'Something went wrong. Please try again.';
-    if (error.code === 'auth/user-not-found') msg = 'No account found. Try creating one.';
-    if (error.code === 'auth/wrong-password') msg = 'Wrong password. Please try again.';
-    if (error.code === 'auth/email-already-in-use') msg = 'That email is already registered. Try signing in.';
-    if (error.code === 'auth/invalid-email') msg = 'That email address is not valid.';
-    if (error.code === 'auth/weak-password') msg = 'Password is too weak. Use 6+ characters.';
-    showAuthError(msg);
-  } finally {
-    btn.textContent = originalText;
-    btn.disabled = false;
-  }
-}
 
-async function handleGoogleLogin() {
-  if (!auth) {
-    setTimeout(handleGoogleLogin, 500);
-    return;
-  }
-  const provider = new window.GoogleAuthProvider();
-  try {
-    await window.signInWithPopup(auth, provider);
-  } catch (error) {
-    console.error(error);
-    if (error.code === 'auth/popup-closed-by-user') return;
-    showAuthError('Google sign-in failed. Make sure your domain is authorized in Firebase.');
-  }
-}
-
-function handleLogout() {
-  if (auth) window.signOut(auth);
-}
     const db = getFirestore(app);
 
     // Expose Firestore tools for the rest of the app
