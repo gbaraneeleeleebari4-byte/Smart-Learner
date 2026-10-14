@@ -771,6 +771,19 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function toast(msg){ const t=$("toast"); t.textContent=msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),2400); }
+  function getDeviceId(){
+  let id = null;
+  try {
+    id = localStorage.getItem("smartCgpaDeviceId");
+    if(!id){
+      id = "dev_" + Math.random().toString(36).slice(2,10) + Date.now().toString(36);
+      localStorage.setItem("smartCgpaDeviceId", id);
+    }
+  } catch(e){
+    id = "dev_unknown";
+  }
+  return id;
+}
 
 /* ---------------- STATE ---------------- */
 const STORE = "smartCgpa.v8";
