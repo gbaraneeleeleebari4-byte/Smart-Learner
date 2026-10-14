@@ -2506,6 +2506,7 @@ setInterval(updateChallengeCountdown, 1000);
 
   try {
     setStatus("#666", "🔵 Loading Firebase modules...");
+    console.log("STEP 1: About to import Firebase modules");
     const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js");
         const { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, where, getDocs } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js");
     const { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signOut } = await import("https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js");
