@@ -2610,6 +2610,89 @@ function showAuthError(msg) {
 // Handle Sign In OR Sign Up button tap
 async function handleAuthSubmit() {
   const email = document.getElementById('authEmail').value.trim();
+/* =====================================================
+   FIREBASE AUTHENTICATION (Modern v9+ Syntax)
+   ===================================================== */
+let auth;
+let authMode = 'login'; // 'login' or 'signup'
+
+// We need to import the auth functions at the top of your script.
+// Since your script is a module, we can dynamically get them from the app.
+async function setupAuth() {
+  // Wait a moment for the app to be fully ready
+  if (typeof app === 'undefined') {
+    setTimeout(setupAuth, 300);
+    return;
+  }
+  
+  // Import the modern auth functions dynamically
+  const { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signOut } = await import("https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js");
+  
+  auth = getAuth(app);
+  
+  // Make the functions available globally for the buttons
+  window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+  window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+  window.GoogleAuthProvider = GoogleAuthProvider;
+  window.signInWithPopup = signInWithPopup;
+  window.signOut = signOut;
+
+  // Listen for login/logout changes
+  onAuthStateChanged(auth, (user) => {
+    const loginScreen = document.getElementById('loginScreen');
+    if (user) {
+      if (loginScreen) loginScreen.style.display = 'none';
+      state.name = user.displayName || user.email.split('@')[0];
+      state.userId = user.uid;
+      saveState();
+      console.log('✅ Logged in as:', state.name);
+    } else {
+      if (loginScreen) loginScreen.style.display = 'flex';
+      console.log('🔒 Not logged in');
+    }
+  });
+  
+  console.log("✅ Auth system ready");
+}
+setupAuth();
+
+// Toggle between "Sign In" and "Create Account" mode
+function toggleAuthMode(mode) {
+  authMode = mode;
+  const form = document.getElementById('emailForm');
+  const submitBtn = document.getElementById('authSubmitBtn');
+  const toggleText = document.getElementById('authToggleText');
+  const toggleBtn = document.getElementById('authToggleBtn');
+  
+  if (!form) return;
+  form.style.display = 'block';
+  
+  if (mode === 'signup') {
+    submitBtn.textContent = 'Create Account';
+    toggleText.textContent = 'Already have an account?';
+    toggleBtn.textContent = 'Sign in';
+    toggleBtn.setAttribute('onclick', "toggleAuthMode('login')");
+  } else {
+    submitBtn.textContent = 'Sign In';
+    toggleText.textContent = "Don't have an account?";
+    toggleBtn.textContent = 'Create one';
+    toggleBtn.setAttribute('onclick', "toggleAuthMode('signup')");
+  }
+}
+
+// Show error messages
+function showAuthError(msg) {
+  const el = document.getElementById('authError');
+  if (el) {
+    el.textContent = msg;
+    el.style.display = 'block';
+    setTimeout(() => { el.style.display = 'none'; }, 5000);
+  }
+}
+
+// Handle Sign In OR Sign Up button tap
+async function handleAuthSubmit() {
+  const email = document.getElementById('authEmail').value.trim();
   const password = document.getElementById('authPassword').value;
   const btn = document.getElementById('authSubmitBtn');
   
@@ -2622,11 +2705,10 @@ async function handleAuthSubmit() {
   
   try {
     if (authMode === 'signup') {
-      await auth.createUserWithEmailAndPassword(email, password);
+      await window.createUserWithEmailAndPassword(auth, email, password);
     } else {
-      await auth.signInWithEmailAndPassword(email, password);
+      await window.signInWithEmailAndPassword(auth, email, password);
     }
-    console.log('✅ Auth successful');
   } catch (error) {
     console.error(error);
     let msg = 'Something went wrong. Please try again.';
@@ -2645,14 +2727,12 @@ async function handleAuthSubmit() {
 // Google Sign In
 async function handleGoogleLogin() {
   if (!auth) {
-    // If firebase auth isn't ready yet, wait a moment
     setTimeout(handleGoogleLogin, 500);
     return;
   }
-  const provider = new firebase.auth.GoogleAuthProvider();
+  const provider = new window.GoogleAuthProvider();
   try {
-    await auth.signInWithPopup(provider);
-    console.log('✅ Google sign-in successful');
+    await window.signInWithPopup(auth, provider);
   } catch (error) {
     console.error(error);
     if (error.code === 'auth/popup-closed-by-user') return;
@@ -2662,7 +2742,7 @@ async function handleGoogleLogin() {
 
 // Sign Out
 function handleLogout() {
-  if (auth) auth.signOut();
+  if (auth) window.signOut(auth);
 }
     const db = getFirestore(app);
 
