@@ -2600,6 +2600,8 @@ function exposeAuthFunctions() {
       });
       
       console.log("✅ Auth system ready");
+            // Expose auth functions now that imports are loaded
+      exposeAuthFunctions();
     }
     setupAuth().then(() => {
   exposeAuthFunctions();
