@@ -2559,7 +2559,18 @@ setInterval(updateChallengeCountdown, 1000);
        ===================================================== */
     let auth;
     let authMode = 'login';
-
+// Make functions available immediately
+function exposeAuthFunctions() {
+  window.handleGoogleLogin = handleGoogleLogin;
+  window.toggleAuthMode = toggleAuthMode;
+  window.handleAuthSubmit = handleAuthSubmit;
+  window.handleLogout = handleLogout;
+  window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+  window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+  window.signInWithPopup = signInWithPopup;
+  window.GoogleAuthProvider = GoogleAuthProvider;
+  window.signOut = signOut;
+}
     async function setupAuth() {
       if (typeof app === 'undefined') {
         setTimeout(setupAuth, 300);
