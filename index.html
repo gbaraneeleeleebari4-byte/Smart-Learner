@@ -2575,7 +2575,7 @@ setInterval(updateChallengeCountdown, 1000);
         async function handleGoogleLogin() {
           if (!window.auth) return;
           const provider = new GoogleAuthProvider();
-          try { await signInWithPopup(auth, provider); } 
+          try { await signInWithPopup(window.auth, provider); }
           catch (error) { console.error(error); }
         }
 
