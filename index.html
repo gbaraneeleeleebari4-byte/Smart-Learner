@@ -788,6 +788,11 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
       <div class="f"><label>Display name</label><input id="setName" placeholder="Student"></div>
       <button class="btn btn-p btn-sm" onclick="saveProfile()">Save profile</button>
     </div>
+        <div class="card">
+      <h3>Account</h3>
+      <p class="sub" id="loggedInAs" style="margin-bottom:12px;">Not signed in</p>
+      <button class="btn btn-r" onclick="handleLogout()">Sign Out</button>
+    </div>
     <div class="card">
       <h3>Subscription</h3>
       <p class="sub" id="subStatus">Free plan</p>
