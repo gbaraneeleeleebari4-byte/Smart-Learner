@@ -1275,6 +1275,14 @@ function refreshUI(){
   $("statPoints").textContent = state.points;
   $("statStreak").textContent = (state.streak||0) + "d";
   $("setName").value = state.name || "";
+    const loggedInEl = $("loggedInAs");
+  if (loggedInEl) {
+    if (state.userId) {
+      loggedInEl.textContent = "Signed in as: " + (state.name || "User");
+    } else {
+      loggedInEl.textContent = "Not signed in";
+    }
+  }
   $("subStatus").textContent = state.tutorUnlocked ? "Premium — AI Tutor unlocked" : "Free plan";
   $("unlockBtn").style.display = state.tutorUnlocked ? "none" : "inline-flex";
   renderContinue();
