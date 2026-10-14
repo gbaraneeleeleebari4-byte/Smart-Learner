@@ -2565,11 +2565,14 @@ function exposeAuthFunctions() {
   window.toggleAuthMode = toggleAuthMode;
   window.handleAuthSubmit = handleAuthSubmit;
   window.handleLogout = handleLogout;
-  window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
-  window.signInWithEmailAndPassword = signInWithEmailAndPassword;
-  window.signInWithPopup = signInWithPopup;
-  window.GoogleAuthProvider = GoogleAuthProvider;
-  window.signOut = signOut;
+  // These are set inside setupAuth() after the imports load
+  if (typeof createUserWithEmailAndPassword !== 'undefined') {
+    window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+    window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+    window.signInWithPopup = signInWithPopup;
+    window.GoogleAuthProvider = GoogleAuthProvider;
+    window.signOut = signOut;
+  }
 }
     async function setupAuth() {
       if (typeof app === 'undefined') {
