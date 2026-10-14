@@ -1836,14 +1836,9 @@ function createGroup(){
 function joinGroup(){
   const code = ($("joinCode").value || "").trim().toUpperCase();
   if(!code){ toast("Enter an invite code."); return; }
-  if((state.groups || []).some(g => g.code === code)){
-    toast("You are already in this group.");
-    return;
-  }
 
-  // Search Firestore for a group with this code
+  // Fallback path if Firestore isn't ready yet
   if(!window.firestoreDB || !window.fsCollection || !window.fsQuery || !window.fsGetDocs){
-    // Fallback to local storage if Firestore isn't ready
     let found = null;
     try {
       const pool = JSON.parse(localStorage.getItem("smartCgpaGroupPool.v1") || "[]");
@@ -1870,22 +1865,29 @@ function joinGroup(){
       if(!found) found = { ...doc.data(), id: doc.id };
     });
 
-    if(found){
-      const groupEntry = {
-        id: found.id || ("g_" + Date.now()),
-        name: found.name || ("Group " + code),
-        emoji: found.emoji || "💬",
-        code: code,
-        createdBy: found.createdBy || "Unknown",
-        messages: [{ from:"System", text:`Joined group "${found.name}" with code ${code}.`, at:Date.now() }]
-      };
-      state.groups.push(groupEntry);
-      $("joinCode").value = "";
-      saveState();
-      hideGroupForms();
-      renderGroups();
-      toast(`Joined group "${found.name}"`);
+    if(!found){ toast("No group found."); return; }
+
+    // Proper duplicate check: has the user already added this exact group?
+    const alreadyLocal = (state.groups || []).some(g => g.id === found.id);
+    if(alreadyLocal){
+      toast("You are already in this group.");
+      return;
     }
+
+    const groupEntry = {
+      id: found.id,
+      name: found.name || ("Group " + code),
+      emoji: found.emoji || "💬",
+      code: found.code,
+      createdBy: found.createdBy || "Unknown",
+      messages: [{ from:"System", text:`Joined group "${found.name}" with code ${code}.`, at:Date.now() }]
+    };
+    state.groups.push(groupEntry);
+    $("joinCode").value = "";
+    saveState();
+    hideGroupForms();
+    renderGroups();
+    toast(`Joined group "${found.name}"`);
   }).catch((err) => {
     console.error("Firestore join failed:", err);
     toast("Could not join group. Check your internet.");
