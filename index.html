@@ -2692,7 +2692,23 @@ function exposeAuthFunctions() {
     setStatus("#ef4444", "❌ Firestore failed: " + err.message);
   }
     // Expose auth functions globally (runs immediately, before buttons are tapped)
-  
+      // Wait for the page to fully load, then attach the button clicks
+    window.addEventListener('DOMContentLoaded', () => {
+      // Wait a tiny bit for setupAuth to finish
+      setTimeout(() => {
+        const googleBtn = document.getElementById('googleLoginBtn');
+        const createBtn = document.getElementById('createAccountBtn');
+        const toggleBtn = document.getElementById('authToggleBtn');
+        const submitBtn = document.getElementById('authSubmitBtn');
+
+        if (googleBtn) googleBtn.addEventListener('click', handleGoogleLogin);
+        if (createBtn) createBtn.addEventListener('click', () => toggleAuthMode('signup'));
+        if (toggleBtn) toggleBtn.addEventListener('click', () => toggleAuthMode('login'));
+        if (submitBtn) submitBtn.addEventListener('click', handleAuthSubmit);
+        
+        console.log("✅ Button listeners attached");
+      }, 1000); // Wait 1 second for Firebase to load
+    });
 </script>
 </body>
 </html>
