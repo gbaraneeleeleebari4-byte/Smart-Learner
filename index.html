@@ -2671,16 +2671,21 @@ setInterval(updateChallengeCountdown, 1000);
     function handleLogout() {
       if (auth) window.signOut(auth);
     }
-        // Make auth functions available to the whole page
-    window.handleGoogleLogin = handleGoogleLogin;
-    window.toggleAuthMode = toggleAuthMode;
-    window.handleAuthSubmit = handleAuthSubmit;
-    window.handleLogout = handleLogout;
-
+        
     setStatus("#0ea5a0", "✅ Firestore connected successfully");
   } catch (err) {
     setStatus("#ef4444", "❌ Firestore failed: " + err.message);
   }
+    // Expose auth functions globally (runs immediately, before buttons are tapped)
+  window.handleGoogleLogin = handleGoogleLogin;
+  window.toggleAuthMode = toggleAuthMode;
+  window.handleAuthSubmit = handleAuthSubmit;
+  window.handleLogout = handleLogout;
+  window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+  window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+  window.signInWithPopup = signInWithPopup;
+  window.GoogleAuthProvider = GoogleAuthProvider;
+  window.signOut = signOut;
 </script>
 </body>
 </html>
