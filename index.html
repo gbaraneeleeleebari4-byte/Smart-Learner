@@ -2678,15 +2678,7 @@ setInterval(updateChallengeCountdown, 1000);
     setStatus("#ef4444", "❌ Firestore failed: " + err.message);
   }
     // Expose auth functions globally (runs immediately, before buttons are tapped)
-  window.handleGoogleLogin = handleGoogleLogin;
-  window.toggleAuthMode = toggleAuthMode;
-  window.handleAuthSubmit = handleAuthSubmit;
-  window.handleLogout = handleLogout;
-  window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
-  window.signInWithEmailAndPassword = signInWithEmailAndPassword;
-  window.signInWithPopup = signInWithPopup;
-  window.GoogleAuthProvider = GoogleAuthProvider;
-  window.signOut = signOut;
+  
 </script>
 </body>
 </html>
