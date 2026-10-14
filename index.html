@@ -310,6 +310,97 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 </head>
 <body>
 <div id="firebase-status" style="position:fixed;top:0;left:0;right:0;background:#666;color:#fff;font-size:13px;padding:10px;text-align:center;z-index:99999;font-family:monospace">🔵 Firebase status: starting...</div>
+  <!-- LOGIN SCREEN -->
+<div id="loginScreen" style="position:fixed;inset:0;background:linear-gradient(160deg, #0a0f24 0%, #121838 40%, #1a0b2e 100%);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;overflow-y:auto;">
+  
+  <!-- LOGO SECTION -->
+  <div style="text-align:center;margin-bottom:24px;">
+    <!-- Graduation Cap Icon -->
+    <div style="font-size:56px;margin-bottom:8px;">🎓</div>
+    <h1 style="font-size:32px;margin:0 0 6px;font-weight:900;letter-spacing:-.5px;">
+      <span style="color:#ffffff;">Smart CGPA</span> <span style="color:#a78bfa;">Plus</span>
+    </h1>
+    <p style="font-size:13px;color:#cbd5e1;margin:0 0 4px;font-weight:600;letter-spacing:1px;">Learn &nbsp;•&nbsp; Plan &nbsp;•&nbsp; Achieve</p>
+    <p style="font-size:12.5px;color:#94a3b8;margin:0;max-width:280px;">Your personal academic companion for a brighter future.</p>
+  </div>
+
+  <!-- FEATURE ICONS ROW -->
+  <div style="display:flex;gap:10px;margin-bottom:28px;background:rgba(255,255,255,0.04);padding:16px 14px;border-radius:20px;border:1px solid rgba(255,255,255,0.06);width:100%;max-width:380px;justify-content:center;">
+    <div style="text-align:center;">
+      <div style="width:44px;height:44px;border-radius:14px;background:#2e1065;display:grid;place-items:center;font-size:20px;margin:0 auto 6px;">🧮</div>
+      <div style="font-size:9px;color:#cbd5e1;font-weight:700;line-height:1.2;">CGPA<br>Calculator</div>
+    </div>
+    <div style="text-align:center;">
+      <div style="width:44px;height:44px;border-radius:14px;background:#064e3b;display:grid;place-items:center;font-size:20px;margin:0 auto 6px;">🎯</div>
+      <div style="font-size:9px;color:#cbd5e1;font-weight:700;line-height:1.2;">Goal<br>Planner</div>
+    </div>
+    <div style="text-align:center;">
+      <div style="width:44px;height:44px;border-radius:14px;background:#1e3a8a;display:grid;place-items:center;font-size:20px;margin:0 auto 6px;">📖</div>
+      <div style="font-size:9px;color:#cbd5e1;font-weight:700;line-height:1.2;">Study<br>Centre</div>
+    </div>
+    <div style="text-align:center;">
+      <div style="width:44px;height:44px;border-radius:14px;background:#4c1d95;display:grid;place-items:center;font-size:20px;margin:0 auto 6px;">🤖</div>
+      <div style="font-size:9px;color:#cbd5e1;font-weight:700;line-height:1.2;">AI<br>Tutor</div>
+    </div>
+    <div style="text-align:center;">
+      <div style="width:44px;height:44px;border-radius:14px;background:#78350f;display:grid;place-items:center;font-size:20px;margin:0 auto 6px;">🏆</div>
+      <div style="font-size:9px;color:#cbd5e1;font-weight:700;line-height:1.2;">Quizzes &<br>Leaderboard</div>
+    </div>
+  </div>
+
+  <!-- WELCOME TEXT -->
+  <div style="text-align:center;margin-bottom:24px;">
+    <h2 style="font-size:26px;margin:0 0 6px;font-weight:800;color:#ffffff;">Welcome Back!</h2>
+    <p style="font-size:12.5px;color:#94a3b8;margin:0;max-width:280px;">Sign in to continue to your Smart CGPA Plus and keep making progress.</p>
+  </div>
+
+  <!-- FORM SECTION -->
+  <div style="width:100%;max-width:360px;">
+    
+    <!-- Continue with Google Button -->
+    <button onclick="handleGoogleLogin()" style="width:100%;background:#ffffff;color:#1e293b;font-weight:800;font-size:14px;padding:14px;border-radius:30px;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:20px;box-shadow:0 4px 14px rgba(0,0,0,.2);transition:.2s;">
+      <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+      Continue with Google
+    </button>
+
+    <!-- Divider -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+      <div style="flex:1;height:1px;background:rgba(255,255,255,0.1);"></div>
+      <span style="font-size:11px;color:#64748b;font-weight:700;">or</span>
+      <div style="flex:1;height:1px;background:rgba(255,255,255,0.1);"></div>
+    </div>
+
+    <!-- Create Account Link -->
+    <button onclick="toggleAuthMode('signup')" style="width:100%;background:transparent;color:#ffffff;font-weight:800;font-size:14px;padding:14px;border-radius:30px;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:20px;border:1.5px solid #6366f1;transition:.2s;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Create Account
+    </button>
+
+    <!-- Toggle to Sign In / Sign Up -->
+    <div style="text-align:center;margin-top:6px;">
+      <span style="font-size:12.5px;color:#94a3b8;" id="authToggleText">Already have an account?</span>
+      <button id="authToggleBtn" onclick="toggleAuthMode('login')" style="background:none;border:0;color:#a78bfa;font-weight:800;font-size:12.5px;padding:0 0 0 6px;">Sign in</button>
+    </div>
+
+    <!-- Hidden Email/Password Form (shows when user taps Create Account or Sign in) -->
+    <div id="emailForm" style="display:none;margin-top:24px;">
+      <div style="margin-bottom:12px;">
+        <input id="authEmail" type="email" placeholder="Email address" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:14px;font-size:14px;color:#fff;outline:none;">
+      </div>
+      <div style="margin-bottom:16px;">
+        <input id="authPassword" type="password" placeholder="Password" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:14px;font-size:14px;color:#fff;outline:none;">
+      </div>
+      <button id="authSubmitBtn" onclick="handleAuthSubmit()" style="width:100%;background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff;font-weight:800;font-size:14px;padding:14px;border-radius:30px;transition:.2s;">Sign In</button>
+      <div id="authError" style="color:#f87171;font-size:12px;text-align:center;margin-top:12px;display:none;"></div>
+    </div>
+    
+    <!-- Terms Footer -->
+    <div style="text-align:center;margin-top:24px;">
+      <p style="font-size:10.5px;color:#64748b;margin:0;line-height:1.5;">By continuing, you agree to our <span style="color:#a78bfa;">Terms of Service</span><br>and <span style="color:#a78bfa;">Privacy Policy</span>.</p>
+    </div>
+
+  </div>
+</div>
 <div class="ov" id="ov" onclick="closeDrawer()"></div>
 <aside class="dr" id="dr">
   <div class="dr-head"><div class="lg">S</div><div><h2>Smart CGPA</h2><span>Learn · Compete · Grow</span></div></div>
