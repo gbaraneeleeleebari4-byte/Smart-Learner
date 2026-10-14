@@ -2670,18 +2670,52 @@ function exposeAuthFunctions() {
   }
     // Expose auth functions globally (runs immediately, before buttons are tapped)
       // Wait for the page to fully load, then attach the button clicks
-    window.addEventListener('DOMContentLoaded', () => {
-      // Wait a tiny bit for setupAuth to finish
-      setTimeout(() => {
-        const googleBtn = document.getElementById('googleLoginBtn');
-        const createBtn = document.getElementById('createAccountBtn');
-        const toggleBtn = document.getElementById('authToggleBtn');
-        const submitBtn = document.getElementById('authSubmitBtn');
+        // Wait for Firebase to be completely ready, then attach button listeners
+    function attachButtonListeners() {
+      // If auth is not ready yet, wait and try again
+      if (typeof auth === 'undefined' || !auth) {
+        setTimeout(attachButtonListeners, 200);
+        return;
+      }
 
-        if (googleBtn) googleBtn.addEventListener('click', handleGoogleLogin);
-        if (createBtn) createBtn.addEventListener('click', () => toggleAuthMode('signup'));
-        if (toggleBtn) toggleBtn.addEventListener('click', () => toggleAuthMode('login'));
-        if (submitBtn) submitBtn.addEventListener('click', handleAuthSubmit);
+      const googleBtn = document.getElementById('googleLoginBtn');
+      const createBtn = document.getElementById('createAccountBtn');
+      const toggleBtn = document.getElementById('authToggleBtn');
+      const submitBtn = document.getElementById('authSubmitBtn');
+
+      // Remove any old listeners by replacing the buttons with fresh clones
+      if (googleBtn) {
+        const newGoogleBtn = googleBtn.cloneNode(true);
+        googleBtn.parentNode.replaceChild(newGoogleBtn, googleBtn);
+        newGoogleBtn.addEventListener('click', () => window.handleGoogleLogin());
+      }
+      
+      if (createBtn) {
+        const newCreateBtn = createBtn.cloneNode(true);
+        createBtn.parentNode.replaceChild(newCreateBtn, createBtn);
+        newCreateBtn.addEventListener('click', () => window.toggleAuthMode('signup'));
+      }
+      
+      if (toggleBtn) {
+        const newToggleBtn = toggleBtn.cloneNode(true);
+        toggleBtn.parentNode.replaceChild(newToggleBtn, toggleBtn);
+        newToggleBtn.addEventListener('click', () => {
+          const mode = document.getElementById('authSubmitBtn').textContent === 'Sign In' ? 'signup' : 'login';
+          window.toggleAuthMode(mode);
+        });
+      }
+      
+      if (submitBtn) {
+        const newSubmitBtn = submitBtn.cloneNode(true);
+        submitBtn.parentNode.replaceChild(newSubmitBtn, submitBtn);
+        newSubmitBtn.addEventListener('click', () => window.handleAuthSubmit());
+      }
+
+      console.log("✅ Button listeners attached successfully");
+    }
+
+    // Start checking for auth readiness
+    attachButtonListeners();
         
         console.log("✅ Button listeners attached");
       }, 1000); // Wait 1 second for Firebase to load
