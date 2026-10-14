@@ -1956,11 +1956,31 @@ function sendGroupMessage(){
   const input = $("chatFsInput");
   const text = input.value.trim();
   if(!text) return;
+
+  // Save locally first, so the sender sees their own message instantly
   g.messages.push({ from: state.name || "You", text, at: Date.now() });
   input.value = "";
   autoGrow(input);
   saveState();
   renderGroupMessages();
+
+  // Save to Firestore so everyone in the group sees it
+  if(window.firestoreDB && window.fsCollection && window.fsAddDoc){
+    const messagesRef = window.fsCollection(window.firestoreDB, "messages");
+    window.fsAddDoc(messagesRef, {
+      groupId: g.id,
+      groupCode: g.code,
+      from: state.name || "You",
+      text: text,
+      at: Date.now()
+    }).then(() => {
+      console.log("✅ Message saved to Firestore");
+    }).catch((err) => {
+      console.error("Firestore message failed:", err);
+    });
+  } else {
+    console.warn("Firestore not ready — message saved locally only");
+  }
 }
 function autoGrow(el){
   el.style.height = "auto";
