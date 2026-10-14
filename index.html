@@ -2581,12 +2581,7 @@ function exposeAuthFunctions() {
       
       auth = getAuth(app);
       
-      window.signInWithEmailAndPassword = signInWithEmailAndPassword;
-      window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
-      window.GoogleAuthProvider = GoogleAuthProvider;
-      window.signInWithPopup = signInWithPopup;
-      window.signOut = signOut;
-
+      
       onAuthStateChanged(auth, (user) => {
         const loginScreen = document.getElementById('loginScreen');
         if (user) {
@@ -2603,7 +2598,9 @@ function exposeAuthFunctions() {
       
       console.log("✅ Auth system ready");
     }
-    setupAuth();
+    setupAuth().then(() => {
+  exposeAuthFunctions();
+});
 
     function toggleAuthMode(mode) {
       authMode = mode;
