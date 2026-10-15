@@ -2531,6 +2531,7 @@ window.go = go;
   const statusEl = document.getElementById("firebase-status");
       // Catch all errors and display them
         function setStatus(color, text) {
+          console.log("MARKER 1: Reached setStatus");
       if (statusEl) {
         statusEl.style.background = color;
         statusEl.textContent = text;
