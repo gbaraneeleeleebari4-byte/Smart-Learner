@@ -2619,9 +2619,9 @@ setInterval(updateChallengeCountdown, 1000);
           }
         }
 
-        function handleLogout() { if (auth) signOut(auth); }
+        function handleLogout() { if (window.auth) signOut(wimdow.auth); }
 
-        onAuthStateChanged(auth, (user) => {
+        onAuthStateChanged(window.auth, (user) => {
           const loginScreen = document.getElementById('loginScreen');
           if (user) {
             if (loginScreen) loginScreen.style.display = 'none';
