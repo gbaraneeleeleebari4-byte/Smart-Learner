@@ -2094,11 +2094,11 @@ function renderGroupMessages(){
       const mine = m.fromId === myId;
       console.log("DIAGNOSTIC →", "My ID:", myId, "| Msg fromId:", m.fromId, "| Match:", mine);
       const time = d.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
-              const msgStyle = mine 
-          ? 'align-self:flex-end;background:linear-gradient(135deg,#0a8380,#0ea5a0);color:#fff;border-bottom-right-radius:5px;'
-          : 'align-self:flex-start;background:var(--card);border:1px solid var(--line);color:#e6edf7;border-bottom-left-radius:5px;';
+                   const msgStyle = mine 
+          ? 'align-self:flex-end !important; background:linear-gradient(135deg,#0a8380,#0ea5a0) !important; color:#fff !important; border-bottom-right-radius:5px !important; margin-left:auto !important;'
+          : 'align-self:flex-start !important; background:var(--card) !important; border:1px solid var(--line) !important; color:#e6edf7 !important; border-bottom-left-radius:5px !important; margin-right:auto !important;';
         const senderHtml = (!mine) ? `<div class="sender">${esc(m.from)}</div>` : '';
-        html += `<div class="msg ${mine?"me":"them"}" style="${msgStyle}">${senderHtml}<div>${esc(m.text)}</div><div class="time">${time}</div></div>`;
+        html += `<div class="msg ${mine?"me":"them"}" style="${msgStyle}">${senderHtml}<div>${esc(m.text)}</div><div class="time">${time}</div></div>`;   
     }
   });
   body.innerHTML = html;
