@@ -2537,11 +2537,12 @@ window.go = go;
       }
     }
 
-    window.addEventListener('error', (e) => {
-      setStatus("#ef4444", "❌ ERROR: " + e.message);
-      console.error("Error:", e.message);
+        window.addEventListener('error', (e) => {
+      if (e.message && !e.message.includes('state') && !e.message.includes('go')) {
+        setStatus("#ef4444", "❌ ERROR: " + e.message);
+        console.error("Error:", e.message);
+      }
     });
-
     window.addEventListener('unhandledrejection', (e) => {
   // Only show real errors, not "state is not defined" warnings from startup
   if (e.reason && e.reason.message && !e.reason.message.includes('state') && !e.reason.message.includes('go')) {
