@@ -2087,7 +2087,7 @@ function renderGroupMessages(){
     if(m.from === "System"){
       html += `<div class="msg sys">${esc(m.text)}</div>`;
     } else {
-            const myId = (auth && auth.currentUser) ? auth.currentUser.uid : getDeviceId();
+            const myId = (window.auth && window.auth.currentUser) ? auth.currentUser.uid : getDeviceId();
       const mine = m.fromId === myId;
       const time = d.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
       html += `<div class="msg ${mine?"me":"them"}">${mine?"":`<div class="sender">${esc(m.from)}</div>`}${esc(m.text)}<div class="time">${time}</div></div>`;
@@ -2104,7 +2104,7 @@ function sendGroupMessage(){
   if(!text) return;
 
   // Save locally first, so the sender sees their own message instantly
-    const user = auth && auth.currentUser;
+    const user = window.auth && wimdow.auth.currentUser;
     const senderName = user ? (user.displayName || user.email.split('@')[0]) : (state.name || "Anonymous");
     const senderId = user ? user.uid : getDeviceId();
     g.messages.push({ from: senderName, fromId: senderId, text: text, at: Date.now() });
