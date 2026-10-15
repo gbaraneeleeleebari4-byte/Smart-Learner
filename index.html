@@ -2039,15 +2039,12 @@ function startMessageListener(group){
     const messages = [];
     snapshot.forEach((doc) => {
       const data = doc.data();
-      messages.push({
-        from: data.from || "Someone",
-                messages.push({
+              messages.push({
           from: data.from || "Someone",
           fromId: data.fromId || "",
           text: data.text || "",
           at: data.at || Date.now()
         });
-    });
 
     messages.sort((a, b) => (a.at || 0) - (b.at || 0));
 
