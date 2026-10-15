@@ -2523,6 +2523,8 @@ refreshUI();
 go("home");
   startFirebaseLeaderboardListener();
 setInterval(updateChallengeCountdown, 1000);
+  window.state = state;
+window.go = go;
 </script>
   
 <script type="module">
