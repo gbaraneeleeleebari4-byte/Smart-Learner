@@ -2094,7 +2094,11 @@ function renderGroupMessages(){
       const mine = m.fromId === myId;
       console.log("DIAGNOSTIC →", "My ID:", myId, "| Msg fromId:", m.fromId, "| Match:", mine);
       const time = d.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
-      html += `<div class="msg ${mine?"me":"them"}">${mine?"":`<div class="sender">${esc(m.from)}</div>`}${esc(m.text)}<div class="time">${time}</div></div>`;
+              const msgStyle = mine 
+          ? 'align-self:flex-end;background:linear-gradient(135deg,#0a8380,#0ea5a0);color:#fff;border-bottom-right-radius:5px;'
+          : 'align-self:flex-start;background:var(--card);border:1px solid var(--line);color:#e6edf7;border-bottom-left-radius:5px;';
+        const senderHtml = (!mine) ? `<div class="sender">${esc(m.from)}</div>` : '';
+        html += `<div class="msg ${mine?"me":"them"}" style="${msgStyle}">${senderHtml}<div>${esc(m.text)}</div><div class="time">${time}</div></div>`;
     }
   });
   body.innerHTML = html;
