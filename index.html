@@ -2090,6 +2090,7 @@ function renderGroupMessages(){
                   const user = window.auth && window.auth.currentUser;
       const myId = user ? user.uid : getDeviceId();
       const mine = m.fromId === myId;
+      console.log("DIAGNOSTIC →", "My ID:", myId, "| Msg fromId:", m.fromId, "| Match:", mine);
       const time = d.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
       html += `<div class="msg ${mine?"me":"them"}">${mine?"":`<div class="sender">${esc(m.from)}</div>`}${esc(m.text)}<div class="time">${time}</div></div>`;
     }
