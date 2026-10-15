@@ -2537,13 +2537,7 @@ window.go = go;
       }
     }
 
-            window.addEventListener('error', (e) => {
-      if (e.message && !e.message.includes('state') && !e.message.includes('go')) {
-        setStatus("#ef4444", "❌ ERROR: " + e.message);
-        console.error("Error:", e.message);
-      }
-    });
-
+            
     window.addEventListener('unhandledrejection', (e) => {
       if (e.reason && e.reason.message && !e.reason.message.includes('state') && !e.reason.message.includes('go')) {
         setStatus("#ef4444", "❌ PROMISE: " + e.reason.message);
@@ -2551,14 +2545,7 @@ window.go = go;
       }
       e.preventDefault();
     });
-    window.addEventListener('unhandledrejection', (e) => {
-  // Only show real errors, not "state is not defined" warnings from startup
-  if (e.reason && e.reason.message && !e.reason.message.includes('state') && !e.reason.message.includes('go')) {
-    setStatus("#ef4444", "❌ PROMISE: " + e.reason);
-    console.error("Promise:", e.reason);
-  }
-  e.preventDefault(); // Prevents the error from crashing the app
-});
+    
 
     async function initFirebase() {
       try {
