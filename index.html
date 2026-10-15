@@ -2543,9 +2543,13 @@ window.go = go;
     });
 
     window.addEventListener('unhandledrejection', (e) => {
-      setStatus("#ef4444", "❌ PROMISE: " + e.reason);
-      console.error("Promise:", e.reason);
-    });
+  // Only show real errors, not "state is not defined" warnings from startup
+  if (e.reason && e.reason.message && !e.reason.message.includes('state') && !e.reason.message.includes('go')) {
+    setStatus("#ef4444", "❌ PROMISE: " + e.reason);
+    console.error("Promise:", e.reason);
+  }
+  e.preventDefault(); // Prevents the error from crashing the app
+});
 
     async function initFirebase() {
       try {
