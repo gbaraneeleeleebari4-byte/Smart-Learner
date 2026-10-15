@@ -2549,6 +2549,7 @@ window.go = go;
     
 
     async function initFirebase() {
+      console.log("MARKER 2: Reached initFirebase");
       try {
         setStatus("#666", "🔵 Loading Firebase...");
         const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js");
