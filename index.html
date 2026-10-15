@@ -2050,7 +2050,7 @@ function startMessageListener(group){
 
     const localGroup = state.groups.find(x => x.id === group.id);
     if(localGroup){
-      localGroup.messages = messages;
+              localGroup.messages = messages.filter(m => m.fromId && m.fromId !== "");
       saveState();
       if(currentGroupId === group.id){
         renderGroupMessages();
