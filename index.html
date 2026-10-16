@@ -2515,15 +2515,16 @@ self.addEventListener('fetch',e=>{
   } catch(e){}
 })();
 
-/* ---------------- BOOT ---------------- */
+/* ---------- BOOT ---------- */
 renderCourses();
 renderLibrary();
 renderDictChips();
 refreshUI();
 go("home");
-  startFirebaseLeaderboardListener();
+startFirebaseLeaderboardListener();
 setInterval(updateChallengeCountdown, 1000);
-  window.state = state;
+
+window.state = state;
 window.go = go;
 </script>
   
