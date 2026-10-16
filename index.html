@@ -2568,6 +2568,7 @@ window.go = go;
         };
 
         setStatus("#666", "🔵 Connecting to Firestore...");
+        console.log("MARKER 3: Config done, about to initialize app");
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         window.firestoreDB = db;
@@ -2672,6 +2673,7 @@ window.go = go;
       } catch (err) {
         setStatus("#ef4444", "❌ Failed: " + err.message);
         console.error(err);
+        console.log("MARKER 4: Reached end of initFirebase");
       }
     }
 
