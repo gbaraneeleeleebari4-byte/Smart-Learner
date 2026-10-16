@@ -346,4 +346,199 @@ input.mini:focus,select.mini:focus{outline:none;border-color:var(--brand);
         <div id="goalOut" class="msg hide"></div>
       </div>
     </section>
-<!-- CONTINUE: PART 1C -->
+    <!-- AI TUTOR -->
+    <section class="page" id="page-tutor">
+      <div class="card">
+        <div class="row between">
+          <div><h3>🤖 AI Academic Tutor</h3><p class="sub" style="margin:0">Maths • English • Sciences • JAMB • WAEC • NECO</p></div>
+          <button class="icon-btn" id="btnNewChat" title="New chat">＋</button>
+        </div>
+      </div>
+      <div id="chatBox" style="display:flex;flex-direction:column;gap:12px;padding:4px 0 12px"></div>
+      <div class="card" style="position:sticky;bottom:8px">
+        <div class="row">
+          <input id="tutorInput" class="mini" placeholder="Ask a question…" style="flex:1" />
+          <button class="icon-btn" id="btnTutorSend" style="background:linear-gradient(135deg,var(--brand),var(--brand-2));border:none;color:#fff">➤</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- DICTIONARY -->
+    <section class="page" id="page-dictionary">
+      <div class="card">
+        <h3>📖 English Dictionary</h3>
+        <p class="sub">Definitions, pronunciation, synonyms, examples and audio.</p>
+        <div class="row">
+          <input id="dictInput" class="mini" placeholder="Search any word…" style="flex:1" />
+          <button class="btn" id="btnDictSearch" style="width:auto;padding:12px 18px;margin:0">Search</button>
+        </div>
+      </div>
+      <div id="dictResult"></div>
+      <div class="card">
+        <h3>Saved words</h3>
+        <div id="dictSaved"></div>
+      </div>
+    </section>
+
+    <!-- QUESTION BANK -->
+    <section class="page" id="page-questions">
+      <div class="card">
+        <h3>📝 Question Bank</h3>
+        <p class="sub">Practice by subject, topic and difficulty — shuffled each session.</p>
+        <div class="grid k2">
+          <div class="field" style="margin:0"><label>Subject</label><select id="qSubject" class="mini"></select></div>
+          <div class="field" style="margin:0"><label>Topic</label><select id="qTopic" class="mini"><option value="all">All topics</option></select></div>
+          <div class="field" style="margin:0"><label>Questions</label><select id="qCount" class="mini"><option>10</option><option>20</option><option>30</option><option>40</option><option>50</option></select></div>
+          <div class="field" style="margin:0"><label>Difficulty</label><select id="qDiff" class="mini"><option value="all">All</option><option value="easy">Easy</option><option value="medium">Medium</option><option value="hard">Hard</option></select></div>
+        </div>
+        <div class="field"><label>Mode</label>
+          <select id="qMode" class="mini">
+            <option value="practice">Practice (no timer)</option>
+            <option value="timed">Timed exam (1 min / question)</option>
+            <option value="mixed">Mixed subjects</option>
+          </select>
+        </div>
+        <button class="btn" id="btnStartQuiz">Start practice</button>
+      </div>
+      <div id="quizArea"></div>
+      <div class="card">
+        <h3>Recent results</h3>
+        <div id="quizHistory"></div>
+      </div>
+    </section>
+
+    <!-- GAMES -->
+    <section class="page" id="page-games">
+      <div class="card">
+        <h3>🎮 Learning Games</h3>
+        <p class="sub">Fast, fun revision with points and streaks.</p>
+      </div>
+      <div class="grid k2">
+        <button class="card" id="gameSpeed" style="text-align:left;cursor:pointer"><h3>⚡ Speed Quiz</h3><p class="sub" style="margin:0">10 questions in 60 seconds.</p></button>
+        <button class="card" id="gameStreak" style="text-align:left;cursor:pointer"><h3>🔥 Streak Master</h3><p class="sub" style="margin:0">Answer until you miss.</p></button>
+      </div>
+      <div id="gameArea"></div>
+    </section>
+
+    <!-- LEADERBOARD -->
+    <section class="page" id="page-leaderboard">
+      <div class="card">
+        <h3>🏆 Leaderboard</h3>
+        <p class="sub">Ranked by verified quiz scores.</p>
+        <div class="tabs" style="margin:0">
+          <button class="lb-tab active" data-lb="daily">Daily</button>
+          <button class="lb-tab" data-lb="weekly">Weekly</button>
+          <button class="lb-tab" data-lb="all">All-time</button>
+        </div>
+      </div>
+      <div class="card"><div id="lbList" class="loading"><span class="spinner"></span>Loading…</div></div>
+    </section>
+
+    <!-- CHAT -->
+    <section class="page" id="page-chat" style="padding:0">
+      <div id="chatHome" style="padding:16px">
+        <div class="card" style="margin-bottom:16px">
+          <div class="row between">
+            <div><h3>💬 Messages</h3><p class="sub" style="margin:0">Public groups & private chats</p></div>
+            <button class="icon-btn" id="btnNewGroup">＋</button>
+          </div>
+        </div>
+        <div id="roomList"></div>
+      </div>
+      <div id="chatRoom" class="hide" style="position:fixed;inset:0;z-index:60;background:var(--chatbg);display:flex;flex-direction:column">
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--card-solid);border-bottom:1px solid var(--line)">
+          <button class="icon-btn" id="btnChatBack">←</button>
+          <div style="flex:1;min-width:0">
+            <b id="roomTitle" style="display:block;font-size:15px"></b>
+            <span id="roomSub" style="font-size:11.5px;color:var(--muted)"></span>
+          </div>
+          <button class="icon-btn" id="btnRoomInfo">⋮</button>
+        </div>
+        <div id="msgScroll" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:8px;-webkit-overflow-scrolling:touch"></div>
+        <div id="typingBar" style="padding:4px 16px;font-size:12px;color:var(--muted);min-height:20px"></div>
+        <div style="display:flex;align-items:center;gap:8px;padding:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom));background:var(--card-solid);border-top:1px solid var(--line)">
+          <button class="icon-btn" id="btnEmoji">😊</button>
+          <button class="icon-btn" id="btnAttach">📎</button>
+          <input id="msgInput" class="mini" placeholder="Message" style="flex:1" />
+          <button class="icon-btn" id="btnMic">🎤</button>
+          <button class="icon-btn" id="btnSend" style="background:linear-gradient(135deg,var(--brand),var(--brand-2));border:none;color:#fff">➤</button>
+        </div>
+        <input type="file" id="fileInput" class="hide" />
+      </div>
+    </section>
+
+    <!-- ADMIN -->
+    <section class="page" id="page-admin">
+      <div class="card">
+        <h3>🛡️ Super Admin Panel</h3>
+        <p class="sub">Full control over users, groups, questions, AI and settings.</p>
+      </div>
+      <div class="card">
+        <h3>Users</h3>
+        <div id="adminUsers" class="loading"><span class="spinner"></span>Loading…</div>
+      </div>
+      <div class="card">
+        <h3>Groups</h3>
+        <div id="adminGroups" class="loading"><span class="spinner"></span>Loading…</div>
+      </div>
+      <div class="card">
+        <h3>Question bank</h3>
+        <p class="sub">Upload a CSV or JSON file. Format shown in SETUP.md.</p>
+        <input type="file" id="qUpload" accept=".csv,.json" class="mini" />
+        <button class="btn" id="btnQImport" style="margin-top:12px">Import questions</button>
+        <div id="qImportOut" style="margin-top:10px"></div>
+      </div>
+      <div class="card">
+        <h3>App settings</h3>
+        <div class="row between" style="padding:10px 0;border-bottom:1px solid var(--line)"><span>AI tutor enabled</span><input type="checkbox" id="setAI" /></div>
+        <div class="row between" style="padding:10px 0;border-bottom:1px solid var(--line)"><span>Dictionary enabled</span><input type="checkbox" id="setDict" /></div>
+        <div class="row between" style="padding:10px 0"><span>Group chat enabled</span><input type="checkbox" id="setChat" /></div>
+        <button class="btn" id="btnSaveSettings" style="margin-top:12px">Save settings</button>
+      </div>
+    </section>
+
+    <!-- PROFILE -->
+    <section class="page" id="page-profile">
+      <div class="card" style="text-align:center">
+        <img id="profAvatar" class="avatar" style="width:90px;height:90px;margin:0 auto 14px" />
+        <h3 id="profName" style="margin-bottom:4px">Your name</h3>
+        <p class="sub" id="profEmail" style="margin-bottom:12px"></p>
+        <span class="pill brand" id="profRole">Student</span>
+      </div>
+      <div class="card">
+        <h3>Profile</h3>
+        <div class="field"><label>Display name</label><input id="profNameInput" class="mini" /></div>
+        <div class="field"><label>Profile picture URL</label><input id="profPhotoInput" class="mini" placeholder="https://…" /></div>
+        <button class="btn" id="btnSaveProfile">Save profile</button>
+      </div>
+      <div class="card">
+        <h3>Privacy</h3>
+        <div class="row between" style="padding:10px 0;border-bottom:1px solid var(--line)"><span>Show last seen</span><input type="checkbox" id="setLastSeen" /></div>
+        <div class="row between" style="padding:10px 0"><span>Show online status</span><input type="checkbox" id="setOnline" /></div>
+      </div>
+      <div class="card">
+        <h3>Notifications</h3>
+        <div class="row between" style="padding:10px 0"><span>Enable notifications</span><input type="checkbox" id="setNotif" /></div>
+      </div>
+      <button class="btn ghost" id="btnLeaderboardLink" style="margin-bottom:10px">🏆 View leaderboard</button>
+      <button class="btn ghost" id="btnGamesLink" style="margin-bottom:10px">🎮 Play games</button>
+      <button class="btn danger" id="btnLogout">Sign out</button>
+    </section>
+
+  </main>
+
+  <nav>
+    <button data-nav="dashboard" class="active"><span class="ic">🏠</span>Home</button>
+    <button data-nav="calculator"><span class="ic">🧮</span>GPA</button>
+    <button data-nav="tutor"><span class="ic">🤖</span>Tutor</button>
+    <button data-nav="chat"><span class="ic">💬</span>Chat</button>
+    <button data-nav="questions"><span class="ic">📝</span>Bank</button>
+    <button data-nav="profile"><span class="ic">👤</span>Me</button>
+  </nav>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<!-- ===== CONTINUE: PART 2 SCRIPT ===== -->
+</body>
+</html>
