@@ -2069,9 +2069,9 @@ function startMessageListener(group){
         renderGroupMessages();
       }
     }
-  }, (err) => {
-    console.error("Message listener error:", err);
-  });
+        }).catch((err) => {
+        console.error("Message listener error:", err);
+      });
 }
 
 function stopMessageListener(){
