@@ -2632,15 +2632,18 @@ window.go = go;
           if (authMode === 'signup' && password.length < 6) return alert('Password must be at least 6 characters.');
           btn.textContent = 'Please wait...';
           btn.disabled = true;
-          try {
-            if (authMode === 'signup') await createUserWithEmailAndPassword(window.auth, email, password);
-            else await signInWithEmailAndPassword(window.auth, email, password);
-          } catch (error) {
-            alert('Error: ' + error.message);
-          } finally {
-            btn.textContent = authMode === 'signup' ? 'Create Account' : 'Sign In';
-            btn.disabled = false;
-          }
+               try {
+        if (authMode === 'signup') {
+          await createUserWithEmailAndPassword(window.auth, email, password);
+        } else {
+          await signInWithEmailAndPassword(window.auth, email, password);
+        }
+      } catch (error) {
+        alert('Error: ' + error.message);
+      } finally {
+        btn.textContent = authMode === 'signup' ? 'Create Account' : 'Sign In';
+        btn.disabled = false;
+      } 
         }
 
         function handleLogout() { if (window.auth) signOut(window.auth); }
