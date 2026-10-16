@@ -2515,9 +2515,11 @@ self.addEventListener('fetch',e=>{
     navigator.serviceWorker.register(url).catch(()=>{});
   } catch(e){}
 })();
+  console.log("REACHED BOOT");
 
 /* ---------- BOOT ---------- */
 renderCourses();
+  return; // TEMPORARY
 renderLibrary();
 renderDictChips();
 refreshUI();
