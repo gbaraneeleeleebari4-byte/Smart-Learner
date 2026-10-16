@@ -2671,7 +2671,7 @@ window.go = go;
     console.log("MARKER B: Before create");
     document.getElementById('createAccountBtn').onclick = function() { toggleAuthMode('signup'); };
     console.log("MARKER C: Before toggle");
-        document.getElementById('authToggleBtn').onclick = function() { if(authMode === 'login') { toggleAuthMode('signup'); } else { toggleAuthMode('login'); } };
+        document.getElementById('authToggleBtn').onclick = function() { var m = authMode === 'login' ? 'signup' : 'login'; toggleAuthMode(m); };
     console.log("MARKER D: Before submit");
     document.getElementById('authSubmitBtn').onclick = function() { handleAuthSubmit(); };
     console.log("MARKER E: All buttons attached");
