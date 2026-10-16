@@ -979,6 +979,561 @@ async function searchWord() {
 }
 $("#btnDictSearch").onclick = searchWord;
 $("#dictInput").addEventListener("keydown", function(e){ if (e.key === "Enter") searchWord(); });
+  let QUIZ = {};
+
+async function loadQuestionSubjects() {
+  const sel = $("#qSubject");
+  if (!sel) return;
+  try {
+    const snap = await getDocs(collection(db, "questions"));
+    const subjects = {};
+    snap.forEach(function(d){
+      const q = d.data();
+      if (q.subject) subjects[q.subject] = (subjects[q.subject] || 0) + 1;
+    });
+    const list = Object.keys(subjects).sort();
+    if (!list.length) {
+      sel.innerHTML = '<option value="">No questions yet — ask the admin to upload</option>';
+      return;
+    }
+    sel.innerHTML = list.map(function(s){ return '<option value="' + esc(s) + '">' + esc(s) + ' (' + subjects[s] + ')</option>'; }).join("");
+    updateQuizTopics();
+  } catch (e) {
+    sel.innerHTML = '<option value="">Could not load subjects</option>';
+  }
+}
+
+async function updateQuizTopics() {
+  const subj = $("#qSubject") ? $("#qSubject").value : "";
+  const topicSel = $("#qTopic");
+  if (!topicSel) return;
+  if (!subj) { topicSel.innerHTML = '<option value="all">All topics</option>'; return; }
+  try {
+    const snap = await getDocs(query(collection(db, "questions"), where("subject", "==", subj)));
+    const topics = {};
+    snap.forEach(function(d){ const q = d.data(); if (q.topic) topics[q.topic] = true; });
+    const list = Object.keys(topics).sort();
+    topicSel.innerHTML = '<option value="all">All topics</option>' + list.map(function(t){ return '<option value="' + esc(t) + '">' + esc(t) + '</option>'; }).join("");
+  } catch (e) {}
+}
+
+if ($("#qSubject")) $("#qSubject").addEventListener("change", updateQuizTopics);
+
+function shuffleArr(a) {
+  const arr = a.slice();
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+  }
+  return arr;
+}
+
+async function startQuiz() {
+  const subj = $("#qSubject").value;
+  const topic = $("#qTopic").value;
+  const count = parseInt($("#qCount").value) || 10;
+  const diff = $("#qDiff").value;
+  const mode = $("#qMode").value;
+  const area = $("#quizArea");
+
+  if (!subj && mode !== "mixed") {
+    area.innerHTML = '<div class="card"><div class="empty"><span class="big">📭</span>No questions available. Ask the Super Admin to upload some.</div></div>';
+    return;
+  }
+
+  area.innerHTML = '<div class="card"><div class="loading"><span class="spinner"></span>Loading questions…</div></div>';
+
+  try {
+    let q;
+    if (mode === "mixed") {
+      q = query(collection(db, "questions"), limit(200));
+    } else {
+      q = query(collection(db, "questions"), where("subject", "==", subj), limit(300));
+    }
+    const snap = await getDocs(q);
+    let pool = [];
+    snap.forEach(function(d){ pool.push({ id: d.id, data: d.data() }); });
+
+    if (topic && topic !== "all") pool = pool.filter(function(x){ return x.data.topic === topic; });
+    if (diff && diff !== "all") pool = pool.filter(function(x){ return x.data.difficulty === diff; });
+
+    if (pool.length < 1) {
+      area.innerHTML = '<div class="card"><div class="empty"><span class="big">📭</span>No questions match those filters.</div></div>';
+      return;
+    }
+
+    pool = shuffleArr(pool).slice(0, Math.min(count, pool.length));
+
+    QUIZ = {
+      questions: pool,
+      index: 0,
+      score: 0,
+      mode: mode,
+      answers: [],
+      startTime: Date.now(),
+      secondsPerQ: mode === "timed" ? 60 : null,
+      timer: null
+    };
+
+    renderQuestion();
+  } catch (e) {
+    area.innerHTML = '<div class="card"><div class="empty"><span class="big">⚠️</span>Could not load questions. Check your internet.</div></div>';
+  }
+}
+
+function renderQuestion() {
+  const area = $("#quizArea");
+  const q = QUIZ.questions[QUIZ.index];
+  if (!q) return finishQuiz();
+  const d = q.data;
+  const letters = ["A","B","C","D"];
+
+  area.innerHTML = '<div class="card">' +
+    '<div class="row between" style="margin-bottom:10px">' +
+      '<span class="pill">Question ' + (QUIZ.index + 1) + ' / ' + QUIZ.questions.length + '</span>' +
+      '<span class="pill brand" id="qTimer">' + (QUIZ.secondsPerQ ? QUIZ.secondsPerQ + 's' : 'Score ' + QUIZ.score) + '</span>' +
+    '</div>' +
+    '<p style="font-size:15.5px;font-weight:600;line-height:1.55;margin:6px 0 14px">' + esc(d.question || "") + '</p>' +
+    '<div class="grid" style="gap:10px">' +
+      letters.map(function(L){
+        const opt = d["option" + L] || d["option" + (letters.indexOf(L) + 1)] || "";
+        return '<button class="btn ghost answer-btn" data-answer="' + L + '" style="text-align:left;margin:0">' +
+          '<b style="color:var(--brand)">' + L + '.</b> ' + esc(opt) + '</button>';
+      }).join("") +
+    '</div>' +
+  '</div>';
+
+  area.querySelectorAll(".answer-btn").forEach(function(b){
+    b.onclick = function(){ answerQuestion(b.dataset.answer); };
+  });
+
+  if (QUIZ.secondsPerQ) {
+    if (QUIZ.timer) clearInterval(QUIZ.timer);
+    let left = QUIZ.secondsPerQ;
+    QUIZ.timer = setInterval(function(){
+      left--;
+      const t = $("#qTimer");
+      if (t) t.textContent = left + "s";
+      if (left <= 0) { clearInterval(QUIZ.timer); answerQuestion(null); }
+    }, 1000);
+  }
+}
+
+function answerQuestion(picked) {
+  if (QUIZ.timer) { clearInterval(QUIZ.timer); QUIZ.timer = null; }
+  const q = QUIZ.questions[QUIZ.index];
+  const d = q.data;
+  const correct = (d.answer || d.correct || "").toString().trim().toUpperCase();
+  const isRight = picked && picked === correct;
+  if (isRight) QUIZ.score++;
+  QUIZ.answers.push({ id: q.id, picked: picked, correct: correct, right: isRight, question: d.question, explanation: d.explanation || "" });
+  QUIZ.index++;
+  if (QUIZ.index >= QUIZ.questions.length) finishQuiz();
+  else renderQuestion();
+}
+
+async function finishQuiz() {
+  const total = QUIZ.questions.length;
+  const score = QUIZ.score;
+  const pct = Math.round((score / total) * 100);
+  const area = $("#quizArea");
+
+  let reviewHtml = "";
+  QUIZ.answers.forEach(function(a, i){
+    reviewHtml += '<div style="padding:12px;border-bottom:1px solid var(--line)">' +
+      '<div class="row between"><b style="font-size:13.5px;flex:1">' + (i + 1) + '. ' + esc((a.question || "").slice(0, 90)) + '</b>' +
+      '<span class="pill ' + (a.right ? "ok" : "err") + '">' + (a.right ? "Correct" : "Wrong") + '</span></div>' +
+      (a.explanation ? '<p class="sub" style="margin:8px 0 0">💡 ' + esc(a.explanation) + '</p>' : "") +
+    '</div>';
+  });
+
+  area.innerHTML = '<div class="card" style="text-align:center">' +
+    '<div class="empty" style="padding:20px"><span class="big">' + (pct >= 70 ? "🎉" : pct >= 40 ? "👍" : "💪") + '</span></div>' +
+    '<h3 style="font-size:32px;margin:0">' + score + ' / ' + total + '</h3>' +
+    '<p class="sub" style="font-size:15px">You scored <b>' + pct + '%</b></p>' +
+    '<button class="btn" id="btnRetryQuiz">Try again</button>' +
+  '</div>' +
+  '<div class="card"><h3>Review</h3>' + reviewHtml + '</div>';
+
+  const rb = $("#btnRetryQuiz");
+  if (rb) rb.onclick = function(){ startQuiz(); };
+
+  if (ME) {
+    const today = new Date().toISOString().slice(0, 10);
+    try {
+      await addDoc(collection(db, "quizResults"), {
+        uid: ME.uid, name: ME.displayName || "Student", photo: ME.photoURL || "",
+        score: score, total: total, pct: pct, date: today, createdAt: serverTimestamp()
+      });
+    } catch (e) {}
+  }
+  loadQuizHistory();
+  loadLeaderboard();
+}
+
+async function loadQuizHistory() {
+  const box = $("#quizHistory");
+  if (!box || !ME) return;
+  try {
+    const snap = await getDocs(query(collection(db, "quizResults"), where("uid", "==", ME.uid), limit(20)));
+    const rows = [];
+    snap.forEach(function(d){ rows.push(d.data()); });
+    rows.sort(function(a, b){ return (b.createdAt && b.createdAt.seconds || 0) - (a.createdAt && a.createdAt.seconds || 0); });
+    if (!rows.length) {
+      box.innerHTML = '<div class="empty"><span class="big">📊</span>No results yet. Start a practice session.</div>';
+      return;
+    }
+    box.innerHTML = '<table><thead><tr><th>Date</th><th>Score</th><th>%</th></tr></thead><tbody>' +
+      rows.map(function(r){ return '<tr><td>' + esc(r.date || "") + '</td><td>' + r.score + '/' + r.total + '</td><td>' + r.pct + '%</td></tr>'; }).join("") +
+    '</tbody></table>';
+  } catch (e) {}
+}
+
+if ($("#btnStartQuiz")) $("#btnStartQuiz").onclick = startQuiz;
+
+async function loadLeaderboard() {
+  const box = $("#lbList");
+  if (!box) return;
+  box.innerHTML = '<div class="loading"><span class="spinner"></span>Loading…</div>';
+  const tabEl = document.querySelector(".lb-tab.active");
+  const range = tabEl ? tabEl.dataset.lb : "all";
+  try {
+    const snap = await getDocs(collection(db, "quizResults"));
+    let rows = [];
+    snap.forEach(function(d){ rows.push(d.data()); });
+    const now = new Date();
+    const todayStr = now.toISOString().slice(0, 10);
+    const weekAgo = new Date(now.getTime() - 7 * 86400000).toISOString().slice(0, 10);
+
+    if (range === "daily") rows = rows.filter(function(r){ return r.date === todayStr; });
+    else if (range === "weekly") rows = rows.filter(function(r){ return r.date >= weekAgo; });
+
+    const byUser = {};
+    rows.forEach(function(r){
+      if (!byUser[r.uid]) byUser[r.uid] = { name: r.name || "Student", photo: r.photo || "", points: 0, sessions: 0 };
+      byUser[r.uid].points += (r.pct || 0);
+      byUser[r.uid].sessions += 1;
+    });
+    const list = Object.keys(byUser).map(function(k){ return { uid: k, name: byUser[k].name, photo: byUser[k].photo, points: byUser[k].points, sessions: byUser[k].sessions }; });
+    list.sort(function(a, b){ return b.points - a.points; });
+
+    if (!list.length) {
+      box.innerHTML = '<div class="empty"><span class="big">🏆</span>No scores yet. Be the first!</div>';
+      return;
+    }
+    box.innerHTML = list.slice(0, 50).map(function(u, i){
+      const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : "#" + (i + 1);
+      const av = u.photo || defaultAvatar(u.name);
+      return '<div class="row" style="padding:12px;border-bottom:1px solid var(--line)">' +
+        '<div style="width:38px;text-align:center;font-weight:800;color:var(--brand)">' + medal + '</div>' +
+        '<img src="' + av + '" class="avatar" style="width:34px;height:34px" />' +
+        '<div style="flex:1"><b>' + esc(u.name) + '</b><div class="sub" style="margin:0;font-size:11.5px">' + u.sessions + ' sessions</div></div>' +
+        '<span class="pill brand">' + u.points + ' pts</span>' +
+      '</div>';
+    }).join("");
+  } catch (e) {
+    box.innerHTML = '<div class="empty"><span class="big">⚠️</span>Could not load leaderboard.</div>';
+  }
+}
+document.querySelectorAll(".lb-tab").forEach(function(b){ b.onclick = function(){ document.querySelectorAll(".lb-tab").forEach(function(x){ x.classList.remove("active"); }); b.classList.add("active"); loadLeaderboard(); }; });
+
+async function loadRooms() {
+  const box = $("#roomList");
+  if (!box) return;
+  box.innerHTML = '<div class="card"><div class="loading"><span class="spinner"></span>Loading chats…</div></div>';
+  try {
+    const snap = await getDocs(collection(db, "groups"));
+    if (snap.empty) {
+      box.innerHTML = '<div class="card"><div class="empty"><span class="big">💬</span>No chats yet. Tap ＋ to create a group.</div></div>';
+      return;
+    }
+    const rooms = [];
+    snap.forEach(function(d){ rooms.push({ id: d.id, data: d.data() }); });
+    rooms.sort(function(a, b){ return (b.data.lastMsgAt && b.data.lastMsgAt.seconds || 0) - (a.data.lastMsgAt && a.data.lastMsgAt.seconds || 0); });
+    box.innerHTML = rooms.map(function(r){
+      const d = r.data;
+      const av = d.photo || defaultAvatar(d.name || "G");
+      return '<div class="card room-item" data-room="' + r.id + '" data-name="' + esc(d.name || "Group") + '" style="cursor:pointer;margin-bottom:10px">' +
+        '<div class="row">' +
+          '<img src="' + av + '" class="avatar" style="width:44px;height:44px" />' +
+          '<div style="flex:1;min-width:0">' +
+            '<b style="display:block">' + esc(d.name || "Group") + '</b>' +
+            '<span class="sub" style="display:block;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(d.lastMsg || "No messages yet") + '</span>' +
+          '</div>' +
+          (d.isPublic ? '<span class="pill brand">Public</span>' : '<span class="pill">Private</span>') +
+        '</div>' +
+      '</div>';
+    }).join("");
+    box.querySelectorAll(".room-item").forEach(function(el){
+      el.onclick = function(){ openRoom(el.dataset.room, el.dataset.name); };
+    });
+  } catch (e) {
+    box.innerHTML = '<div class="card"><div class="empty"><span class="big">⚠️</span>Could not load chats.</div></div>';
+  }
+}
+
+let roomUnsub = null, typingUnsub = null, activeRoom = null;
+
+async function openRoom(roomId, roomName) {
+  activeRoom = roomId;
+  $("#chatHome").classList.add("hide");
+  $("#chatRoom").classList.remove("hide");
+  $("#roomTitle").textContent = roomName;
+  $("#roomSub").textContent = "Public group";
+  $("#msgScroll").innerHTML = '<div class="loading"><span class="spinner"></span>Loading messages…</div>';
+
+  if (roomUnsub) roomUnsub();
+  if (typingUnsub) typingUnsub();
+
+  roomUnsub = onSnapshot(query(collection(db, "groups", roomId, "messages"), orderBy("createdAt", "asc"), limit(200)), function(snap){
+    const scroll = $("#msgScroll");
+    const wasAtBottom = scroll.scrollHeight - scroll.scrollTop - scroll.clientHeight < 120;
+    if (snap.empty) {
+      scroll.innerHTML = '<div class="empty" style="color:#7a8bb5"><span class="big">💬</span>No messages yet. Say hi!</div>';
+      return;
+    }
+    let html = "";
+    snap.forEach(function(d){
+      const m = d.data();
+      const mine = m.uid === ME.uid;
+      const time = m.createdAt ? new Date(m.createdAt.seconds * 1000).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "";
+      const isAI = m.fromAI;
+      html += '<div style="align-self:' + (mine ? "flex-end" : "flex-start") + ';max-width:82%;">' +
+        (mine ? "" : '<div style="font-size:11px;color:' + (isAI ? "#7ee2a8" : "#8ba0d4") + ';margin-bottom:3px;font-weight:700">' + esc(m.name || "User") + (isAI ? " 🤖" : "") + '</div>') +
+        '<div class="msg-bubble" data-msgid="' + d.id + '" data-mine="' + mine + '" style="background:' + (mine ? "var(--bubble-me)" : "var(--bubble-them)") + ';color:' + (mine ? "#fff" : "var(--text)") + ';padding:9px 13px;border-radius:14px;font-size:14px;line-height:1.4;word-wrap:break-word;position:relative;box-shadow:0 1px 2px rgba(0,0,0,.2)">' +
+          (m.reply ? '<div style="border-left:3px solid rgba(255,255,255,.5);padding-left:8px;margin-bottom:6px;font-size:12.5px;opacity:.85">' + esc(m.reply.slice(0, 80)) + '</div>' : "") +
+          (m.image ? '<img src="' + m.image + '" style="max-width:100%;border-radius:8px;margin-bottom:6px" />' : "") +
+          esc(m.text || "") +
+          '<div style="font-size:10px;opacity:.7;text-align:right;margin-top:4px">' + time + (mine ? " ✓✓" : "") + '</div>' +
+        '</div>' +
+      '</div>';
+    });
+    scroll.innerHTML = html;
+    scroll.querySelectorAll(".msg-bubble").forEach(function(el){
+      el.oncontextmenu = function(e){ e.preventDefault(); deleteMsg(roomId, el.dataset.msgid, el.dataset.mine === "true"); };
+    });
+    if (wasAtBottom) scroll.scrollTop = scroll.scrollHeight;
+  });
+
+  typingUnsub = onSnapshot(doc(db, "groups", roomId, "meta", "typing"), function(snap){
+    if (!snap.exists()) { $("#typingBar").textContent = ""; return; }
+    const d = snap.data();
+    const others = Object.keys(d).filter(function(k){ return k !== ME.uid && (Date.now() - (d[k] || 0)) < 4000; });
+    $("#typingBar").textContent = others.length ? "typing…" : "";
+  });
+}
+
+async function deleteMsg(roomId, msgId, mine) {
+  if (!ME) return;
+  if (ME.role !== "superadmin" && !mine) { toast("You can only delete your own messages.", "err"); return; }
+  if (!confirm("Delete this message?")) return;
+  await deleteDoc(doc(db, "groups", roomId, "messages", msgId));
+}
+
+if ($("#btnChatBack")) $("#btnChatBack").onclick = function(){
+  if (roomUnsub) { roomUnsub(); roomUnsub = null; }
+  if (typingUnsub) { typingUnsub(); typingUnsub = null; }
+  activeRoom = null;
+  $("#chatRoom").classList.add("hide");
+  $("#chatHome").classList.remove("hide");
+  loadRooms();
+};
+
+if ($("#btnSend")) $("#btnSend").onclick = async function(){
+  const input = $("#msgInput");
+  const text = input.value.trim();
+  if (!text || !activeRoom || !ME) return;
+  input.value = "";
+  let reply = "";
+  if (text.toLowerCase().indexOf("@ai ") === 0 || text.toLowerCase() === "@ai") {
+    reply = "AI assistant";
+  }
+  await addDoc(collection(db, "groups", activeRoom, "messages"), {
+    uid: ME.uid, name: ME.displayName || "Student", text: text, reply: reply,
+    createdAt: serverTimestamp()
+  });
+  await updateDoc(doc(db, "groups", activeRoom), { lastMsg: (ME.displayName || "User") + ": " + text.slice(0, 60), lastMsgAt: serverTimestamp() });
+
+  if (text.toLowerCase().indexOf("@ai ") === 0) {
+    const question = text.slice(4);
+    try {
+      const res = await fetch(AI_ENDPOINT, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: [{ role: "user", content: question }] })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const answer = data.reply || data.content || "No response";
+        await addDoc(collection(db, "groups", activeRoom, "messages"), {
+          uid: "ai", name: "AI Tutor", text: answer, fromAI: true, createdAt: serverTimestamp()
+        });
+      }
+    } catch (e) {}
+  }
+};
+if ($("#msgInput")) $("#msgInput").addEventListener("keydown", function(e){ if (e.key === "Enter") $("#btnSend").click(); });
+
+if ($("#btnNewGroup")) $("#btnNewGroup").onclick = async function(){
+  if (!ME) return;
+  const name = prompt("Group name:");
+  if (!name) return;
+  const isPublic = confirm("Make this group public? (OK = Public, Cancel = Private)");
+  await addDoc(collection(db, "groups"), {
+    name: name, isPublic: isPublic, owner: ME.uid, ownerName: ME.displayName || "Student",
+    createdAt: serverTimestamp(), lastMsg: "Group created"
+  });
+  toast("Group created", "ok");
+  loadRooms();
+};
+
+if ($("#btnRoomInfo")) $("#btnRoomInfo").onclick = function(){
+  if (!activeRoom || !ME) return;
+  if (ME.role === "superadmin") {
+    if (confirm("Delete this group? (Cannot be undone)")) {
+      deleteDoc(doc(db, "groups", activeRoom));
+      toast("Group deleted");
+      $("#btnChatBack").click();
+    }
+  } else {
+    toast("Only the Super Admin can manage groups.");
+  }
+};
+
+async function loadAdminUsers() {
+  const box = $("#adminUsers");
+  if (!box || !ME || ME.role !== "superadmin") return;
+  box.innerHTML = '<div class="loading"><span class="spinner"></span>Loading…</div>';
+  try {
+    const snap = await getDocs(collection(db, "users"));
+    if (snap.empty) { box.innerHTML = '<div class="empty">No users yet.</div>'; return; }
+    const users = [];
+    snap.forEach(function(d){ users.push({ id: d.id, data: d.data() }); });
+    box.innerHTML = '<table><thead><tr><th>User</th><th>Role</th><th>Status</th><th></th></tr></thead><tbody>' +
+      users.map(function(u){
+        const d = u.data;
+        const av = d.photoURL || defaultAvatar(d.displayName);
+        const online = d.online ? '<span class="pill ok">Online</span>' : '<span class="pill">Offline</span>';
+        return '<tr>' +
+          '<td><div class="row"><img src="' + av + '" class="avatar" style="width:28px;height:28px" /><div><b>' + esc(d.displayName || "User") + '</b><div class="sub" style="margin:0;font-size:11px">' + esc(d.email || "") + '</div></div></div></td>' +
+          '<td><span class="pill ' + (d.role === "superadmin" ? "brand" : "") + '">' + esc(d.role || "student") + '</span></td>' +
+          '<td>' + online + '</td>' +
+          '<td>' + (d.role === "superadmin" ? "" : '<button class="icon-btn" data-suspend="' + u.id + '" title="Suspend">⛔</button>') + '</td>' +
+        '</tr>';
+      }).join("") +
+    '</tbody></table>';
+    box.querySelectorAll("[data-suspend]").forEach(function(b){
+      b.onclick = async function(){
+        if (!confirm("Suspend this user?")) return;
+        await updateDoc(doc(db, "users", b.dataset.suspend), { suspended: true });
+        toast("User suspended");
+        loadAdminUsers();
+      };
+    });
+  } catch (e) {
+    box.innerHTML = '<div class="empty">Could not load users.</div>';
+  }
+}
+
+async function loadAdminGroups() {
+  const box = $("#adminGroups");
+  if (!box || !ME || ME.role !== "superadmin") return;
+  box.innerHTML = '<div class="loading"><span class="spinner"></span>Loading…</div>';
+  try {
+    const snap = await getDocs(collection(db, "groups"));
+    if (snap.empty) { box.innerHTML = '<div class="empty">No groups yet.</div>'; return; }
+    const rows = [];
+    snap.forEach(function(d){ rows.push({ id: d.id, data: d.data() }); });
+    box.innerHTML = rows.map(function(r){
+      return '<div class="row between" style="padding:10px 0;border-bottom:1px solid var(--line)">' +
+        '<div><b>' + esc(r.data.name || "Group") + '</b><div class="sub" style="margin:0;font-size:11.5px">Owner: ' + esc(r.data.ownerName || "—") + '</div></div>' +
+        '<button class="btn danger" style="margin:0;padding:6px 12px;font-size:12.5px;width:auto" data-del-group="' + r.id + '">Delete</button>' +
+      '</div>';
+    }).join("");
+    box.querySelectorAll("[data-del-group]").forEach(function(b){
+      b.onclick = async function(){
+        if (!confirm("Delete this group?")) return;
+        await deleteDoc(doc(db, "groups", b.dataset.delGroup));
+        toast("Deleted");
+        loadAdminGroups();
+      };
+    });
+  } catch (e) {
+    box.innerHTML = '<div class="empty">Could not load groups.</div>';
+  }
+}
+
+async function loadAdminSettings() {
+  if (!ME || ME.role !== "superadmin") return;
+  try {
+    const snap = await getDoc(doc(db, "appSettings", "global"));
+    if (snap.exists()) {
+      const s = snap.data();
+      if ($("#setAI")) $("#setAI").checked = s.aiEnabled !== false;
+      if ($("#setDict")) $("#setDict").checked = s.dictEnabled !== false;
+      if ($("#setChat")) $("#setChat").checked = s.chatEnabled !== false;
+    }
+  } catch (e) {}
+}
+
+if ($("#btnSaveSettings")) $("#btnSaveSettings").onclick = async function(){
+  if (!ME || ME.role !== "superadmin") return;
+  await setDoc(doc(db, "appSettings", "global"), {
+    aiEnabled: $("#setAI").checked,
+    dictEnabled: $("#setDict").checked,
+    chatEnabled: $("#setChat").checked,
+    updatedAt: serverTimestamp()
+  });
+  toast("Settings saved", "ok");
+};
+
+if ($("#btnQImport")) $("#btnQImport").onclick = async function(){
+  if (!ME || ME.role !== "superadmin") return;
+  const f = $("#qUpload").files[0];
+  if (!f) return toast("Pick a file first.", "err");
+  const out = $("#qImportOut");
+  out.innerHTML = '<div class="loading"><span class="spinner"></span>Importing…</div>';
+  try {
+    const text = await f.text();
+    let questions = [];
+    if (f.name.endsWith(".json")) {
+      questions = JSON.parse(text);
+    } else {
+      const lines = text.split("\n").filter(function(l){ return l.trim(); });
+      const header = lines[0].split(",");
+      for (let i = 1; i < lines.length; i++) {
+        const cols = lines[i].match(/(".*?"|[^,]+)(?=\s*,|\s*$)/g) || lines[i].split(",");
+        const row = {};
+        header.forEach(function(h, j){ row[h.trim()] = (cols[j] || "").replace(/^"|"$/g, "").trim(); });
+        questions.push(row);
+      }
+    }
+    let added = 0;
+    for (const q of questions) {
+      if (!q.question || !q.answer) continue;
+      await addDoc(collection(db, "questions"), {
+        subject: q.subject || "General",
+        topic: q.topic || "General",
+        difficulty: q.difficulty || "medium",
+        question: q.question,
+        optionA: q.optionA || q.A || "",
+        optionB: q.optionB || q.B || "",
+        optionC: q.optionC || q.C || "",
+        optionD: q.optionD || q.D || "",
+        answer: q.answer,
+        explanation: q.explanation || "",
+        createdAt: serverTimestamp()
+      });
+      added++;
+    }
+    out.innerHTML = '<div class="msg ok">✅ Imported ' + added + ' questions.</div>';
+    loadQuestionSubjects();
+  } catch (e) {
+    out.innerHTML = '<div class="msg err">Import failed: ' + e.message + '</div>';
+  }
+};
+
+loadQuestionSubjects();
+</script>
 </script>
 </body>
 </html>
