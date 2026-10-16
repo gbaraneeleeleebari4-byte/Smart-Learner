@@ -1,1 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Smart CGPA Plus</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>" />
+<style>
+:root{
+  --bg:#0b1020; --bg2:#121a33; --card:#182240; --card2:#1f2b4d;
+  --text:#eef2ff; --muted:#8fa0c9; --line:#28345c;
+  --brand:#4f7cff; --brand2:#7a5cff; --ok:#22c55e; --warn:#f59e0b; --err:#ef4444;
+  --me:#005c4b; --them:#202c33; --chatbg:#0b141a;
+  --radius:14px; --shadow:0 10px 30px rgba(0,0,0,.35);
+}
+[data-theme="light"]{
+  --bg:#f4f6fb; --bg2:#eaeefb; --card:#ffffff; --card2:#f2f5ff;
+  --text:#0d1530; --muted:#5a6785; --line:#dde4f5;
+  --me:#d9fdd3; --them:#ffffff; --chatbg:#efeae2;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;height:100%;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,system-ui,sans-serif;
+  overscroll-behavior:none}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:none;background:none}
+a{color:var(--brand)}
+.hide{display:none !important}
 
+/* ---- AUTH ---- */
+#authScreen{min-height:100%;display:flex;align-items:center;justify-content:center;
+  padding:24px;background:radial-gradient(1200px 600px at 20% 0%,#1b2a5e 0%,var(--bg) 55%)}
+.auth-card{width:100%;max-width:400px;background:var(--card);border:1px solid var(--line);
+  border-radius:22px;padding:28px;box-shadow:var(--shadow)}
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.brand .logo{width:46px;height:46px;border-radius:13px;
+  background:linear-gradient(135deg,var(--brand),var(--brand2));
+  display:grid;place-items:center;font-size:22px}
+.brand h1{font-size:20px;margin:0;letter-spacing:-.3px}
+.brand p{margin:0;color:var(--muted);font-size:12.5px}
+.tabs{display:flex;gap:6px;background:var(--card2);padding:5px;border-radius:12px;margin:18px 0}
+.tabs button{flex:1;padding:9px;border-radius:9px;color:var(--muted);font-weight:600;font-size:14px}
+.tabs button.active{background:var(--brand);color:#fff}
+.field{margin:12px 0}
+.field label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:6px;font-weight:600}
+.field input,.field select,.field textarea{width:100%;padding:12px 14px;border-radius:11px;
+  border:1px solid var(--line);background:var(--card2);outline:none;font-size:15px}
+.field input:focus{border-color:var(--brand)}
+.btn{width:100%;padding:13px;border-radius:12px;font-weight:700;font-size:15px;
+  background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;margin-top:8px;
+  transition:transform .12s}
+.btn:active{transform:scale(.98)}
+.btn.ghost{background:var(--card2);color:var(--text);border:1px solid var(--line)}
+.btn.danger{background:var(--err)}
+.btn.google{background:#fff;color:#111;display:flex;align-items:center;justify-content:center;gap:10px;
+  border:1px solid #dadce0;font-weight:600}
+.divider{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px;margin:16px 0}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line)}
+.msg{font-size:13px;margin-top:12px;padding:10px 12px;border-radius:10px;text-align:center}
+.msg.err{background:rgba(239,68,68,.14);color:#ffb4b4;border:1px solid rgba(239,68,68,.35)}
+.msg.ok{background:rgba(34,197,94,.14);color:#a7f3c2;border:1px solid rgba(34,197,94,.35)}
+
+/* ---- APP SHELL ---- */
+#app{display:none;height:100%;flex-direction:column}
+#app.on{display:flex}
+header{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:12px;
+  padding:12px 16px;background:var(--card);border-bottom:1px solid var(--line)}
+header .logo{width:38px;height:38px;border-radius:11px;
+  background:linear-gradient(135deg,var(--brand),var(--brand2));display:grid;place-items:center;font-size:18px}
+header .titles{flex:1;min-width:0}
+header .titles b{display:block;font-size:15px;letter-spacing:-.2px}
+header .titles span{font-size:11.5px;color:var(--muted)}
+.icon-btn{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;
+  background:var(--card2);border:1px solid var(--line);font-size:17px}
+.avatar{width:34px;height:34px;border-radius:50%;object-fit:cover;background:var(--card2)}
+
+main{flex:1;overflow-y:auto;padding:16px;padding-bottom:90px;-webkit-overflow-scrolling:touch}
+.page{display:none}
+.page.on{display:block;animation:fade .22s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+nav{position:fixed;bottom:0;left:0;right:0;z-index:40;display:flex;
+  background:var(--card);border-top:1px solid var(--line);padding:6px 4px 8px;
+  padding-bottom:calc(8px + env(safe-area-inset-bottom))}
+nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:6px 2px;color:var(--muted);font-size:10.5px;font-weight:600;border-radius:11px}
+nav button .ic{font-size:19px;line-height:1}
+nav button.active{color:var(--brand);background:var(--card2)}
+
+/* ---- CARDS / UI ---- */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px;margin-bottom:14px}
+.card h3{margin:0 0 4px;font-size:16px}
+.card .sub{color:var(--muted);font-size:12.5px;margin:0 0 12px}
+.grid{display:grid;gap:12px}
+.grid.k2{grid-template-columns:1fr 1fr}
+.grid.k3{grid-template-columns:repeat(3,1fr)}
+@media(max-width:520px){.grid.k3{grid-template-columns:1fr 1fr}}
+.stat{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center}
+.stat b{display:block;font-size:22px;letter-spacing:-.5px}
+.stat span{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.pill{display:inline-block;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700;
+  background:var(--card2);border:1px solid var(--line);color:var(--muted)}
+.pill.ok{background:rgba(34,197,94,.15);color:#7ee2a8;border-color:rgba(34,197,94,.3)}
+.pill.err{background:rgba(239,68,68,.15);color:#ffb4b4;border-color:rgba(239,68,68,.3)}
+.pill.warn{background:rgba(245,158,11,.15);color:#ffd28a;border-color:rgba(245,158,11,.3)}
+.pill.brand{background:rgba(79,124,255,.18);color:#a9c0ff;border-color:rgba(79,124,255,.35)}
+.row{display:flex;align-items:center;gap:10px}
+.row.between{justify-content:space-between}
+.empty{text-align:center;padding:40px 20px;color:var(--muted)}
+.empty .big{font-size:44px;display:block;margin-bottom:10px;opacity:.6}
+.spinner{width:18px;height:18px;border:2.5px solid rgba(255,255,255,.25);
+  border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading{display:flex;align-items:center;justify-content:center;gap:10px;padding:30px;color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+input.mini,select.mini{padding:8px 10px;border-radius:9px;border:1px solid var(--line);
+  background:var(--card2);font-size:13.5px;width:100%}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);z-index:200;
+  background:#111a30;color:#fff;padding:12px 18px;border-radius:12px;font-size:13.5px;
+  box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;max-width:88vw;text-align:center}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(-6px)}
+.toast.err{background:#7f1d1d}
+.toast.ok{background:#14532d}
+</style>
+</head>
+<body>
+
+<!-- ================= AUTH ================= -->
+<div id="authScreen">
+  <div class="auth-card">
+    <div class="brand">
+      <div class="logo">🎓</div>
+      <div>
+        <h1>Smart CGPA Plus</h1>
+        <p>School • JAMB • WAEC • NECO • University</p>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button id="tabLogin" class="active">Sign in</button>
+      <button id="tabSignup">Sign up</button>
+    </div>
+
+    <div id="loginForm">
+      <div class="field"><label>Email</label><input id="loginEmail" type="email" placeholder="you@example.com" autocomplete="email" /></div>
+      <div class="field"><label>Password</label><input id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password" /></div>
+      <button class="btn" id="btnLogin">Sign in</button>
+      <button class="btn ghost" id="btnForgot" style="margin-top:8px">Forgot password?</button>
+      <div class="divider">or</div>
+      <button class="btn google" id="btnGoogle">
+        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.5l6.7-6.7C35.6 2.4 30.2 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.8 6.1C12.3 13.2 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4 6.9-10 6.9-17.5z"/><path fill="#FBBC05" d="M10.4 28.7c-.5-1.4-.8-2.9-.8-4.7s.3-3.3.8-4.7l-7.8-6.1C1 16.4 0 20.1 0 24s1 7.6 2.6 10.8l7.8-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2.1 1.4-4.8 2.2-8.4 2.2-6.3 0-11.7-3.7-13.6-9.1l-7.8 6.1C6.5 42.6 14.6 48 24 48z"/></svg>
+        Continue with Google
+      </button>
+      <div id="authMsg" class="msg hide"></div>
+    </div>
+
+    <div id="signupForm" class="hide">
+      <div class="field"><label>Full name</label><input id="suName" type="text" placeholder="Your name" /></div>
+      <div class="field"><label>Email</label><input id="suEmail" type="email" placeholder="you@example.com" /></div>
+      <div class="field"><label>Password (min 6 characters)</label><input id="suPass" type="password" placeholder="••••••••" /></div>
+      <button class="btn" id="btnSignup">Create account</button>
+      <div id="suMsg" class="msg hide"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= APP ================= -->
+<div id="app">
+  <header>
+    <div class="logo">🎓</div>
+    <div class="titles">
+      <b id="hdrTitle">Dashboard</b>
+      <span id="hdrSub">Welcome back</span>
+    </div>
+    <button class="icon-btn" id="btnTheme" title="Toggle theme">🌙</button>
+    <img class="avatar" id="hdrAvatar" alt="" />
+  </header>
+
+  <main id="main">
+
+    <!-- DASHBOARD -->
+    <section class="page on" id="page-dashboard">
+      <div class="card">
+        <div class="row between">
+          <div>
+            <h3 id="dashName">Hello 👋</h3>
+            <p class="sub" id="dashSub">Let's track your academic progress.</p>
+          </div>
+          <span class="pill brand" id="dashRole">Student</span>
+        </div>
+      </div>
+
+      <div class="grid k3">
+        <div class="stat"><b id="statCGPA">0.00</b><span>CGPA</span></div>
+        <div class="stat"><b id="statUnits">0</b><span>Units</span></div>
+        <div class="stat"><b id="statSem">0</b><span>Semesters</span></div>
+      </div>
+
+      <div class="card" style="margin-top:14px">
+        <h3>Quick actions</h3>
+        <p class="sub">Jump straight into what you need.</p>
+        <div class="grid k2">
+          <button class="btn ghost" data-go="calculator">🧮 Calculator</button>
+          <button class="btn ghost" data-go="tutor">🤖 AI Tutor</button>
+          <button class="btn ghost" data-go="dictionary">📖 Dictionary</button>
+          <button class="btn ghost" data-go="questions">📝 Question Bank</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Academic feedback</h3>
+        <p class="sub" id="feedback">Add your first semester to see personalised feedback.</p>
+      </div>
+    </section>
+
+    <!-- CALCULATOR -->
+    <section class="page" id="page-calculator">
+      <div class="card">
+        <h3>Grading scale</h3>
+        <p class="sub">Choose the system your school uses.</p>
+        <select id="scaleSel" class="mini">
+          <option value="5">5-point (A=5, B=4, C=3, D=2, E=1, F=0)</option>
+          <option value="4">4-point (A=4, B=3, C=2, D=1, F=0)</option>
+          <option value="7">7-point (A=7 … F=0)</option>
+        </select>
+      </div>
+
+      <div class="card">
+        <h3>Previous record (optional)</h3>
+        <p class="sub">Carry over your CGPA from before.</p>
+        <div class="grid k2">
+          <div class="field" style="margin:0"><label>Previous CGPA</label><input id="prevCGPA" type="number" step="0.01" min="0" placeholder="0.00" /></div>
+          <div class="field" style="margin:0"><label>Previous units</label><input id="prevUnits" type="number" min="0" placeholder="0" /></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="row between">
+          <div><h3>Current semester</h3><p class="sub" style="margin:0">Add your courses below.</p></div>
+          <button class="icon-btn" id="btnAddCourse" title="Add course">＋</button>
+        </div>
+        <div id="courseList" style="margin-top:12px"></div>
+        <div class="grid k2" style="margin-top:8px">
+          <button class="btn" id="btnSaveSem">💾 Save semester</button>
+          <button class="btn ghost" id="btnClearSem">Clear</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Saved semesters</h3>
+        <p class="sub">Your results are stored in your account.</p>
+        <div id="semList"></div>
+      </div>
+
+      <div class="card">
+        <h3>🎯 CGPA goal planner</h3>
+        <p class="sub">Find out what you need next semester.</p>
+        <div class="grid k3">
+          <div class="field" style="margin:0"><label>Target CGPA</label><input id="goalCGPA" type="number" step="0.01" placeholder="4.50" /></div>
+          <div class="field" style="margin:0"><label>Next units</label><input id="goalUnits" type="number" placeholder="20" /></div>
+          <div class="field" style="margin:0"><label>Current CGPA</label><input id="goalCur" type="number" step="0.01" placeholder="0.00" /></div>
+        </div>
+        <button class="btn" id="btnGoal" style="margin-top:10px">Calculate required GPA</button>
+        <div id="goalOut" class="msg hide"></div>
+      </div>
+    </section>
+
+    <!-- ===== PART 2 CONTINUES (tutor, dictionary, questions, games, leaderboard, chat, admin) ===== -->
