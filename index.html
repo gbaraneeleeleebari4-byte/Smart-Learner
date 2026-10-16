@@ -2072,6 +2072,7 @@ function startMessageListener(group){
         }).catch((err) => {
         console.error("Message listener error:", err);
       });
+    console.log("REACHED STOP LISTENER AREA");
 
 
 function stopMessageListener(){
@@ -2516,6 +2517,7 @@ self.addEventListener('fetch',e=>{
     navigator.serviceWorker.register(url).catch(()=>{});
   } catch(e){}
 })();
+    console.log("REACHED BEFORE BOOT");
   console.log("REACHED BOOT");
 
 /* ---------- BOOT ---------- */
