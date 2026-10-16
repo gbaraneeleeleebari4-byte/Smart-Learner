@@ -2665,11 +2665,13 @@ window.go = go;
         exposeAuthFunctions();
             console.log("MARKER 3.5: All auth functions defined");
 
-        // Attach button listeners now that everything is ready
-        document.getElementById('googleLoginBtn').onclick = handleGoogleLogin;
-        document.getElementById('createAccountBtn').onclick = () => toggleAuthMode('signup');
-        document.getElementById('authToggleBtn').onclick = () => toggleAuthMode(authMode === 'login' ? 'signup' : 'login');
-        document.getElementById('authSubmitBtn').onclick = handleAuthSubmit;
+            // Attach button listeners now that everything is ready
+    document.getElementById('googleLoginBtn').onclick = function() { handleGoogleLogin(); };
+    document.getElementById('createAccountBtn').onclick = function() { toggleAuthMode('signup'); };
+    document.getElementById('authToggleBtn').onclick = function() { toggleAuthMode(authMode === 'login' ? 'signup' : 'login'); };
+    document.getElementById('authSubmitBtn').onclick = function() { handleAuthSubmit(); };
+
+    console.log("MARKER 4: Button listeners attached");
 
         setStatus("#0ea5a0", "✅ Firestore connected successfully");
       } catch (err) {
