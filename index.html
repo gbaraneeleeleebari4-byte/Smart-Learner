@@ -2665,11 +2665,16 @@ window.go = go;
         exposeAuthFunctions();
             console.log("MARKER 3.5: All auth functions defined");
 
-            // Attach button listeners now that everything is ready
+                // Attach button listeners now that everything is ready
+    console.log("MARKER A: Before google");
     document.getElementById('googleLoginBtn').onclick = function() { handleGoogleLogin(); };
+    console.log("MARKER B: Before create");
     document.getElementById('createAccountBtn').onclick = function() { toggleAuthMode('signup'); };
-    document.getElementById('authToggleBtn').onclick = function() { toggleAuthMode(authMode === 'login' ? 'signup' : 'login'); };
+    console.log("MARKER C: Before toggle");
+        document.getElementById('authToggleBtn').onclick = function() { if(authMode === 'login') { toggleAuthMode('signup'); } else { toggleAuthMode('login'); } };
+    console.log("MARKER D: Before submit");
     document.getElementById('authSubmitBtn').onclick = function() { handleAuthSubmit(); };
+    console.log("MARKER E: All buttons attached");
 
     console.log("MARKER 4: Button listeners attached");
 
