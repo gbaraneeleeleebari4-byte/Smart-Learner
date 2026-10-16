@@ -2173,10 +2173,11 @@ function copyGroupCode(){
   }
 }
 
-/* ---------------- DICTIONARY ---------------- */
 function renderDictChips(){
   const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-  $("dictChips").innerHTML = letters.map(l => `<button class="chip" onclick="$('dictSearch').value='${l}';searchDict()">${l}</button>`).join("");
+  $("dictChips").innerHTML = letters.map(function(l){
+    return '<button class="chip" onclick="document.getElementById(\'dictSearch\').value=\'' + l + '\';searchDict()">' + l + '</button>';
+  }).join("");
 }
 function searchDict(){
   const q = ($("dictSearch").value || "").trim().toLowerCase();
