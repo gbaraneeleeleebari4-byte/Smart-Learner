@@ -2648,7 +2648,7 @@ window.go = go;
         }
 
         function handleLogout() { if (window.auth) signOut(window.auth); }
-            console.log("MARKER 3.5: All auth functions defined");
+          
 
         onAuthStateChanged(window.auth, (user) => {
           const loginScreen = document.getElementById('loginScreen');
@@ -2663,6 +2663,7 @@ window.go = go;
         });
 
         exposeAuthFunctions();
+            console.log("MARKER 3.5: All auth functions defined");
 
         // Attach button listeners now that everything is ready
         document.getElementById('googleLoginBtn').onclick = handleGoogleLogin;
