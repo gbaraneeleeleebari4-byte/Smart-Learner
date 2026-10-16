@@ -2648,6 +2648,7 @@ window.go = go;
         }
 
         function handleLogout() { if (window.auth) signOut(window.auth); }
+            console.log("MARKER 3.5: All auth functions defined");
 
         onAuthStateChanged(window.auth, (user) => {
           const loginScreen = document.getElementById('loginScreen');
