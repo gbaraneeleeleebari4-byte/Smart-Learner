@@ -837,6 +837,11 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 </div>
 
 <div class="toast" id="toast"></div>
+  <script>
+window.addEventListener('error', function(e) {
+  alert("FOUND ERROR: Line " + e.lineno + " Column " + e.colno + "\n\nMessage: " + e.message);
+});
+</script>
 
 <script>
   console.log("CHAPTER 1 STARTED");
