@@ -2173,12 +2173,7 @@ function copyGroupCode(){
   }
 }
 
-function renderDictChips(){
-  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-  $("dictChips").innerHTML = letters.map(function(l){
-    return '<button class="chip" onclick="document.getElementById(\'dictSearch\').value=\'' + l + '\';searchDict()">' + l + '</button>';
-  }).join("");
-}
+
 function searchDict(){
   const q = ($("dictSearch").value || "").trim().toLowerCase();
   if(!q){ $("dictResults").innerHTML = '<div class="empty">Type a word above, or use the letter buttons to browse.</div>'; return; }
