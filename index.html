@@ -539,6 +539,446 @@ input.mini:focus,select.mini:focus{outline:none;border-color:var(--brand);
 
 <div id="toast" class="toast"></div>
 
-<!-- ===== CONTINUE: PART 2 SCRIPT ===== -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword,
+  signOut, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail, updateProfile
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc, collection, addDoc,
+  query, orderBy, onSnapshot, serverTimestamp, getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBalfqEksKXbrcfVCqrrWkILx_V7up25Xs",
+  authDomain: "smart-learn-hub-73667.firebaseapp.com",
+  databaseURL: "https://smart-learn-hub-73667-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "smart-learn-hub-73667",
+  storageBucket: "smart-learn-hub-73667.firebasestorage.app",
+  messagingSenderId: "165458065701",
+  appId: "1:165458065701:web:08a1bcfac2ae286b9502cc"
+};
+const SUPER_ADMIN_EMAIL = "gbaraneeleeleebari4@gmail.com";
+const AI_ENDPOINT = "/api/ai";
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+const $  = (s) => document.querySelector(s);
+const $$ = (s) => [...document.querySelectorAll(s)];
+const esc = (v) => String(v ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function toast(msg, type) {
+  const t = $("#toast");
+  t.textContent = msg;
+  t.className = "toast on " + (type || "");
+  clearTimeout(t._t);
+  t._t = setTimeout(function(){ t.className = "toast " + (type || ""); }, 2800);
+}
+
+function showPage(name) {
+  $$(".page").forEach(function(p){ p.classList.remove("on"); });
+  const el = $("#page-" + name);
+  if (el) el.classList.add("on");
+  $$("nav button").forEach(function(b){ b.classList.toggle("active", b.dataset.nav === name); });
+  const titles = {
+    dashboard:["Dashboard","Welcome back"], calculator:["GPA Calculator","Semester & CGPA"],
+    tutor:["AI Tutor","Ask any academic question"], dictionary:["Dictionary","Words & phrases"],
+    questions:["Question Bank","Practice & mock exams"], games:["Games","Learn while playing"],
+    leaderboard:["Leaderboard","Top students"], chat:["Messages","Groups & private chats"],
+    admin:["Super Admin","Full control"], profile:["Profile","Your account"]
+  };
+  const t = titles[name] || ["Smart CGPA Plus",""];
+  $("#hdrTitle").textContent = t[0];
+  $("#hdrSub").textContent = t[1];
+  $("#main").scrollTop = 0;
+}
+
+document.addEventListener("click", function(e){
+  const nav = e.target.closest("[data-nav]");
+  if (nav) return showPage(nav.dataset.nav);
+  const go = e.target.closest("[data-go]");
+  if (go) return showPage(go.dataset.go);
+});
+
+const savedTheme = localStorage.getItem("theme") || "dark";
+document.documentElement.setAttribute("data-theme", savedTheme);
+$("#btnTheme").textContent = savedTheme === "dark" ? "🌙" : "☀️";
+$("#btnTheme").onclick = function(){
+  const cur = document.documentElement.getAttribute("data-theme");
+  const nxt = cur === "dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", nxt);
+  localStorage.setItem("theme", nxt);
+  $("#btnTheme").textContent = nxt === "dark" ? "🌙" : "☀️";
+};
+
+$("#tabLogin").onclick  = function(){ $("#tabLogin").classList.add("active");  $("#tabSignup").classList.remove("active"); $("#loginForm").classList.remove("hide"); $("#signupForm").classList.add("hide"); };
+$("#tabSignup").onclick = function(){ $("#tabSignup").classList.add("active"); $("#tabLogin").classList.remove("active");  $("#signupForm").classList.remove("hide"); $("#loginForm").classList.add("hide"); };
+
+function authMsg(id, text, type) { const el = $(id); el.textContent = text; el.className = "msg " + (type || "err"); }
+function authHide(id) { $(id).className = "msg hide"; }
+
+$("#btnLogin").onclick = async function(){
+  authHide("#authMsg");
+  const email = $("#loginEmail").value.trim(), pass = $("#loginPass").value;
+  if (!email || !pass) return authMsg("#authMsg", "Enter your email and password.");
+  $("#btnLogin").innerHTML = '<span class="spinner"></span>';
+  try { await signInWithEmailAndPassword(auth, email, pass); }
+  catch (e) { authMsg("#authMsg", prettyAuthError(e)); $("#btnLogin").textContent = "Sign in"; }
+};
+
+$("#btnSignup").onclick = async function(){
+  authHide("#suMsg");
+  const name = $("#suName").value.trim(), email = $("#suEmail").value.trim(), pass = $("#suPass").value;
+  if (!name || !email || !pass) return authMsg("#suMsg", "Fill in every field.");
+  if (pass.length < 6) return authMsg("#suMsg", "Password must be at least 6 characters.");
+  $("#btnSignup").innerHTML = '<span class="spinner"></span>';
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+    await updateProfile(cred.user, { displayName: name });
+    await ensureUserDoc(cred.user, name);
+  } catch (e) { authMsg("#suMsg", prettyAuthError(e)); $("#btnSignup").textContent = "Create account"; }
+};
+
+$("#btnGoogle").onclick = async function(){
+  authHide("#authMsg");
+  try {
+    const cred = await signInWithPopup(auth, new GoogleAuthProvider());
+    await ensureUserDoc(cred.user, cred.user.displayName || "Student");
+  } catch (e) { authMsg("#authMsg", prettyAuthError(e)); }
+};
+
+$("#btnForgot").onclick = async function(){
+  const email = $("#loginEmail").value.trim();
+  if (!email) return authMsg("#authMsg", "Type your email first, then tap again.");
+  try { await sendPasswordResetEmail(auth, email); authMsg("#authMsg", "Reset link sent. Check your inbox.", "ok"); }
+  catch (e) { authMsg("#authMsg", prettyAuthError(e)); }
+};
+
+function prettyAuthError(e) {
+  const m = (e && e.code) || "";
+  if (m.indexOf("invalid-credential") >= 0 || m.indexOf("wrong-password") >= 0) return "Wrong email or password.";
+  if (m.indexOf("user-not-found") >= 0) return "No account found with that email.";
+  if (m.indexOf("email-already-in-use") >= 0) return "That email is already registered.";
+  if (m.indexOf("popup-closed") >= 0) return "Google sign-in was cancelled.";
+  if (m.indexOf("network") >= 0) return "Network error. Check your connection.";
+  return (e && e.message) || "Something went wrong.";
+}
+
+async function ensureUserDoc(user, name) {
+  const ref = doc(db, "users", user.uid);
+  const snap = await getDoc(ref);
+  const isSuper = user.email === SUPER_ADMIN_EMAIL;
+  if (!snap.exists()) {
+    await setDoc(ref, {
+      uid: user.uid, email: user.email || "",
+      displayName: name || "Student", photoURL: user.photoURL || "",
+      role: isSuper ? "superadmin" : "student",
+      createdAt: serverTimestamp(), online: true, lastSeen: serverTimestamp(),
+      privacy: { showLastSeen: true, showOnline: true }, notif: { enabled: true }
+    });
+  } else if (isSuper && snap.data().role !== "superadmin") {
+    await updateDoc(ref, { role: "superadmin" });
+  }
+}
+
+function defaultAvatar(name) {
+  const ch = (name || "U").trim().charAt(0).toUpperCase();
+  return "data:image/svg+xml;utf8," + encodeURIComponent(
+    "<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%235b8dff'/><stop offset='1' stop-color='%238b5cff'/></linearGradient></defs><rect width='100%' height='100%' rx='40' fill='url(%23g)'/><text x='50%' y='54%' font-size='38' fill='white' text-anchor='middle' font-family='Arial' dominant-baseline='middle'>" + ch + "</text></svg>"
+  );
+}
+
+let ME = null, userUnsub = null;
+
+onAuthStateChanged(auth, async function(user){
+  if (userUnsub) { userUnsub(); userUnsub = null; }
+  if (!user) {
+    ME = null;
+    $("#app").classList.remove("on");
+    $("#authScreen").style.display = "flex";
+    $("#btnLogin").textContent = "Sign in";
+    $("#btnSignup").textContent = "Create account";
+    return;
+  }
+  $("#authScreen").style.display = "none";
+  $("#app").classList.add("on");
+  await ensureUserDoc(user, user.displayName || "Student");
+
+  userUnsub = onSnapshot(doc(db, "users", user.uid), function(snap){
+    if (!snap.exists()) return;
+    ME = snap.data();
+    $("#hdrAvatar").src = ME.photoURL || defaultAvatar(ME.displayName);
+    $("#dashName").textContent = "Hello, " + (ME.displayName || "Student") + " 👋";
+    $("#dashRole").textContent = ME.role === "superadmin" ? "Super Admin" : "Student";
+    $("#profName").textContent = ME.displayName || "Student";
+    $("#profEmail").textContent = ME.email;
+    $("#profAvatar").src = ME.photoURL || defaultAvatar(ME.displayName);
+    $("#profRole").textContent = ME.role === "superadmin" ? "Super Admin" : "Student";
+    $("#profNameInput").value = ME.displayName || "";
+    $("#profPhotoInput").value = ME.photoURL || "";
+    $("#setLastSeen").checked = !!(ME.privacy && ME.privacy.showLastSeen);
+    $("#setOnline").checked = !!(ME.privacy && ME.privacy.showOnline);
+    $("#setNotif").checked = !!(ME.notif && ME.notif.enabled);
+
+    if (ME.role === "superadmin" && !document.querySelector("[data-nav='admin']")) {
+      const b = document.createElement("button");
+      b.dataset.nav = "admin";
+      b.innerHTML = '<span class="ic">🛡️</span>Admin';
+      document.querySelector("nav").appendChild(b);
+    }
+    loadCalculator();
+    loadSavedWords();
+  });
+
+  await updateDoc(doc(db, "users", user.uid), { online: true, lastSeen: serverTimestamp() });
+});
+
+$("#btnSaveProfile").onclick = async function(){
+  if (!ME) return;
+  const name = $("#profNameInput").value.trim();
+  const photo = $("#profPhotoInput").value.trim();
+  await updateDoc(doc(db, "users", ME.uid), { displayName: name, photoURL: photo });
+  if (auth.currentUser) await updateProfile(auth.currentUser, { displayName: name, photoURL: photo });
+  toast("Profile saved", "ok");
+};
+$("#setLastSeen").onchange = $("#setOnline").onchange = function(){
+  if (!ME) return;
+  updateDoc(doc(db, "users", ME.uid), {
+    privacy: { showLastSeen: $("#setLastSeen").checked, showOnline: $("#setOnline").checked }
+  });
+};
+$("#setNotif").onchange = function(){
+  if (!ME) return;
+  updateDoc(doc(db, "users", ME.uid), { notif: { enabled: $("#setNotif").checked } });
+};
+$("#btnLogout").onclick = async function(){
+  if (ME) await updateDoc(doc(db, "users", ME.uid), { online: false, lastSeen: serverTimestamp() });
+  await signOut(auth);
+  toast("Signed out");
+};
+$("#btnLeaderboardLink").onclick = function(){ showPage("leaderboard"); };
+$("#btnGamesLink").onclick = function(){ showPage("games"); };
+
+const SCALES = { 5:{A:5,B:4,C:3,D:2,E:1,F:0}, 4:{A:4,B:3,C:2,D:1,F:0}, 7:{A:7,B:6,C:5,D:4,E:3,F:0} };
+let currentCourses = [];
+
+function renderCourses() {
+  const wrap = $("#courseList");
+  if (!currentCourses.length) {
+    wrap.innerHTML = '<div class="empty"><span class="big">📚</span>No courses yet. Tap ＋ to add.</div>';
+    return;
+  }
+  const scale = SCALES[$("#scaleSel").value];
+  const opts = Object.keys(scale).map(function(g){ return '<option value="' + g + '"' + (g === 'A' ? ' selected' : '') + '>' + g + '</option>'; }).join("");
+  wrap.innerHTML = currentCourses.map(function(c, i){
+    return '<div class="row" style="margin-bottom:8px;gap:6px">' +
+      '<input class="mini" placeholder="Course" value="' + esc(c.name) + '" data-i="' + i + '" data-k="name" style="flex:2" />' +
+      '<input class="mini" placeholder="Code" value="' + esc(c.code) + '" data-i="' + i + '" data-k="code" style="flex:1" />' +
+      '<input class="mini" type="number" min="0" placeholder="Units" value="' + esc(c.units) + '" data-i="' + i + '" data-k="units" style="width:64px" />' +
+      '<select class="mini" data-i="' + i + '" data-k="grade" style="width:64px">' + opts + '</select>' +
+      '<button class="icon-btn" data-del="' + i + '">✕</button>' +
+    '</div>';
+  }).join("");
+  wrap.querySelectorAll("[data-i]").forEach(function(el){
+    if (el.dataset.k === "grade") el.value = currentCourses[el.dataset.i].grade;
+    el.oninput = el.onchange = function(){ currentCourses[el.dataset.i][el.dataset.k] = el.value; updateLiveGPA(); };
+  });
+  wrap.querySelectorAll("[data-del]").forEach(function(b){
+    b.onclick = function(){ currentCourses.splice(+b.dataset.del, 1); renderCourses(); updateLiveGPA(); };
+  });
+  updateLiveGPA();
+}
+
+function computeGPA(courses, scaleKey) {
+  const scale = SCALES[scaleKey];
+  let pts = 0, units = 0;
+  courses.forEach(function(c){ const u = Number(c.units) || 0; pts += u * (scale[c.grade] || 0); units += u; });
+  return { gpa: units ? pts / units : 0, units: units, points: pts };
+}
+function updateLiveGPA() {
+  const r = computeGPA(currentCourses, $("#scaleSel").value);
+  const pC = parseFloat($("#prevCGPA").value) || 0;
+  const pU = parseFloat($("#prevUnits").value) || 0;
+  const total = r.units + pU;
+  const cgpa = total ? ((pC * pU) + (r.gpa * r.units)) / total : r.gpa;
+  $("#statCGPA").textContent = cgpa.toFixed(2);
+  $("#statUnits").textContent = total;
+}
+$("#scaleSel").onchange = function(){ renderCourses(); updateLiveGPA(); };
+$("#prevCGPA").oninput = $("#prevUnits").oninput = updateLiveGPA;
+$("#btnAddCourse").onclick = function(){ currentCourses.push({ name:"", code:"", units:"", grade:"A" }); renderCourses(); };
+$("#btnClearSem").onclick = function(){ currentCourses = []; renderCourses(); };
+
+$("#btnSaveSem").onclick = async function(){
+  if (!ME) return;
+  if (!currentCourses.length) return toast("Add at least one course.", "err");
+  const scaleKey = $("#scaleSel").value;
+  const r = computeGPA(currentCourses, scaleKey);
+  const semName = prompt("Semester name", "Semester " + (Date.now() % 1000));
+  if (!semName) return;
+  await addDoc(collection(db, "users", ME.uid, "semesters"), {
+    name: semName, scale: scaleKey, courses: currentCourses, gpa: r.gpa, units: r.units, createdAt: serverTimestamp()
+  });
+  toast("Semester saved", "ok");
+  currentCourses = []; renderCourses();
+  loadCalculator();
+};
+
+async function loadCalculator() {
+  if (!ME) return;
+  const snap = await getDocs(query(collection(db, "users", ME.uid, "semesters"), orderBy("createdAt", "asc")));
+  let pts = 0, units = 0;
+  const list = $("#semList");
+  if (snap.empty) {
+    list.innerHTML = '<div class="empty"><span class="big">🗓️</span>No semesters saved yet.</div>';
+    $("#statSem").textContent = "0";
+    $("#feedback").textContent = "Add your first semester to see personalised feedback.";
+    return;
+  }
+  let html = "";
+  snap.forEach(function(d){
+    const s = d.data();
+    pts += s.gpa * s.units; units += s.units;
+    html += '<div style="padding:12px;border:1px solid var(--line);border-radius:12px;margin-bottom:10px">' +
+      '<div class="row between"><b>' + esc(s.name) + '</b><span class="pill brand">GPA ' + s.gpa.toFixed(2) + '</span></div>' +
+      '<div class="sub" style="margin:6px 0 8px">' + s.units + ' units • ' + s.courses.length + ' courses</div>' +
+      '<button class="btn ghost" style="margin:0;padding:8px;font-size:13px" data-del-sem="' + d.id + '">Delete</button>' +
+    '</div>';
+  });
+  list.innerHTML = html;
+  list.querySelectorAll("[data-del-sem]").forEach(function(b){
+    b.onclick = async function(){
+      if (!confirm("Delete this semester?")) return;
+      await deleteDoc(doc(db, "users", ME.uid, "semesters", b.dataset.delSem));
+      toast("Deleted"); loadCalculator();
+    };
+  });
+  const cgpa = units ? pts / units : 0;
+  $("#statCGPA").textContent = cgpa.toFixed(2);
+  $("#statUnits").textContent = units;
+  $("#statSem").textContent = snap.size;
+  $("#feedback").textContent = feedbackFor(cgpa);
+}
+function feedbackFor(c) {
+  if (c >= 4.5) return "Outstanding! You're in First Class range — keep this consistency. 🏅";
+  if (c >= 3.5) return "Very strong. You're in Second Class Upper range. Push a little for First Class.";
+  if (c >= 2.4) return "Solid work. With focus on weak courses you can climb higher.";
+  if (c >= 1.5) return "You're passing, but there's room to grow. Target weak courses first.";
+  return "Don't be discouraged. Study consistently and ask your AI Tutor for help.";
+}
+$("#btnGoal").onclick = function(){
+  const target = parseFloat($("#goalCGPA").value);
+  const nUnits = parseFloat($("#goalUnits").value);
+  const cur = parseFloat($("#goalCur").value) || (parseFloat($("#statCGPA").textContent) || 0);
+  const doneUnits = parseFloat($("#statUnits").textContent) || 0;
+  if (!target || !nUnits) return toast("Fill in target CGPA and next units.", "err");
+  const need = ((target * (doneUnits + nUnits)) - (cur * doneUnits)) / nUnits;
+  const out = $("#goalOut");
+  out.classList.remove("hide");
+  if (need > 5) { out.className = "msg err"; out.textContent = "You'd need a GPA of " + need.toFixed(2) + " — not possible in a 5-point system."; }
+  else if (need <= 0) { out.className = "msg ok"; out.textContent = "You're already at or above your target. Well done!"; }
+  else { out.className = "msg ok"; out.textContent = "You need an average GPA of " + need.toFixed(2) + " over your next " + nUnits + " units to reach " + target.toFixed(2) + " CGPA."; }
+};
+
+let tutorHistory = JSON.parse(localStorage.getItem("tutorHistory") || "[]");
+function saveTutorHistory(){ localStorage.setItem("tutorHistory", JSON.stringify(tutorHistory.slice(-40))); }
+function renderTutor() {
+  const box = $("#chatBox");
+  if (!tutorHistory.length) { box.innerHTML = '<div class="empty"><span class="big">🤖</span>Ask me anything about your studies.</div>'; return; }
+  box.innerHTML = tutorHistory.map(function(m){
+    return '<div style="align-self:' + (m.role === "user" ? "flex-end" : "flex-start") + ';max-width:88%;' +
+      'background:' + (m.role === "user" ? "linear-gradient(135deg,var(--brand),var(--brand-2))" : "var(--card-solid)") + ';' +
+      'color:' + (m.role === "user" ? "#fff" : "var(--text)") + ';' +
+      'border:1px solid var(--line-strong);border-radius:14px;padding:12px 14px;font-size:14px;line-height:1.55;white-space:pre-wrap">' +
+      esc(m.content) + '</div>';
+  }).join("");
+  box.scrollTop = box.scrollHeight;
+}
+async function askTutor(text) {
+  if (!text.trim()) return;
+  tutorHistory.push({ role: "user", content: text });
+  renderTutor(); saveTutorHistory();
+  $("#tutorInput").value = "";
+  const thinking = document.createElement("div");
+  thinking.style.cssText = "align-self:flex-start;max-width:88%;background:var(--card-solid);border:1px solid var(--line-strong);border-radius:14px;padding:12px 14px";
+  thinking.innerHTML = '<span class="spinner"></span> Thinking…';
+  $("#chatBox").appendChild(thinking);
+  $("#chatBox").scrollTop = $("#chatBox").scrollHeight;
+  try {
+    const res = await fetch(AI_ENDPOINT, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messages: tutorHistory.slice(-10) })
+    });
+    if (!res.ok) throw new Error("AI service unavailable");
+    const data = await res.json();
+    const reply = data.reply || data.content || "No response.";
+    tutorHistory.push({ role: "assistant", content: reply });
+    saveTutorHistory();
+    thinking.remove();
+    renderTutor();
+  } catch (e) {
+    thinking.innerHTML = '<span style="color:var(--err)">AI is unavailable right now. Please retry.</span>';
+    setTimeout(function(){ thinking.remove(); }, 2500);
+  }
+}
+$("#btnTutorSend").onclick = function(){ askTutor($("#tutorInput").value); };
+$("#tutorInput").addEventListener("keydown", function(e){ if (e.key === "Enter") askTutor($("#tutorInput").value); });
+$("#btnNewChat").onclick = function(){ if (confirm("Start a new chat?")) { tutorHistory = []; saveTutorHistory(); renderTutor(); } };
+renderTutor();
+
+let savedWords = JSON.parse(localStorage.getItem("savedWords") || "[]");
+function loadSavedWords() {
+  const box = $("#dictSaved");
+  if (!savedWords.length) { box.innerHTML = '<div class="empty"><span class="big">⭐</span>No saved words yet.</div>'; return; }
+  box.innerHTML = savedWords.map(function(w){ return '<span class="pill brand" style="margin:4px;cursor:pointer" data-word="' + esc(w) + '">' + esc(w) + '</span>'; }).join("");
+  box.querySelectorAll("[data-word]").forEach(function(el){
+    el.onclick = function(){ $("#dictInput").value = el.dataset.word; searchWord(); };
+  });
+}
+async function searchWord() {
+  const word = $("#dictInput").value.trim();
+  if (!word) return;
+  const box = $("#dictResult");
+  box.innerHTML = '<div class="card"><div class="loading"><span class="spinner"></span>Searching…</div></div>';
+  try {
+    const r = await fetch("https://api.dictionaryapi.dev/api/v2/entries/en/" + encodeURIComponent(word));
+    if (!r.ok) throw new Error("not found");
+    const data = await r.json();
+    const e = data[0];
+    const phonetic = e.phonetic || (e.phonetics.find(function(p){ return p.text; }) || {}).text || "";
+    const audio = (e.phonetics.find(function(p){ return p.audio; }) || {}).audio || "";
+    let html = '<div class="card">' +
+      '<div class="row between"><div><h3 style="margin:0">' + esc(e.word) + '</h3>' +
+      '<p class="sub" style="margin:4px 0 0">' + esc(phonetic) + '</p></div>' +
+      '<button class="pill brand" id="saveWordBtn">⭐ Save</button></div>' +
+      (audio ? '<audio controls src="' + audio + '" style="width:100%;margin-top:10px"></audio>' : "") +
+    '</div>';
+    e.meanings.forEach(function(m){
+      html += '<div class="card"><span class="pill">' + esc(m.partOfSpeech) + '</span>';
+      m.definitions.slice(0, 5).forEach(function(d, i){
+        html += '<p style="margin:10px 0 4px"><b>' + (i+1) + '.</b> ' + esc(d.definition) + '</p>';
+        if (d.example) html += '<p class="sub" style="margin:0 0 4px;font-style:italic">"' + esc(d.example) + '"</p>';
+      });
+      if (m.synonyms && m.synonyms.length) html += '<p class="sub" style="margin-top:8px"><b>Synonyms:</b> ' + m.synonyms.slice(0,8).map(esc).join(", ") + '</p>';
+      if (m.antonyms && m.antonyms.length) html += '<p class="sub"><b>Antonyms:</b> ' + m.antonyms.slice(0,8).map(esc).join(", ") + '</p>';
+      html += '</div>';
+    });
+    box.innerHTML = html;
+    const sb = $("#saveWordBtn");
+    if (sb) sb.onclick = function(){
+      const w = e.word.toLowerCase();
+      if (savedWords.indexOf(w) < 0) { savedWords.push(w); localStorage.setItem("savedWords", JSON.stringify(savedWords)); loadSavedWords(); toast("Saved", "ok"); }
+      else toast("Already saved");
+    };
+  } catch (err) {
+    box.innerHTML = '<div class="card"><div class="empty"><span class="big">😕</span>Word not found. Check the spelling.</div></div>';
+  }
+}
+$("#btnDictSearch").onclick = searchWord;
+$("#dictInput").addEventListener("keydown", function(e){ if (e.key === "Enter") searchWord(); });
+</script>
 </body>
 </html>
