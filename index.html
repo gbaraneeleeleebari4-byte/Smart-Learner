@@ -2655,9 +2655,11 @@ window.go = go;
           const loginScreen = document.getElementById('loginScreen');
           if (user) {
             if (loginScreen) loginScreen.style.display = 'none';
-            state.name = user.displayName || user.email.split('@')[0];
-            state.userId = user.uid;
-            saveState();
+            if (window.state) {
+  window.state.name = user.displayName || user.email.split('@')[0];
+  window.state.userId = user.uid;
+}
+            if (window.saveState) window.saveState();
           } else {
             if (loginScreen) loginScreen.style.display = 'flex';
           }
