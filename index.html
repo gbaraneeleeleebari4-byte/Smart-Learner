@@ -808,6 +808,10 @@ $("#setNotif").onchange = function(){
 $("#btnLogout").onclick = async function(){
   if (ME) await updateDoc(doc(db, "users", ME.uid), { online: false, lastSeen: serverTimestamp() });
   await signOut(auth);
+  // Clear the chat history so the next user doesn't see it
+  localStorage.removeItem("tutorHistory");
+  tutorHistory = [];
+  renderTutor();
   toast("Signed out");
 };
 $("#btnLeaderboardLink").onclick = function(){ showPage("leaderboard"); };
