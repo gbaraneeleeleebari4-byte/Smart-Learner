@@ -1690,16 +1690,19 @@ let unreadCount = 0;
 
 function updateNotifBadge() {
   const badge = $("#notifBadge");
-  if (unreadCount > 0) {
-    badge.textContent = unreadCount > 9 ? "9+" : unreadCount;
-    badge.classList.remove("hide");
-  } else {
-    badge.classList.add("hide");
+  if (badge) {
+    if (unreadCount > 0) {
+      badge.textContent = unreadCount > 9 ? "9+" : unreadCount;
+      badge.classList.remove("hide");
+    } else {
+      badge.classList.add("hide");
+    }
   }
 }
 
 function renderNotifList() {
   const list = $("#notifList");
+  if (!list) return;
   if (allNotifs.length === 0) {
     list.innerHTML = '<div class="empty" style="padding:20px"><span class="big" style="font-size:32px">🔔</span>No notifications yet.</div>';
     return;
@@ -1728,19 +1731,30 @@ function renderNotifList() {
 function addToNotifCenter(title, body) {
   const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   allNotifs.unshift({ title, body, time, read: false });
-  if (allNotifs.length > 50) allNotifs.pop(); // Keep last 50
+  if (allNotifs.length > 50) allNotifs.pop();
   unreadCount++;
   updateNotifBadge();
   renderNotifList();
 }
 
-$("#btnNotifBell").onclick = () => {
-  $("#notifPanel").classList.toggle("hide");
-};
-$("#btnCloseNotif").onclick = () => {
-  $("#notifPanel").classList.add("hide");
-};
+const bellBtn = $("#btnNotifBell");
+const panel = $("#notifPanel");
+const closeBtn = $("#btnCloseNotif");
+
+if (bellBtn && panel) {
+  bellBtn.onclick = (e) => {
+    e.stopPropagation();
+    panel.classList.toggle("hide");
+  };
+}
+if (closeBtn && panel) {
+  closeBtn.onclick = () => panel.classList.add("hide");
+}
 document.addEventListener("click", (e) => {
+  if (panel && !e.target.closest("#notifPanel") && !e.target.closest("#btnNotifBell")) {
+    panel.classList.add("hide");
+  }
+});
   if (!e.target.closest("#notifPanel") && !e.target.closest("#btnNotifBell")) {
     $("#notifPanel").classList.add("hide");
   }
