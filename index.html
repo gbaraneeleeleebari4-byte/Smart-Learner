@@ -15,7 +15,6 @@
   --brand:#5b8dff; --brand-2:#8b5cff; --brand-3:#4dd4ff;
   --ok:#38d39f; --warn:#ffb84d; --err:#ff5d6c; --chatbg:#101a38;
   --shadow-sm:0 2px 8px rgba(0,0,0,.25); --shadow:0 10px 30px rgba(0,0,0,.4);
-  --shadow-glow:0 0 40px rgba(91,141,255,.35);
   --radius:16px; --radius-lg:22px;
 }
 [data-theme="light"]{
@@ -26,227 +25,98 @@
   --brand:#3a6bff; --brand-2:#7a4cff; --brand-3:#00b8d4;
   --ok:#0ea37a; --warn:#d97706; --err:#e11d48; --chatbg:#e8edf7;
   --shadow-sm:0 2px 8px rgba(20,40,100,.08); --shadow:0 10px 30px rgba(20,40,100,.14);
-  --shadow-glow:0 0 40px rgba(58,107,255,.18);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;padding:0;height:100%;background:var(--bg);color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,system-ui,sans-serif;
-  overscroll-behavior:none;-webkit-font-smoothing:antialiased;letter-spacing:-.01em}
+html,body{margin:0;padding:0;height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,system-ui,sans-serif;overscroll-behavior:none;-webkit-font-smoothing:antialiased;letter-spacing:-.01em}
 button,input,select,textarea{font:inherit;color:inherit;letter-spacing:inherit}
 button{cursor:pointer;border:none;background:none}
 a{color:var(--brand);text-decoration:none}
 .hide{display:none !important}
 
-#authScreen{min-height:100%;display:flex;align-items:center;justify-content:center;padding:24px;
-  background:
-    radial-gradient(1000px 600px at 15% -10%, rgba(91,141,255,.45), transparent 60%),
-    radial-gradient(900px 500px at 110% 10%, rgba(139,92,255,.40), transparent 55%),
-    radial-gradient(700px 500px at 50% 120%, rgba(77,212,255,.25), transparent 60%),
-    linear-gradient(160deg, var(--bg-1), var(--bg-3));
-  position:relative;overflow:hidden}
-#authScreen::before{content:"";position:absolute;inset:0;
-  background-image:
-    radial-gradient(circle at 20% 30%, rgba(255,255,255,.08) 1px, transparent 1px),
-    radial-gradient(circle at 80% 70%, rgba(255,255,255,.06) 1px, transparent 1px);
-  background-size:60px 60px, 90px 90px;pointer-events:none}
-.auth-card{position:relative;width:100%;max-width:420px;
-  background:var(--card);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
-  border:1px solid var(--line-strong);border-radius:var(--radius-lg);
-  padding:32px 28px 28px;box-shadow:var(--shadow), var(--shadow-glow)}
-.auth-card::after{content:"";position:absolute;top:0;left:10%;right:10%;height:1px;
-  background:linear-gradient(90deg, transparent, rgba(255,255,255,.6), transparent)}
+#authScreen{min-height:100%;display:flex;align-items:center;justify-content:center;padding:24px;background:radial-gradient(1000px 600px at 15% -10%, rgba(91,141,255,.45), transparent 60%),radial-gradient(900px 500px at 110% 10%, rgba(139,92,255,.40), transparent 55%),radial-gradient(700px 500px at 50% 120%, rgba(77,212,255,.25), transparent 60%),linear-gradient(160deg, var(--bg-1), var(--bg-3));position:relative;overflow:hidden}
+.auth-card{position:relative;width:100%;max-width:420px;background:var(--card);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid var(--line-strong);border-radius:var(--radius-lg);padding:32px 28px 28px;box-shadow:var(--shadow)}
 .brand{display:flex;align-items:center;gap:14px;margin-bottom:8px}
-.brand .logo{width:54px;height:54px;border-radius:16px;
-  background:linear-gradient(135deg, var(--brand), var(--brand-2) 60%, var(--brand-3));
-  display:grid;place-items:center;font-size:26px;
-  box-shadow:0 8px 24px rgba(91,141,255,.5), inset 0 1px 0 rgba(255,255,255,.35)}
-.brand h1{font-size:21px;margin:0;letter-spacing:-.4px;font-weight:800;
-  background:linear-gradient(135deg, var(--text), var(--text-2));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.brand .logo{width:54px;height:54px;border-radius:16px;background:linear-gradient(135deg, var(--brand), var(--brand-2) 60%, var(--brand-3));display:grid;place-items:center;font-size:26px;box-shadow:0 8px 24px rgba(91,141,255,.5), inset 0 1px 0 rgba(255,255,255,.35)}
+.brand h1{font-size:21px;margin:0;letter-spacing:-.4px;font-weight:800}
 .brand p{margin:2px 0 0;color:var(--muted);font-size:12.5px;font-weight:500}
 .tabs{display:flex;gap:6px;background:rgba(255,255,255,.06);padding:5px;border-radius:14px;margin:22px 0 8px;border:1px solid var(--line)}
-[data-theme="light"] .tabs{background:rgba(0,0,0,.04)}
 .tabs button{flex:1;padding:10px;border-radius:10px;color:var(--muted);font-weight:700;font-size:14px;transition:all .2s}
-.tabs button.active{background:linear-gradient(135deg, var(--brand), var(--brand-2));color:#fff;
-  box-shadow:0 6px 16px rgba(91,141,255,.45)}
+.tabs button.active{background:linear-gradient(135deg, var(--brand), var(--brand-2));color:#fff;box-shadow:0 6px 16px rgba(91,141,255,.45)}
 .field{margin:14px 0}
-.field label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:7px;font-weight:700;
-  text-transform:uppercase;letter-spacing:.5px}
-.field input,.field select,.field textarea{width:100%;padding:13px 15px;border-radius:12px;
-  border:1px solid var(--line-strong);background:rgba(255,255,255,.05);
-  outline:none;font-size:15px;transition:all .18s;color:var(--text)}
-[data-theme="light"] .field input,
-[data-theme="light"] .field select,
-[data-theme="light"] .field textarea{background:#fff;border-color:rgba(60,90,180,.22)}
-.field input::placeholder{color:var(--muted);opacity:.7}
-.field input:focus,.field select:focus,.field textarea:focus{
-  border-color:var(--brand);background:rgba(91,141,255,.08);
-  box-shadow:0 0 0 4px rgba(91,141,255,.18)}
-.btn{width:100%;padding:14px;border-radius:13px;font-weight:800;font-size:15px;
-  background:linear-gradient(135deg, var(--brand), var(--brand-2));
-  color:#fff;margin-top:10px;transition:transform .12s, box-shadow .18s, filter .18s;
-  box-shadow:0 8px 22px rgba(91,141,255,.4), inset 0 1px 0 rgba(255,255,255,.25);
-  letter-spacing:.2px;position:relative;overflow:hidden}
-.btn::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg, rgba(255,255,255,.18), transparent 40%);pointer-events:none}
-.btn:hover{filter:brightness(1.06)}
-.btn:active{transform:scale(.985);box-shadow:0 4px 12px rgba(91,141,255,.35)}
+.field label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:7px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.field input,.field select,.field textarea{width:100%;padding:13px 15px;border-radius:12px;border:1px solid var(--line-strong);background:rgba(255,255,255,.05);outline:none;font-size:15px;transition:all .18s;color:var(--text)}
+.field input:focus{border-color:var(--brand);background:rgba(91,141,255,.08);box-shadow:0 0 0 4px rgba(91,141,255,.18)}
+.btn{width:100%;padding:14px;border-radius:13px;font-weight:800;font-size:15px;background:linear-gradient(135deg, var(--brand), var(--brand-2));color:#fff;margin-top:10px;transition:transform .12s, box-shadow .18s;box-shadow:0 8px 22px rgba(91,141,255,.4);position:relative;overflow:hidden}
+.btn:active{transform:scale(.985)}
 .btn.ghost{background:rgba(255,255,255,.08);color:var(--text);border:1px solid var(--line-strong);box-shadow:var(--shadow-sm)}
-[data-theme="light"] .btn.ghost{background:#fff}
-.btn.danger{background:linear-gradient(135deg, #ff5d6c, #d92646);box-shadow:0 8px 22px rgba(255,93,108,.35)}
-.btn.google{background:#fff;color:#1f1f1f;display:flex;align-items:center;justify-content:center;gap:10px;
-  border:1px solid #dadce0;font-weight:700;box-shadow:var(--shadow-sm)}
-.btn.google:hover{background:#f8f9fa}
+.btn.danger{background:linear-gradient(135deg, #ff5d6c, #d92646)}
+.btn.google{background:#fff;color:#1f1f1f;display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid #dadce0;font-weight:700}
 .divider{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:12px;margin:18px 0 6px;font-weight:600}
 .divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line-strong)}
 .msg{font-size:13.5px;margin-top:14px;padding:11px 14px;border-radius:11px;text-align:center;font-weight:500;line-height:1.45}
 .msg.err{background:rgba(255,93,108,.14);color:#ffb4bd;border:1px solid rgba(255,93,108,.35)}
-[data-theme="light"] .msg.err{color:#a01227}
 .msg.ok{background:rgba(56,211,159,.14);color:#a8f0d5;border:1px solid rgba(56,211,159,.35)}
-[data-theme="light"] .msg.ok{color:#046a4f}
 
 #app{display:none;height:100%;flex-direction:column;background:var(--bg)}
 #app.on{display:flex}
-header{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:12px;
-  padding:14px 18px;
-  background:linear-gradient(180deg, rgba(28,40,80,.95), rgba(28,40,80,.75));
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  border-bottom:1px solid var(--line)}
-[data-theme="light"] header{background:linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.8))}
-header .logo{width:42px;height:42px;border-radius:13px;
-  background:linear-gradient(135deg, var(--brand), var(--brand-2) 60%, var(--brand-3));
-  display:grid;place-items:center;font-size:20px;
-  box-shadow:0 6px 18px rgba(91,141,255,.45), inset 0 1px 0 rgba(255,255,255,.35)}
+header{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--card-solid);border-bottom:1px solid var(--line)}
+header .logo{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg, var(--brand), var(--brand-2));display:grid;place-items:center;font-size:20px}
 header .titles{flex:1;min-width:0}
-header .titles b{display:block;font-size:16px;letter-spacing:-.3px;font-weight:800;color:var(--text)}
-header .titles span{font-size:11.5px;color:var(--muted);font-weight:500}
-.icon-btn{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;
-  background:rgba(255,255,255,.08);border:1px solid var(--line-strong);font-size:18px;
-  transition:all .18s;color:var(--text)}
-[data-theme="light"] .icon-btn{background:#fff}
-.icon-btn:hover{background:rgba(91,141,255,.2);border-color:var(--brand)}
-.icon-btn:active{transform:scale(.94)}
-.avatar{width:38px;height:38px;border-radius:50%;object-fit:cover;background:var(--card-2);
-  border:2px solid var(--brand);box-shadow:0 4px 12px rgba(91,141,255,.35)}
-main{flex:1;overflow-y:auto;padding:18px;padding-bottom:100px;-webkit-overflow-scrolling:touch;
-  background:
-    radial-gradient(800px 400px at 100% 0%, rgba(91,141,255,.08), transparent 60%),
-    radial-gradient(600px 400px at 0% 100%, rgba(139,92,255,.08), transparent 60%),
-    var(--bg)}
+header .titles b{display:block;font-size:16px;font-weight:800}
+header .titles span{font-size:11.5px;color:var(--muted)}
+.icon-btn{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:rgba(255,255,255,.08);border:1px solid var(--line-strong);font-size:18px;color:var(--text)}
+.avatar{width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid var(--brand)}
+main{flex:1;overflow-y:auto;padding:18px;padding-bottom:100px}
 .page{display:none}
-.page.on{display:block;animation:fade .28s cubic-bezier(.2,.7,.3,1)}
+.page.on{display:block;animation:fade .28s ease}
 @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-nav{position:fixed;bottom:0;left:0;right:0;z-index:40;display:flex;
-  background:linear-gradient(180deg, rgba(28,40,80,.85), rgba(28,40,80,.98));
-  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
-  border-top:1px solid var(--line);
-  padding:8px 6px 10px;padding-bottom:calc(10px + env(safe-area-inset-bottom));
-  box-shadow:0 -10px 30px rgba(0,0,0,.35)}
-[data-theme="light"] nav{background:linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,255,255,.98))}
-nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;
-  padding:8px 2px;color:var(--muted);font-size:10.5px;font-weight:700;
-  border-radius:12px;transition:all .18s;position:relative}
-nav button .ic{font-size:20px;line-height:1;transition:transform .2s}
-nav button.active{color:var(--brand)}
-nav button.active .ic{transform:translateY(-2px) scale(1.1)}
-nav button.active::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);
-  width:22px;height:3px;border-radius:0 0 4px 4px;
-  background:linear-gradient(90deg, var(--brand), var(--brand-2));
-  box-shadow:0 2px 8px rgba(91,141,255,.6)}
-.card{background:var(--card);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  border:1px solid var(--line);border-radius:var(--radius);
-  padding:18px;margin-bottom:16px;box-shadow:var(--shadow-sm);
-  transition:border-color .2s, transform .2s}
-.card:hover{border-color:var(--line-strong)}
-.card h3{margin:0 0 6px;font-size:17px;font-weight:800;letter-spacing:-.3px;color:var(--text)}
-.card .sub{color:var(--muted);font-size:13px;margin:0 0 14px;line-height:1.5;font-weight:500}
+nav{position:fixed;bottom:0;left:0;right:0;z-index:40;display:flex;background:var(--card-solid);border-top:1px solid var(--line);padding:8px 6px;padding-bottom:calc(8px + env(safe-area-inset-bottom))}
+nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 2px;color:var(--muted);font-size:10.5px;font-weight:700;border-radius:12px}
+nav button.active{color:var(--brand);background:rgba(91,141,255,.1)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-bottom:16px}
+.card h3{margin:0 0 6px;font-size:17px;font-weight:800}
+.card .sub{color:var(--muted);font-size:13px;margin:0 0 14px;font-weight:500}
 .grid{display:grid;gap:12px}
 .grid.k2{grid-template-columns:1fr 1fr}
 .grid.k3{grid-template-columns:repeat(3,1fr)}
-@media(max-width:520px){.grid.k3{grid-template-columns:1fr 1fr}}
-.stat{background:linear-gradient(135deg, rgba(91,141,255,.14), rgba(139,92,255,.10));
-  border:1px solid var(--line-strong);border-radius:14px;padding:16px 12px;text-align:center;
-  transition:transform .2s;position:relative;overflow:hidden}
-.stat::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg, var(--brand), var(--brand-2), var(--brand-3));opacity:.7}
-.stat:hover{transform:translateY(-2px)}
-.stat b{display:block;font-size:24px;letter-spacing:-.6px;font-weight:800;
-  background:linear-gradient(135deg, var(--brand), var(--brand-3));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.stat span{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-top:4px;display:block}
-.pill{display:inline-block;padding:5px 11px;border-radius:999px;font-size:11px;font-weight:700;
-  background:rgba(255,255,255,.08);border:1px solid var(--line-strong);color:var(--muted);letter-spacing:.3px}
-.pill.brand{background:linear-gradient(135deg, rgba(91,141,255,.22), rgba(139,92,255,.18));
-  color:#bfd0ff;border-color:rgba(91,141,255,.5)}
-[data-theme="light"] .pill.brand{color:#3a5bd9}
+.stat{background:linear-gradient(135deg, rgba(91,141,255,.14), rgba(139,92,255,.10));border:1px solid var(--line-strong);border-radius:14px;padding:16px 12px;text-align:center}
+.stat b{display:block;font-size:24px;font-weight:800;color:var(--brand)}
+.stat span{font-size:10.5px;color:var(--muted);text-transform:uppercase;font-weight:700}
+.pill{display:inline-block;padding:5px 11px;border-radius:999px;font-size:11px;font-weight:700;background:rgba(255,255,255,.08);border:1px solid var(--line-strong);color:var(--muted)}
+.pill.brand{background:rgba(91,141,255,.22);color:#bfd0ff}
+.pill.ok{background:rgba(56,211,159,.15);color:#7ee2a8}
+.pill.err{background:rgba(255,93,108,.15);color:#ffb4bd}
 .row{display:flex;align-items:center;gap:10px}
 .row.between{justify-content:space-between}
 .empty{text-align:center;padding:44px 20px;color:var(--muted)}
-.empty .big{font-size:48px;display:block;margin-bottom:12px;opacity:.5;filter:grayscale(.3)}
-.spinner{width:20px;height:20px;border:2.5px solid rgba(255,255,255,.2);
-  border-top-color:var(--brand);border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+.empty .big{font-size:48px;display:block;margin-bottom:12px}
+.spinner{width:20px;height:20px;border:2.5px solid rgba(255,255,255,.2);border-top-color:var(--brand);border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading{display:flex;align-items:center;justify-content:center;gap:12px;padding:36px;color:var(--muted);font-weight:600}
-input.mini,select.mini{padding:10px 12px;border-radius:10px;border:1px solid var(--line-strong);
-  background:rgba(255,255,255,.05);font-size:14px;width:100%;transition:all .18s;color:var(--text);font-weight:500}
-[data-theme="light"] input.mini,[data-theme="light"] select.mini{background:#fff;border-color:rgba(60,90,180,.22)}
-input.mini:focus,select.mini:focus{outline:none;border-color:var(--brand);
-  box-shadow:0 0 0 4px rgba(91,141,255,.18);background:rgba(91,141,255,.06)}
-.toast{position:fixed;left:50%;bottom:110px;transform:translateX(-50%);z-index:200;
-  background:linear-gradient(135deg, #2a3a70, #1c2850);color:#fff;
-  padding:14px 22px;border-radius:14px;font-size:14px;font-weight:600;
-  box-shadow:var(--shadow), var(--shadow-glow);opacity:0;pointer-events:none;
-  transition:opacity .28s, transform .28s;max-width:88vw;text-align:center;
-  border:1px solid var(--line-strong);backdrop-filter:blur(20px)}
-.toast.on{opacity:1;transform:translateX(-50%) translateY(-8px)}
-.toast.err{background:linear-gradient(135deg, #7f1d3a, #5c0f28);border-color:rgba(255,93,108,.5)}
-.toast.ok{background:linear-gradient(135deg, #0e5f43, #074d33);border-color:rgba(56,211,159,.5)}
-  #notifPanel { animation: fade .2s ease; }
-.notif-item { padding: 12px; border-bottom: 1px solid var(--line); cursor: pointer; border-radius: 8px; transition: background .2s; }
-.notif-item:hover { background: var(--card-2); }
-.notif-item.unread { background: rgba(91,141,255,.08); border-left: 3px solid var(--brand); }
-.notif-item b { display: block; font-size: 13.5px; margin-bottom: 4px; color: var(--brand); }
-.notif-item p { margin: 0; font-size: 12.5px; color: var(--text); }
-.notif-item span { display: block; font-size: 10.5px; color: var(--muted); margin-top: 6px; }
-  /* Notification Banner */
-.notif-banner {
-  position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
-  width: 90%; max-width: 400px; background: var(--card-solid); 
-  border: 1px solid var(--brand); border-radius: 14px; padding: 12px 16px;
-  box-shadow: 0 10px 25px rgba(0,0,0,.5); z-index: 9999;
-  display: flex; align-items: center; gap: 12px;
-  transition: top 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-.notif-banner.show { top: 16px; }
-.notif-banner img { width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--brand); }
-.notif-banner .notif-text { flex: 1; min-width: 0; }
-.notif-banner .notif-title { font-size: 13px; font-weight: 800; color: var(--brand); margin-bottom: 2px; }
-.notif-banner .notif-body { font-size: 13px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-::-webkit-scrollbar{width:8px;height:8px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:rgba(120,150,255,.3);border-radius:4px}
-::-webkit-scrollbar-thumb:hover{background:rgba(120,150,255,.5)}
+input.mini,select.mini{padding:10px 12px;border-radius:10px;border:1px solid var(--line-strong);background:var(--card-2);font-size:14px;width:100%;color:var(--text)}
+.toast{position:fixed;left:50%;bottom:110px;transform:translateX(-50%);z-index:200;background:#1c2850;color:#fff;padding:14px 22px;border-radius:14px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .28s;max-width:88vw;text-align:center;border:1px solid var(--line-strong)}
+.toast.on{opacity:1}
+.notif-banner{position:fixed;top:-100px;left:50%;transform:translateX(-50%);width:90%;max-width:400px;background:var(--card-solid);border:1px solid var(--brand);border-radius:14px;padding:12px 16px;box-shadow:0 10px 25px rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;gap:12px;transition:top 0.4s ease}
+.notif-banner.show{top:16px}
+.notif-item{padding:12px;border-bottom:1px solid var(--line);cursor:pointer}
+.notif-item.unread{background:rgba(91,141,255,.08);border-left:3px solid var(--brand)}
 </style>
 </head>
 <body>
-<!-- ================= AUTH ================= -->
+
 <div id="authScreen">
   <div class="auth-card">
     <div class="brand">
       <div class="logo">🎓</div>
-      <div>
-        <h1>Smart CGPA Plus</h1>
-        <p>School • JAMB • WAEC • NECO • University</p>
-      </div>
+      <div><h1>Smart CGPA Plus</h1><p>School • JAMB • WAEC • NECO • University</p></div>
     </div>
-
     <div class="tabs">
       <button id="tabLogin" class="active">Sign in</button>
       <button id="tabSignup">Sign up</button>
     </div>
-
     <div id="loginForm">
-      <div class="field"><label>Email</label><input id="loginEmail" type="email" placeholder="you@example.com" autocomplete="email" /></div>
-      <div class="field"><label>Password</label><input id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password" /></div>
+      <div class="field"><label>Email</label><input id="loginEmail" type="email" placeholder="you@example.com" /></div>
+      <div class="field"><label>Password</label><input id="loginPass" type="password" placeholder="••••••••" /></div>
       <button class="btn" id="btnLogin">Sign in</button>
       <button class="btn ghost" id="btnForgot" style="margin-top:10px">Forgot password?</button>
       <div class="divider">or</div>
@@ -256,7 +126,6 @@ input.mini:focus,select.mini:focus{outline:none;border-color:var(--brand);
       </button>
       <div id="authMsg" class="msg hide"></div>
     </div>
-
     <div id="signupForm" class="hide">
       <div class="field"><label>Full name</label><input id="suName" type="text" placeholder="Your name" /></div>
       <div class="field"><label>Email</label><input id="suEmail" type="email" placeholder="you@example.com" /></div>
@@ -267,262 +136,117 @@ input.mini:focus,select.mini:focus{outline:none;border-color:var(--brand);
   </div>
 </div>
 
-<!-- ================= APP ================= -->
 <div id="app">
   <header>
     <div class="logo">🎓</div>
-    <div class="titles">
-      <b id="hdrTitle">Dashboard</b>
-      <span id="hdrSub">Welcome back</span>
-    </div>
-        <div style="position:relative;cursor:pointer" id="btnNotifBell">
+    <div class="titles"><b id="hdrTitle">Dashboard</b><span id="hdrSub">Welcome back</span></div>
+    <div style="position:relative;cursor:pointer" id="btnNotifBell">
       <button class="icon-btn" style="position:relative">🔔</button>
-      <span id="notifBadge" class="hide" style="position:absolute;top:-4px;right:-4px;background:var(--err);color:#fff;font-size:10px;font-weight:800;padding:2px 5px;border-radius:10px;border:2px solid var(--card);">0</span>
+      <span id="notifBadge" class="hide" style="position:absolute;top:-4px;right:-4px;background:var(--err);color:#fff;font-size:10px;font-weight:800;padding:2px 5px;border-radius:10px;border:2px solid var(--card-solid);">0</span>
     </div>
-    <button class="icon-btn" id="btnTheme" title="Toggle theme">🌙</button>
+    <button class="icon-btn" id="btnTheme">🌙</button>
     <img class="avatar" id="hdrAvatar" alt="" />
   </header>
 
   <main id="main">
-
-    <!-- DASHBOARD -->
     <section class="page on" id="page-dashboard">
-      <div class="card">
-        <div class="row between">
-          <div>
-            <h3 id="dashName">Hello 👋</h3>
-            <p class="sub" id="dashSub" style="margin:0">Let's track your academic progress.</p>
-          </div>
-          <span class="pill brand" id="dashRole">Student</span>
-        </div>
-      </div>
-
+      <div class="card"><div class="row between"><div><h3 id="dashName">Hello 👋</h3><p class="sub" id="dashSub" style="margin:0">Let's track your academic progress.</p></div><span class="pill brand" id="dashRole">Student</span></div></div>
       <div class="grid k3">
         <div class="stat"><b id="statCGPA">0.00</b><span>CGPA</span></div>
         <div class="stat"><b id="statUnits">0</b><span>Units</span></div>
         <div class="stat"><b id="statSem">0</b><span>Semesters</span></div>
       </div>
-
-      <div class="card" style="margin-top:16px">
-        <h3>Quick actions</h3>
-        <p class="sub">Jump straight into what you need.</p>
-        <div class="grid k2">
-          <button class="btn ghost" data-go="calculator">🧮 Calculator</button>
-          <button class="btn ghost" data-go="tutor">🤖 AI Tutor</button>
-          <button class="btn ghost" data-go="dictionary">📖 Dictionary</button>
-          <button class="btn ghost" data-go="questions">📝 Question Bank</button>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>Academic feedback</h3>
-        <p class="sub" id="feedback" style="margin:0">Add your first semester to see personalised feedback.</p>
-      </div>
+      <div class="card" style="margin-top:16px"><h3>Quick actions</h3><div class="grid k2">
+        <button class="btn ghost" data-go="calculator">🧮 Calculator</button>
+        <button class="btn ghost" data-go="tutor">🤖 AI Tutor</button>
+        <button class="btn ghost" data-go="dictionary">📖 Dictionary</button>
+        <button class="btn ghost" data-go="questions">📝 Question Bank</button>
+      </div></div>
+      <div class="card"><h3>Academic feedback</h3><p class="sub" id="feedback" style="margin:0">Add your first semester to see personalised feedback.</p></div>
     </section>
 
-    <!-- CALCULATOR -->
     <section class="page" id="page-calculator">
+      <div class="card"><h3>Grading scale</h3><select id="scaleSel" class="mini">
+        <option value="5">5-point (A=5, B=4, C=3, D=2, E=1, F=0)</option>
+        <option value="4">4-point (A=4, B=3, C=2, D=1, F=0)</option>
+        <option value="7">7-point (A=7 … F=0)</option>
+      </select></div>
+      <div class="card"><h3>Previous record (optional)</h3><div class="grid k2">
+        <div class="field" style="margin:0"><label>Previous CGPA</label><input id="prevCGPA" type="number" step="0.01" placeholder="0.00" /></div>
+        <div class="field" style="margin:0"><label>Previous units</label><input id="prevUnits" type="number" placeholder="0" /></div>
+      </div></div>
       <div class="card">
-        <h3>Grading scale</h3>
-        <p class="sub">Choose the system your school uses.</p>
-        <select id="scaleSel" class="mini">
-          <option value="5">5-point (A=5, B=4, C=3, D=2, E=1, F=0)</option>
-          <option value="4">4-point (A=4, B=3, C=2, D=1, F=0)</option>
-          <option value="7">7-point (A=7 … F=0)</option>
-        </select>
-      </div>
-
-      <div class="card">
-        <h3>Previous record (optional)</h3>
-        <p class="sub">Carry over your CGPA from before.</p>
-        <div class="grid k2">
-          <div class="field" style="margin:0"><label>Previous CGPA</label><input id="prevCGPA" type="number" step="0.01" min="0" placeholder="0.00" /></div>
-          <div class="field" style="margin:0"><label>Previous units</label><input id="prevUnits" type="number" min="0" placeholder="0" /></div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="row between">
-          <div><h3>Current semester</h3><p class="sub" style="margin:0">Add your courses below.</p></div>
-          <button class="icon-btn" id="btnAddCourse" title="Add course">＋</button>
-        </div>
+        <div class="row between"><div><h3>Current semester</h3></div><button class="icon-btn" id="btnAddCourse">＋</button></div>
         <div id="courseList" style="margin-top:14px"></div>
-        <div class="grid k2" style="margin-top:10px">
-          <button class="btn" id="btnSaveSem">💾 Save semester</button>
-          <button class="btn ghost" id="btnClearSem">Clear</button>
-        </div>
+        <div class="grid k2" style="margin-top:10px"><button class="btn" id="btnSaveSem">💾 Save semester</button><button class="btn ghost" id="btnClearSem">Clear</button></div>
       </div>
-
-      <div class="card">
-        <h3>Saved semesters</h3>
-        <p class="sub">Your results are stored in your account.</p>
-        <div id="semList"></div>
-      </div>
-
-      <div class="card">
-        <h3>🎯 CGPA goal planner</h3>
-        <p class="sub">Find out what you need next semester.</p>
-        <div class="grid k3">
-          <div class="field" style="margin:0"><label>Target</label><input id="goalCGPA" type="number" step="0.01" placeholder="4.50" /></div>
-          <div class="field" style="margin:0"><label>Units</label><input id="goalUnits" type="number" placeholder="20" /></div>
-          <div class="field" style="margin:0"><label>Current</label><input id="goalCur" type="number" step="0.01" placeholder="0.00" /></div>
-        </div>
-        <button class="btn" id="btnGoal" style="margin-top:12px">Calculate required GPA</button>
-        <div id="goalOut" class="msg hide"></div>
-      </div>
+      <div class="card"><h3>Saved semesters</h3><div id="semList"></div></div>
+      <div class="card"><h3>🎯 CGPA goal planner</h3><div class="grid k3">
+        <div class="field" style="margin:0"><label>Target</label><input id="goalCGPA" type="number" step="0.01" /></div>
+        <div class="field" style="margin:0"><label>Units</label><input id="goalUnits" type="number" /></div>
+        <div class="field" style="margin:0"><label>Current</label><input id="goalCur" type="number" step="0.01" /></div>
+      </div><button class="btn" id="btnGoal" style="margin-top:12px">Calculate required GPA</button><div id="goalOut" class="msg hide"></div></div>
     </section>
-    <!-- AI TUTOR -->
+
     <section class="page" id="page-tutor">
-      <div class="card">
-        <div class="row between">
-          <div><h3>🤖 AI Academic Tutor</h3><p class="sub" style="margin:0">Maths • English • Sciences • JAMB • WAEC • NECO</p></div>
-          <button class="icon-btn" id="btnNewChat" title="New chat">＋</button>
-        </div>
-      </div>
+      <div class="card"><div class="row between"><div><h3>🤖 AI Academic Tutor</h3></div><button class="icon-btn" id="btnNewChat">＋</button></div></div>
       <div id="chatBox" style="display:flex;flex-direction:column;gap:12px;padding:4px 0 12px"></div>
-      <div class="card" style="position:sticky;bottom:8px">
-        <div class="row">
-          <input id="tutorInput" class="mini" placeholder="Ask a question…" style="flex:1" />
-          <button class="icon-btn" id="btnTutorSend" style="background:linear-gradient(135deg,var(--brand),var(--brand-2));border:none;color:#fff">➤</button>
-        </div>
-      </div>
+      <div class="card" style="position:sticky;bottom:8px"><div class="row"><input id="tutorInput" class="mini" placeholder="Ask a question…" style="flex:1" /><button class="icon-btn" id="btnTutorSend" style="background:var(--brand);color:#fff">➤</button></div></div>
     </section>
 
-    <!-- DICTIONARY -->
     <section class="page" id="page-dictionary">
-      <div class="card">
-        <h3>📖 English Dictionary</h3>
-        <p class="sub">Definitions, pronunciation, synonyms, examples and audio.</p>
-        <div class="row">
-          <input id="dictInput" class="mini" placeholder="Search any word…" style="flex:1" />
-          <button class="btn" id="btnDictSearch" style="width:auto;padding:12px 18px;margin:0">Search</button>
-        </div>
-      </div>
+      <div class="card"><h3>📖 English Dictionary</h3><div class="row"><input id="dictInput" class="mini" placeholder="Search any word…" style="flex:1" /><button class="btn" id="btnDictSearch" style="width:auto;padding:12px 18px;margin:0">Search</button></div></div>
       <div id="dictResult"></div>
-      <div class="card">
-        <h3>Saved words</h3>
-        <div id="dictSaved"></div>
-      </div>
+      <div class="card"><h3>Saved words</h3><div id="dictSaved"></div></div>
     </section>
 
-    <!-- QUESTION BANK -->
     <section class="page" id="page-questions">
-      <div class="card">
-        <h3>📝 Question Bank</h3>
-        <p class="sub">Practice by subject, topic and difficulty — shuffled each session.</p>
-        <div class="grid k2">
-          <div class="field" style="margin:0"><label>Subject</label><select id="qSubject" class="mini"></select></div>
-          <div class="field" style="margin:0"><label>Topic</label><select id="qTopic" class="mini"><option value="all">All topics</option></select></div>
-          <div class="field" style="margin:0"><label>Questions</label><select id="qCount" class="mini"><option>10</option><option>20</option><option>30</option><option>40</option><option>50</option></select></div>
-          <div class="field" style="margin:0"><label>Difficulty</label><select id="qDiff" class="mini"><option value="all">All</option><option value="easy">Easy</option><option value="medium">Medium</option><option value="hard">Hard</option></select></div>
-        </div>
-        <div class="field"><label>Mode</label>
-          <select id="qMode" class="mini">
-            <option value="practice">Practice (no timer)</option>
-            <option value="timed">Timed exam (1 min / question)</option>
-            <option value="mixed">Mixed subjects</option>
-          </select>
-        </div>
-        <button class="btn" id="btnStartQuiz">Start practice</button>
-      </div>
+      <div class="card"><h3>📝 Question Bank</h3><div class="grid k2">
+        <div class="field" style="margin:0"><label>Subject</label><select id="qSubject" class="mini"></select></div>
+        <div class="field" style="margin:0"><label>Topic</label><select id="qTopic" class="mini"><option value="all">All topics</option></select></div>
+        <div class="field" style="margin:0"><label>Questions</label><select id="qCount" class="mini"><option>10</option><option>20</option><option>30</option><option>40</option><option>50</option></select></div>
+        <div class="field" style="margin:0"><label>Difficulty</label><select id="qDiff" class="mini"><option value="all">All</option><option value="easy">Easy</option><option value="medium">Medium</option><option value="hard">Hard</option></select></div>
+      </div><div class="field"><label>Mode</label><select id="qMode" class="mini"><option value="practice">Practice (no timer)</option><option value="timed">Timed exam (1 min / question)</option><option value="mixed">Mixed subjects</option></select></div><button class="btn" id="btnStartQuiz">Start practice</button></div>
       <div id="quizArea"></div>
-      <div class="card">
-        <h3>Recent results</h3>
-        <div id="quizHistory"></div>
-      </div>
+      <div class="card"><h3>Recent results</h3><div id="quizHistory"></div></div>
     </section>
 
-    <!-- GAMES -->
     <section class="page" id="page-games">
-      <div class="card">
-        <h3>🎮 Learning Games</h3>
-        <p class="sub">Fast, fun revision with points and streaks.</p>
-      </div>
+      <div class="card"><h3>🎮 Learning Games</h3></div>
       <div class="grid k2">
-        <button class="card" id="gameSpeed" style="text-align:left;cursor:pointer"><h3>⚡ Speed Quiz</h3><p class="sub" style="margin:0">10 questions in 60 seconds.</p></button>
-        <button class="card" id="gameStreak" style="text-align:left;cursor:pointer"><h3>🔥 Streak Master</h3><p class="sub" style="margin:0">Answer until you miss.</p></button>
-      </div>
-      <div id="gameArea"></div>
+        <button class="card" id="gameSpeed" style="text-align:left;cursor:pointer"><h3>⚡ Speed Quiz</h3></button>
+        <button class="card" id="gameStreak" style="text-align:left;cursor:pointer"><h3>🔥 Streak Master</h3></button>
+      </div><div id="gameArea"></div>
     </section>
 
-    <!-- LEADERBOARD -->
     <section class="page" id="page-leaderboard">
-      <div class="card">
-        <h3>🏆 Leaderboard</h3>
-        <p class="sub">Ranked by verified quiz scores.</p>
-        <div class="tabs" style="margin:0">
-          <button class="lb-tab active" data-lb="daily">Daily</button>
-          <button class="lb-tab" data-lb="weekly">Weekly</button>
-          <button class="lb-tab" data-lb="all">All-time</button>
-        </div>
+      <div class="card"><h3>🏆 Leaderboard</h3>
+        <div class="tabs" style="margin:0"><button class="lb-tab active" data-lb="daily">Daily</button><button class="lb-tab" data-lb="weekly">Weekly</button><button class="lb-tab" data-lb="all">All-time</button></div>
       </div>
       <div class="card"><div id="lbList" class="loading"><span class="spinner"></span>Loading…</div></div>
     </section>
 
-    <!-- CHAT -->
     <section class="page" id="page-chat" style="padding:0">
       <div id="chatHome" style="padding:16px">
-        <div class="card" style="margin-bottom:16px">
-          <div class="row between">
-            <div><h3>💬 Messages</h3><p class="sub" style="margin:0">Public groups & private chats</p></div>
-            <button class="icon-btn" id="btnNewGroup">＋</button>
-          </div>
-        </div>
+        <div class="card" style="margin-bottom:16px"><div class="row between"><div><h3>💬 Messages</h3></div><button class="icon-btn" id="btnNewGroup">＋</button></div></div>
         <div id="roomList"></div>
       </div>
       <div id="chatRoom" class="hide" style="position:fixed;inset:0;z-index:60;background:var(--chatbg);display:flex;flex-direction:column">
-        <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--card-solid);border-bottom:1px solid var(--line)">
-          <button class="icon-btn" id="btnChatBack">←</button>
-          <div style="flex:1;min-width:0">
-            <b id="roomTitle" style="display:block;font-size:15px"></b>
-            <span id="roomSub" style="font-size:11.5px;color:var(--muted)"></span>
-          </div>
-          <button class="icon-btn" id="btnRoomInfo">⋮</button>
-        </div>
-        <div id="msgScroll" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:8px;-webkit-overflow-scrolling:touch"></div>
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--card-solid);border-bottom:1px solid var(--line)"><button class="icon-btn" id="btnChatBack">←</button><div style="flex:1;min-width:0"><b id="roomTitle" style="display:block;font-size:15px"></b><span id="roomSub" style="font-size:11.5px;color:var(--muted)"></span></div><button class="icon-btn" id="btnRoomInfo">⋮</button></div>
+        <div id="msgScroll" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:8px"></div>
         <div id="typingBar" style="padding:4px 16px;font-size:12px;color:var(--muted);min-height:20px"></div>
-        <div style="display:flex;align-items:center;gap:8px;padding:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom));background:var(--card-solid);border-top:1px solid var(--line)">
-          <button class="icon-btn" id="btnEmoji">😊</button>
-          <button class="icon-btn" id="btnAttach">📎</button>
-          <input id="msgInput" class="mini" placeholder="Message" style="flex:1" />
-          <button class="icon-btn" id="btnMic">🎤</button>
-          <button class="icon-btn" id="btnSend" style="background:linear-gradient(135deg,var(--brand),var(--brand-2));border:none;color:#fff">➤</button>
-        </div>
+        <div style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--card-solid);border-top:1px solid var(--line)"><button class="icon-btn" id="btnEmoji">😊</button><button class="icon-btn" id="btnAttach">📎</button><input id="msgInput" class="mini" placeholder="Message" style="flex:1" /><button class="icon-btn" id="btnMic">🎤</button><button class="icon-btn" id="btnSend" style="background:var(--brand);color:#fff">➤</button></div>
         <input type="file" id="fileInput" class="hide" />
       </div>
     </section>
 
-    <!-- ADMIN -->
     <section class="page" id="page-admin">
-      <div class="card">
-        <h3>🛡️ Super Admin Panel</h3>
-        <p class="sub">Full control over users, groups, questions, AI and settings.</p>
-      </div>
-      <div class="card">
-        <h3>Users</h3>
-        <div id="adminUsers" class="loading"><span class="spinner"></span>Loading…</div>
-      </div>
-      <div class="card">
-        <h3>Groups</h3>
-        <div id="adminGroups" class="loading"><span class="spinner"></span>Loading…</div>
-      </div>
-      <div class="card">
-        <h3>Question bank</h3>
-        <p class="sub">Upload a CSV or JSON file. Format shown in SETUP.md.</p>
-        <input type="file" id="qUpload" accept=".csv,.json" class="mini" />
-        <button class="btn" id="btnQImport" style="margin-top:12px">Import questions</button>
-        <div id="qImportOut" style="margin-top:10px"></div>
-      </div>
-            <div class="card">
-        <h3>📢 Send App-Wide Announcement</h3>
-        <p class="sub">This will pop up on every user's screen immediately.</p>
-        <div class="field">
-          <input id="announceInput" class="mini" placeholder="Type your announcement here..." />
-        </div>
-        <button class="btn" id="btnSendAnnounce">Send Announcement</button>
-      </div>
-      <div class="card">
-        <h3>App settings</h3>
+      <div class="card"><h3>🛡️ Super Admin Panel</h3></div>
+      <div class="card"><h3>Users</h3><div id="adminUsers" class="loading"><span class="spinner"></span>Loading…</div></div>
+      <div class="card"><h3>Groups</h3><div id="adminGroups" class="loading"><span class="spinner"></span>Loading…</div></div>
+      <div class="card"><h3>Question bank</h3><input type="file" id="qUpload" accept=".csv,.json" class="mini" /><button class="btn" id="btnQImport" style="margin-top:12px">Import questions</button><div id="qImportOut" style="margin-top:10px"></div></div>
+      <div class="card"><h3>📢 Send App-Wide Announcement</h3><div class="field"><input id="announceInput" class="mini" placeholder="Type your announcement here..." /></div><button class="btn" id="btnSendAnnounce">Send Announcement</button></div>
+      <div class="card"><h3>App settings</h3>
         <div class="row between" style="padding:10px 0;border-bottom:1px solid var(--line)"><span>AI tutor enabled</span><input type="checkbox" id="setAI" /></div>
         <div class="row between" style="padding:10px 0;border-bottom:1px solid var(--line)"><span>Dictionary enabled</span><input type="checkbox" id="setDict" /></div>
         <div class="row between" style="padding:10px 0"><span>Group chat enabled</span><input type="checkbox" id="setChat" /></div>
@@ -530,34 +254,16 @@ input.mini:focus,select.mini:focus{outline:none;border-color:var(--brand);
       </div>
     </section>
 
-    <!-- PROFILE -->
     <section class="page" id="page-profile">
-      <div class="card" style="text-align:center">
-        <img id="profAvatar" class="avatar" style="width:90px;height:90px;margin:0 auto 14px" />
-        <h3 id="profName" style="margin-bottom:4px">Your name</h3>
-        <p class="sub" id="profEmail" style="margin-bottom:12px"></p>
-        <span class="pill brand" id="profRole">Student</span>
-      </div>
-      <div class="card">
-        <h3>Profile</h3>
-        <div class="field"><label>Display name</label><input id="profNameInput" class="mini" /></div>
-        <div class="field"><label>Profile picture URL</label><input id="profPhotoInput" class="mini" placeholder="https://…" /></div>
-        <button class="btn" id="btnSaveProfile">Save profile</button>
-      </div>
-      <div class="card">
-        <h3>Privacy</h3>
+      <div class="card" style="text-align:center"><img id="profAvatar" class="avatar" style="width:90px;height:90px;margin:0 auto 14px" /><h3 id="profName">Your name</h3><p class="sub" id="profEmail"></p><span class="pill brand" id="profRole">Student</span></div>
+      <div class="card"><h3>Profile</h3><div class="field"><label>Display name</label><input id="profNameInput" class="mini" /></div><div class="field"><label>Profile picture URL</label><input id="profPhotoInput" class="mini" /></div><button class="btn" id="btnSaveProfile">Save profile</button></div>
+      <div class="card"><h3>Privacy & Notifications</h3>
         <div class="row between" style="padding:10px 0;border-bottom:1px solid var(--line)"><span>Show last seen</span><input type="checkbox" id="setLastSeen" /></div>
-        <div class="row between" style="padding:10px 0"><span>Show online status</span><input type="checkbox" id="setOnline" /></div>
-      </div>
-      <div class="card">
-        <h3>Notifications</h3>
+        <div class="row between" style="padding:10px 0;border-bottom:1px solid var(--line)"><span>Show online status</span><input type="checkbox" id="setOnline" /></div>
         <div class="row between" style="padding:10px 0"><span>Enable notifications</span><input type="checkbox" id="setNotif" /></div>
       </div>
-      <button class="btn ghost" id="btnLeaderboardLink" style="margin-bottom:10px">🏆 View leaderboard</button>
-      <button class="btn ghost" id="btnGamesLink" style="margin-bottom:10px">🎮 Play games</button>
       <button class="btn danger" id="btnLogout">Sign out</button>
     </section>
-
   </main>
 
   <nav>
@@ -571,32 +277,21 @@ input.mini:focus,select.mini:focus{outline:none;border-color:var(--brand);
 </div>
 
 <div id="toast" class="toast"></div>
-  <!-- NOTIFICATION CENTER PANEL -->
+<div id="notifBanner" class="notif-banner"><img id="notifImg" src="" alt="avatar" style="width:36px;height:36px;border-radius:50%;border:2px solid var(--brand);" /><div class="notif-text" style="flex:1;min-width:0"><div id="notifTitle" class="notif-title" style="font-size:13px;font-weight:800;color:var(--brand);margin-bottom:2px;">New Message</div><div id="notifBody" class="notif-body" style="font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Hello there!</div></div></div>
 <div id="notifPanel" class="hide" style="position:fixed;top:70px;right:16px;width:calc(100% - 32px);max-width:380px;background:var(--card-solid);border:1px solid var(--line-strong);border-radius:16px;box-shadow:var(--shadow);z-index:9998;max-height:80vh;overflow-y:auto;">
-  <div style="padding:14px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;">
-    <h3 style="margin:0;font-size:16px;">Notifications</h3>
-    <button id="btnCloseNotif" style="color:var(--muted);font-size:20px;">&times;</button>
-  </div>
+  <div style="padding:14px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;"><h3 style="margin:0;font-size:16px;">Notifications</h3><button id="btnCloseNotif" style="color:var(--muted);font-size:20px;">&times;</button></div>
   <div id="notifList" style="padding:8px;"></div>
-</div>
-  <!-- IN-APP NOTIFICATION BANNER -->
-<div id="notifBanner" class="notif-banner">
-  <img id="notifImg" src="" alt="avatar" />
-  <div class="notif-text">
-    <div id="notifTitle" class="notif-title">New Message</div>
-    <div id="notifBody" class="notif-body">Hello there!</div>
-  </div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword,
-  signOut, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, sendPasswordResetEmail, updateProfile
+  signOut, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail, updateProfile
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc, collection, addDoc,
-  query, orderBy, onSnapshot, serverTimestamp, getDocs
+  query, orderBy, limit, onSnapshot, serverTimestamp, getDocs
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -608,44 +303,39 @@ const firebaseConfig = {
   messagingSenderId: "165458065701",
   appId: "1:165458065701:web:08a1bcfac2ae286b9502cc"
 };
+
 const SUPER_ADMIN_EMAIL = "gbaraneeleeleebari4@gmail.com";
-const AI_ENDPOINT = "https://gbaraneeleeleebari4--1fb7caf2c99a11f1ad4c1607ee4eb77e.web.val.run";
+const AI_ENDPOINT = "https://gbaraneeleeleebari4--1fb7caf2c99a11f1ad4c1607ee4eb77e.web.val.run"; // Your Val Town URL
 
-const app  = initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db   = getFirestore(app);
+const db = getFirestore(app);
 
-const $  = (s) => document.querySelector(s);
+const $ = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
 const esc = (v) => String(v ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-function toast(msg, type) {
+function toast(msg, type = "") {
   const t = $("#toast");
   t.textContent = msg;
-  t.className = "toast on " + (type || "");
+  t.className = "toast on " + type;
   clearTimeout(t._t);
-  t._t = setTimeout(function(){ t.className = "toast " + (type || ""); }, 2800);
+  t._t = setTimeout(() => t.className = "toast " + type, 2800);
 }
 
 function showPage(name) {
-  $$(".page").forEach(function(p){ p.classList.remove("on"); });
+  $$(".page").forEach(p => p.classList.remove("on"));
   const el = $("#page-" + name);
   if (el) el.classList.add("on");
-  $$("nav button").forEach(function(b){ b.classList.toggle("active", b.dataset.nav === name); });
-  const titles = {
-    dashboard:["Dashboard","Welcome back"], calculator:["GPA Calculator","Semester & CGPA"],
-    tutor:["AI Tutor","Ask any academic question"], dictionary:["Dictionary","Words & phrases"],
-    questions:["Question Bank","Practice & mock exams"], games:["Games","Learn while playing"],
-    leaderboard:["Leaderboard","Top students"], chat:["Messages","Groups & private chats"],
-    admin:["Super Admin","Full control"], profile:["Profile","Your account"]
-  };
+  $$("nav button").forEach(b => b.classList.toggle("active", b.dataset.nav === name));
+  const titles = { dashboard:["Dashboard","Welcome back"], calculator:["GPA Calculator","Semester & CGPA"], tutor:["AI Tutor","Ask any academic question"], dictionary:["Dictionary","Words & phrases"], questions:["Question Bank","Practice & mock exams"], games:["Games","Learn while playing"], leaderboard:["Leaderboard","Top students"], chat:["Messages","Groups & private chats"], admin:["Super Admin","Full control"], profile:["Profile","Your account"] };
   const t = titles[name] || ["Smart CGPA Plus",""];
   $("#hdrTitle").textContent = t[0];
   $("#hdrSub").textContent = t[1];
   $("#main").scrollTop = 0;
 }
 
-document.addEventListener("click", function(e){
+document.addEventListener("click", (e) => {
   const nav = e.target.closest("[data-nav]");
   if (nav) return showPage(nav.dataset.nav);
   const go = e.target.closest("[data-go]");
@@ -655,7 +345,7 @@ document.addEventListener("click", function(e){
 const savedTheme = localStorage.getItem("theme") || "dark";
 document.documentElement.setAttribute("data-theme", savedTheme);
 $("#btnTheme").textContent = savedTheme === "dark" ? "🌙" : "☀️";
-$("#btnTheme").onclick = function(){
+$("#btnTheme").onclick = () => {
   const cur = document.documentElement.getAttribute("data-theme");
   const nxt = cur === "dark" ? "light" : "dark";
   document.documentElement.setAttribute("data-theme", nxt);
@@ -663,13 +353,13 @@ $("#btnTheme").onclick = function(){
   $("#btnTheme").textContent = nxt === "dark" ? "🌙" : "☀️";
 };
 
-$("#tabLogin").onclick  = function(){ $("#tabLogin").classList.add("active");  $("#tabSignup").classList.remove("active"); $("#loginForm").classList.remove("hide"); $("#signupForm").classList.add("hide"); };
-$("#tabSignup").onclick = function(){ $("#tabSignup").classList.add("active"); $("#tabLogin").classList.remove("active");  $("#signupForm").classList.remove("hide"); $("#loginForm").classList.add("hide"); };
+$("#tabLogin").onclick = () => { $("#tabLogin").classList.add("active"); $("#tabSignup").classList.remove("active"); $("#loginForm").classList.remove("hide"); $("#signupForm").classList.add("hide"); };
+$("#tabSignup").onclick = () => { $("#tabSignup").classList.add("active"); $("#tabLogin").classList.remove("active"); $("#signupForm").classList.remove("hide"); $("#loginForm").classList.add("hide"); };
 
-function authMsg(id, text, type) { const el = $(id); el.textContent = text; el.className = "msg " + (type || "err"); }
+function authMsg(id, text, type = "err") { const el = $(id); el.textContent = text; el.className = "msg " + type; }
 function authHide(id) { $(id).className = "msg hide"; }
 
-$("#btnLogin").onclick = async function(){
+$("#btnLogin").onclick = async () => {
   authHide("#authMsg");
   const email = $("#loginEmail").value.trim(), pass = $("#loginPass").value;
   if (!email || !pass) return authMsg("#authMsg", "Enter your email and password.");
@@ -678,7 +368,7 @@ $("#btnLogin").onclick = async function(){
   catch (e) { authMsg("#authMsg", prettyAuthError(e)); $("#btnLogin").textContent = "Sign in"; }
 };
 
-$("#btnSignup").onclick = async function(){
+$("#btnSignup").onclick = async () => {
   authHide("#suMsg");
   const name = $("#suName").value.trim(), email = $("#suEmail").value.trim(), pass = $("#suPass").value;
   if (!name || !email || !pass) return authMsg("#suMsg", "Fill in every field.");
@@ -690,40 +380,20 @@ $("#btnSignup").onclick = async function(){
     await ensureUserDoc(cred.user, name);
   } catch (e) { authMsg("#suMsg", prettyAuthError(e)); $("#btnSignup").textContent = "Create account"; }
 };
-getRedirectResult(auth).then(async (result) => {
-  if (result && result.user) {
-    await ensureUserDoc(result.user, result.user.displayName || "Student");
-  }
-}).catch((error) => {
-  console.error("Redirect error:", error);
-});
+
 $("#btnGoogle").onclick = async () => {
   authHide("#authMsg");
-  const provider = new GoogleAuthProvider();
-  
-  // Detect if the user is on a mobile device
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-  if (isMobile) {
-    // On mobile, try Redirect directly (more reliable than Popup on phones)
-    try {
-      await signInWithRedirect(auth, provider);
-    } catch (e) {
-      authMsg("#authMsg", prettyAuthError(e));
-    }
-  } else {
-    // On desktop, use Popup
-    try {
-      const result = await signInWithPopup(auth, provider);
-      await ensureUserDoc(result.user, result.user.displayName || "Student");
-    } catch (e) { 
-      authMsg("#authMsg", prettyAuthError(e)); 
-    }
+  try {
+    const provider = new GoogleAuthProvider();
+    const result = await signInWithPopup(auth, provider);
+    await ensureUserDoc(result.user, result.user.displayName || "Student");
+  } catch (e) { 
+    if (e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request') return;
+    authMsg("#authMsg", prettyAuthError(e)); 
   }
 };
 
-
-$("#btnForgot").onclick = async function(){
+$("#btnForgot").onclick = async () => {
   const email = $("#loginEmail").value.trim();
   if (!email) return authMsg("#authMsg", "Type your email first, then tap again.");
   try { await sendPasswordResetEmail(auth, email); authMsg("#authMsg", "Reset link sent. Check your inbox.", "ok"); }
@@ -732,11 +402,9 @@ $("#btnForgot").onclick = async function(){
 
 function prettyAuthError(e) {
   const m = (e && e.code) || "";
-  if (m.indexOf("invalid-credential") >= 0 || m.indexOf("wrong-password") >= 0) return "Wrong email or password.";
-  if (m.indexOf("user-not-found") >= 0) return "No account found with that email.";
-  if (m.indexOf("email-already-in-use") >= 0) return "That email is already registered.";
-  if (m.indexOf("popup-closed") >= 0) return "Google sign-in was cancelled.";
-  if (m.indexOf("network") >= 0) return "Network error. Check your connection.";
+  if (m.includes("invalid-credential") || m.includes("wrong-password")) return "Wrong email or password.";
+  if (m.includes("user-not-found")) return "No account found with that email.";
+  if (m.includes("email-already-in-use")) return "That email is already registered.";
   return (e && e.message) || "Something went wrong.";
 }
 
@@ -746,10 +414,8 @@ async function ensureUserDoc(user, name) {
   const isSuper = user.email === SUPER_ADMIN_EMAIL;
   if (!snap.exists()) {
     await setDoc(ref, {
-      uid: user.uid, email: user.email || "",
-      displayName: name || "Student", photoURL: user.photoURL || "",
-      role: isSuper ? "superadmin" : "student",
-      createdAt: serverTimestamp(), online: true, lastSeen: serverTimestamp(),
+      uid: user.uid, email: user.email || "", displayName: name || "Student", photoURL: user.photoURL || "",
+      role: isSuper ? "superadmin" : "student", createdAt: serverTimestamp(), online: true, lastSeen: serverTimestamp(),
       privacy: { showLastSeen: true, showOnline: true }, notif: { enabled: true }
     });
   } else if (isSuper && snap.data().role !== "superadmin") {
@@ -757,16 +423,14 @@ async function ensureUserDoc(user, name) {
   }
 }
 
-function defaultAvatar(name) {
+function defaultAvatar(name = "U") {
   const ch = (name || "U").trim().charAt(0).toUpperCase();
-  return "data:image/svg+xml;utf8," + encodeURIComponent(
-    "<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%235b8dff'/><stop offset='1' stop-color='%238b5cff'/></linearGradient></defs><rect width='100%' height='100%' rx='40' fill='url(%23g)'/><text x='50%' y='54%' font-size='38' fill='white' text-anchor='middle' font-family='Arial' dominant-baseline='middle'>" + ch + "</text></svg>"
-  );
+  return "data:image/svg+xml;utf8," + encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80'><rect width='100%' height='100%' rx='40' fill='%235b8dff'/><text x='50%' y='54%' font-size='38' fill='white' text-anchor='middle' font-family='Arial' dominant-baseline='middle'>${ch}</text></svg>`);
 }
 
 let ME = null, userUnsub = null;
 
-onAuthStateChanged(auth, async function(user){
+onAuthStateChanged(auth, async (user) => {
   if (userUnsub) { userUnsub(); userUnsub = null; }
   if (!user) {
     ME = null;
@@ -780,7 +444,7 @@ onAuthStateChanged(auth, async function(user){
   $("#app").classList.add("on");
   await ensureUserDoc(user, user.displayName || "Student");
 
-  userUnsub = onSnapshot(doc(db, "users", user.uid), function(snap){
+  userUnsub = onSnapshot(doc(db, "users", user.uid), (snap) => {
     if (!snap.exists()) return;
     ME = snap.data();
     $("#hdrAvatar").src = ME.photoURL || defaultAvatar(ME.displayName);
@@ -798,1005 +462,219 @@ onAuthStateChanged(auth, async function(user){
 
     if (ME.role === "superadmin" && !document.querySelector("[data-nav='admin']")) {
       const b = document.createElement("button");
-      b.dataset.nav = "admin";
-      b.innerHTML = '<span class="ic">🛡️</span>Admin';
+      b.dataset.nav = "admin"; b.innerHTML = '<span class="ic">🛡️</span>Admin';
       document.querySelector("nav").appendChild(b);
     }
-    loadCalculator();
-    loadSavedWords();
-        listenForAnnouncements();
-    listenForNewMessages();
+    if (ME.role === "superadmin") { loadAdminUsers(); loadAdminGroups(); loadAdminSettings(); }
+    loadCalculator(); loadQuizHistory(); loadLeaderboard(); loadRooms(); loadSavedWords(); loadQuestionSubjects();
   });
 
   await updateDoc(doc(db, "users", user.uid), { online: true, lastSeen: serverTimestamp() });
 });
 
-$("#btnSaveProfile").onclick = async function(){
+$("#btnSaveProfile").onclick = async () => {
   if (!ME) return;
-  const name = $("#profNameInput").value.trim();
-  const photo = $("#profPhotoInput").value.trim();
+  const name = $("#profNameInput").value.trim(), photo = $("#profPhotoInput").value.trim();
   await updateDoc(doc(db, "users", ME.uid), { displayName: name, photoURL: photo });
   if (auth.currentUser) await updateProfile(auth.currentUser, { displayName: name, photoURL: photo });
   toast("Profile saved", "ok");
 };
-$("#setLastSeen").onchange = $("#setOnline").onchange = function(){
-  if (!ME) return;
-  updateDoc(doc(db, "users", ME.uid), {
-    privacy: { showLastSeen: $("#setLastSeen").checked, showOnline: $("#setOnline").checked }
-  });
-};
-$("#setNotif").onchange = function(){
-  if (!ME) return;
-  updateDoc(doc(db, "users", ME.uid), { notif: { enabled: $("#setNotif").checked } });
-};
-$("#btnLogout").onclick = async function(){
+$("#setLastSeen").onchange = $("#setOnline").onchange = () => { if (ME) updateDoc(doc(db, "users", ME.uid), { privacy: { showLastSeen: $("#setLastSeen").checked, showOnline: $("#setOnline").checked } }); };
+$("#setNotif").onchange = () => { if (ME) updateDoc(doc(db, "users", ME.uid), { notif: { enabled: $("#setNotif").checked } }); };
+
+$("#btnLogout").onclick = async () => {
   if (ME) await updateDoc(doc(db, "users", ME.uid), { online: false, lastSeen: serverTimestamp() });
   await signOut(auth);
-  // Clear the chat history so the next user doesn't see it
   localStorage.removeItem("tutorHistory");
   tutorHistory = [];
-  renderTutor();
   toast("Signed out");
 };
-$("#btnLeaderboardLink").onclick = function(){ showPage("leaderboard"); };
-$("#btnGamesLink").onclick = function(){ showPage("games"); };
 
 const SCALES = { 5:{A:5,B:4,C:3,D:2,E:1,F:0}, 4:{A:4,B:3,C:2,D:1,F:0}, 7:{A:7,B:6,C:5,D:4,E:3,F:0} };
 let currentCourses = [];
 
 function renderCourses() {
   const wrap = $("#courseList");
-  if (!currentCourses.length) {
-    wrap.innerHTML = '<div class="empty"><span class="big">📚</span>No courses yet. Tap ＋ to add.</div>';
-    return;
-  }
+  if (!currentCourses.length) { wrap.innerHTML = `<div class="empty"><span class="big">📚</span>No courses yet.</div>`; return; }
   const scale = SCALES[$("#scaleSel").value];
-  const opts = Object.keys(scale).map(function(g){ return '<option value="' + g + '"' + (g === 'A' ? ' selected' : '') + '>' + g + '</option>'; }).join("");
-  wrap.innerHTML = currentCourses.map(function(c, i){
-    return '<div class="row" style="margin-bottom:8px;gap:6px">' +
-      '<input class="mini" placeholder="Course" value="' + esc(c.name) + '" data-i="' + i + '" data-k="name" style="flex:2" />' +
-      '<input class="mini" placeholder="Code" value="' + esc(c.code) + '" data-i="' + i + '" data-k="code" style="flex:1" />' +
-      '<input class="mini" type="number" min="0" placeholder="Units" value="' + esc(c.units) + '" data-i="' + i + '" data-k="units" style="width:64px" />' +
-      '<select class="mini" data-i="' + i + '" data-k="grade" style="width:64px">' + opts + '</select>' +
-      '<button class="icon-btn" data-del="' + i + '">✕</button>' +
-    '</div>';
-  }).join("");
-  wrap.querySelectorAll("[data-i]").forEach(function(el){
+  const opts = Object.keys(scale).map(g => `<option value="${g}"${g==='A'?' selected':''}>${g}</option>`).join("");
+  wrap.innerHTML = currentCourses.map((c, i) => `<div class="row" style="margin-bottom:8px;gap:6px"><input class="mini" placeholder="Course" value="${esc(c.name)}" data-i="${i}" data-k="name" style="flex:2" /><input class="mini" placeholder="Units" value="${esc(c.units)}" data-i="${i}" data-k="units" style="width:64px" /><select class="mini" data-i="${i}" data-k="grade" style="width:64px">${opts}</select><button class="icon-btn" data-del="${i}">✕</button></div>`).join("");
+  wrap.querySelectorAll("[data-i]").forEach(el => {
     if (el.dataset.k === "grade") el.value = currentCourses[el.dataset.i].grade;
-    el.oninput = el.onchange = function(){ currentCourses[el.dataset.i][el.dataset.k] = el.value; updateLiveGPA(); };
+    el.oninput = el.onchange = () => { currentCourses[el.dataset.i][el.dataset.k] = el.value; updateLiveGPA(); };
   });
-  wrap.querySelectorAll("[data-del]").forEach(function(b){
-    b.onclick = function(){ currentCourses.splice(+b.dataset.del, 1); renderCourses(); updateLiveGPA(); };
-  });
+  wrap.querySelectorAll("[data-del]").forEach(b => { b.onclick = () => { currentCourses.splice(+b.dataset.del, 1); renderCourses(); updateLiveGPA(); }; });
   updateLiveGPA();
 }
 
 function computeGPA(courses, scaleKey) {
-  const scale = SCALES[scaleKey];
-  let pts = 0, units = 0;
-  courses.forEach(function(c){ const u = Number(c.units) || 0; pts += u * (scale[c.grade] || 0); units += u; });
-  return { gpa: units ? pts / units : 0, units: units, points: pts };
+  const scale = SCALES[scaleKey]; let pts = 0, units = 0;
+  courses.forEach(c => { const u = Number(c.units) || 0; pts += u * (scale[c.grade] || 0); units += u; });
+  return { gpa: units ? pts / units : 0, units: units };
 }
 function updateLiveGPA() {
   const r = computeGPA(currentCourses, $("#scaleSel").value);
-  const pC = parseFloat($("#prevCGPA").value) || 0;
-  const pU = parseFloat($("#prevUnits").value) || 0;
-  const total = r.units + pU;
-  const cgpa = total ? ((pC * pU) + (r.gpa * r.units)) / total : r.gpa;
+  const pC = parseFloat($("#prevCGPA").value) || 0, pU = parseFloat($("#prevUnits").value) || 0;
+  const total = r.units + pU, cgpa = total ? ((pC * pU) + (r.gpa * r.units)) / total : r.gpa;
   $("#statCGPA").textContent = cgpa.toFixed(2);
   $("#statUnits").textContent = total;
 }
-$("#scaleSel").onchange = function(){ renderCourses(); updateLiveGPA(); };
+$("#scaleSel").onchange = () => { renderCourses(); updateLiveGPA(); };
 $("#prevCGPA").oninput = $("#prevUnits").oninput = updateLiveGPA;
-$("#btnAddCourse").onclick = function(){ currentCourses.push({ name:"", code:"", units:"", grade:"A" }); renderCourses(); };
-$("#btnClearSem").onclick = function(){ currentCourses = []; renderCourses(); };
+$("#btnAddCourse").onclick = () => { currentCourses.push({ name:"", units:"", grade:"A" }); renderCourses(); };
+$("#btnClearSem").onclick = () => { currentCourses = []; renderCourses(); };
 
-$("#btnSaveSem").onclick = async function(){
-  if (!ME) return;
-  if (!currentCourses.length) return toast("Add at least one course.", "err");
-  const scaleKey = $("#scaleSel").value;
-  const r = computeGPA(currentCourses, scaleKey);
+$("#btnSaveSem").onclick = async () => {
+  if (!ME || !currentCourses.length) return toast("Add at least one course.", "err");
+  const r = computeGPA(currentCourses, $("#scaleSel").value);
   const semName = prompt("Semester name", "Semester " + (Date.now() % 1000));
   if (!semName) return;
-  await addDoc(collection(db, "users", ME.uid, "semesters"), {
-    name: semName, scale: scaleKey, courses: currentCourses, gpa: r.gpa, units: r.units, createdAt: serverTimestamp()
-  });
-  toast("Semester saved", "ok");
-  currentCourses = []; renderCourses();
-  loadCalculator();
+  await addDoc(collection(db, "users", ME.uid, "semesters"), { name: semName, scale: $("#scaleSel").value, courses: currentCourses, gpa: r.gpa, units: r.units, createdAt: serverTimestamp() });
+  toast("Saved", "ok"); currentCourses = []; renderCourses(); loadCalculator();
 };
 
 async function loadCalculator() {
   if (!ME) return;
   const snap = await getDocs(query(collection(db, "users", ME.uid, "semesters"), orderBy("createdAt", "asc")));
-  let pts = 0, units = 0;
-  const list = $("#semList");
-  if (snap.empty) {
-    list.innerHTML = '<div class="empty"><span class="big">🗓️</span>No semesters saved yet.</div>';
-    $("#statSem").textContent = "0";
-    $("#feedback").textContent = "Add your first semester to see personalised feedback.";
-    return;
-  }
+  let pts = 0, units = 0; const list = $("#semList");
+  if (snap.empty) { list.innerHTML = `<div class="empty">No semesters saved.</div>`; $("#statSem").textContent = "0"; return; }
   let html = "";
-  snap.forEach(function(d){
-    const s = d.data();
-    pts += s.gpa * s.units; units += s.units;
-    html += '<div style="padding:12px;border:1px solid var(--line);border-radius:12px;margin-bottom:10px">' +
-      '<div class="row between"><b>' + esc(s.name) + '</b><span class="pill brand">GPA ' + s.gpa.toFixed(2) + '</span></div>' +
-      '<div class="sub" style="margin:6px 0 8px">' + s.units + ' units • ' + s.courses.length + ' courses</div>' +
-      '<button class="btn ghost" style="margin:0;padding:8px;font-size:13px" data-del-sem="' + d.id + '">Delete</button>' +
-    '</div>';
+  snap.forEach(d => {
+    const s = d.data(); pts += s.gpa * s.units; units += s.units;
+    html += `<div style="padding:12px;border:1px solid var(--line);border-radius:12px;margin-bottom:10px"><div class="row between"><b>${esc(s.name)}</b><span class="pill brand">GPA ${s.gpa.toFixed(2)}</span></div></div>`;
   });
   list.innerHTML = html;
-  list.querySelectorAll("[data-del-sem]").forEach(function(b){
-    b.onclick = async function(){
-      if (!confirm("Delete this semester?")) return;
-      await deleteDoc(doc(db, "users", ME.uid, "semesters", b.dataset.delSem));
-      toast("Deleted"); loadCalculator();
-    };
-  });
-  const cgpa = units ? pts / units : 0;
-  $("#statCGPA").textContent = cgpa.toFixed(2);
+  $("#statCGPA").textContent = (units ? pts / units : 0).toFixed(2);
   $("#statUnits").textContent = units;
   $("#statSem").textContent = snap.size;
-  $("#feedback").textContent = feedbackFor(cgpa);
 }
-function feedbackFor(c) {
-  if (c >= 4.5) return "Outstanding! You're in First Class range — keep this consistency. 🏅";
-  if (c >= 3.5) return "Very strong. You're in Second Class Upper range. Push a little for First Class.";
-  if (c >= 2.4) return "Solid work. With focus on weak courses you can climb higher.";
-  if (c >= 1.5) return "You're passing, but there's room to grow. Target weak courses first.";
-  return "Don't be discouraged. Study consistently and ask your AI Tutor for help.";
-}
-$("#btnGoal").onclick = function(){
-  const target = parseFloat($("#goalCGPA").value);
-  const nUnits = parseFloat($("#goalUnits").value);
-  const cur = parseFloat($("#goalCur").value) || (parseFloat($("#statCGPA").textContent) || 0);
-  const doneUnits = parseFloat($("#statUnits").textContent) || 0;
-  if (!target || !nUnits) return toast("Fill in target CGPA and next units.", "err");
-  const need = ((target * (doneUnits + nUnits)) - (cur * doneUnits)) / nUnits;
-  const out = $("#goalOut");
-  out.classList.remove("hide");
-  if (need > 5) { out.className = "msg err"; out.textContent = "You'd need a GPA of " + need.toFixed(2) + " — not possible in a 5-point system."; }
-  else if (need <= 0) { out.className = "msg ok"; out.textContent = "You're already at or above your target. Well done!"; }
-  else { out.className = "msg ok"; out.textContent = "You need an average GPA of " + need.toFixed(2) + " over your next " + nUnits + " units to reach " + target.toFixed(2) + " CGPA."; }
+
+$("#btnGoal").onclick = () => {
+  const target = parseFloat($("#goalCGPA").value), nUnits = parseFloat($("#goalUnits").value);
+  const cur = parseFloat($("#goalCur").value) || (parseFloat($("#statCGPA").textContent) || 0), done = parseFloat($("#statUnits").textContent) || 0;
+  if (!target || !nUnits) return toast("Fill in target and units.", "err");
+  const need = ((target * (done + nUnits)) - (cur * done)) / nUnits;
+  const out = $("#goalOut"); out.classList.remove("hide");
+  out.className = "msg " + (need > 5 ? "err" : "ok");
+  out.textContent = need > 5 ? "Not possible." : need <= 0 ? "Already above target!" : `You need a GPA of ${need.toFixed(2)}.`;
 };
 
 let tutorHistory = JSON.parse(localStorage.getItem("tutorHistory") || "[]");
-function saveTutorHistory(){ localStorage.setItem("tutorHistory", JSON.stringify(tutorHistory.slice(-40))); }
 function renderTutor() {
   const box = $("#chatBox");
-  if (!tutorHistory.length) { box.innerHTML = '<div class="empty"><span class="big">🤖</span>Ask me anything about your studies.</div>'; return; }
-  box.innerHTML = tutorHistory.map(function(m){
-    return '<div style="align-self:' + (m.role === "user" ? "flex-end" : "flex-start") + ';max-width:88%;' +
-      'background:' + (m.role === "user" ? "linear-gradient(135deg,var(--brand),var(--brand-2))" : "var(--card-solid)") + ';' +
-      'color:' + (m.role === "user" ? "#fff" : "var(--text)") + ';' +
-      'border:1px solid var(--line-strong);border-radius:14px;padding:12px 14px;font-size:14px;line-height:1.55;white-space:pre-wrap">' +
-      esc(m.content) + '</div>';
-  }).join("");
+  if (!tutorHistory.length) { box.innerHTML = `<div class="empty">Ask me anything.</div>`; return; }
+  box.innerHTML = tutorHistory.map(m => `<div style="align-self:${m.role === "user" ? "flex-end" : "flex-start"};max-width:88%;background:${m.role === "user" ? "var(--brand)" : "var(--card-solid)"};color:${m.role === "user" ? "#fff" : "var(--text)"};border:1px solid var(--line-strong);border-radius:14px;padding:12px;font-size:14px;white-space:pre-wrap">${esc(m.content)}</div>`).join("");
   box.scrollTop = box.scrollHeight;
 }
 async function askTutor(text) {
   if (!text.trim()) return;
-  tutorHistory.push({ role: "user", content: text });
-  renderTutor(); saveTutorHistory();
+  tutorHistory.push({ role: "user", content: text }); renderTutor(); localStorage.setItem("tutorHistory", JSON.stringify(tutorHistory.slice(-40)));
   $("#tutorInput").value = "";
-  const thinking = document.createElement("div");
-  thinking.style.cssText = "align-self:flex-start;max-width:88%;background:var(--card-solid);border:1px solid var(--line-strong);border-radius:14px;padding:12px 14px";
-  thinking.innerHTML = '<span class="spinner"></span> Thinking…';
-  $("#chatBox").appendChild(thinking);
-  $("#chatBox").scrollTop = $("#chatBox").scrollHeight;
+  const think = document.createElement("div"); think.innerHTML = '<span class="spinner"></span> Thinking…'; $("#chatBox").appendChild(think);
   try {
-    const res = await fetch(AI_ENDPOINT, {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages: tutorHistory.slice(-10) })
-    });
-    if (!res.ok) throw new Error("AI service unavailable");
+    const res = await fetch(AI_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ messages: tutorHistory.slice(-10) }) });
     const data = await res.json();
-    const reply = data.reply || data.content || "No response.";
-    tutorHistory.push({ role: "assistant", content: reply });
-    saveTutorHistory();
-    thinking.remove();
-    renderTutor();
-  } catch (e) {
-    thinking.innerHTML = '<span style="color:var(--err)">AI is unavailable right now. Please retry.</span>';
-    setTimeout(function(){ thinking.remove(); }, 2500);
-  }
+    tutorHistory.push({ role: "assistant", content: data.reply || "No response" });
+    localStorage.setItem("tutorHistory", JSON.stringify(tutorHistory.slice(-40))); think.remove(); renderTutor();
+  } catch (e) { think.innerHTML = `<span style="color:var(--err)">AI unavailable.</span>`; setTimeout(() => think.remove(), 2500); }
 }
-$("#btnTutorSend").onclick = function(){ askTutor($("#tutorInput").value); };
-$("#tutorInput").addEventListener("keydown", function(e){ if (e.key === "Enter") askTutor($("#tutorInput").value); });
-$("#btnNewChat").onclick = function(){ if (confirm("Start a new chat?")) { tutorHistory = []; saveTutorHistory(); renderTutor(); } };
+$("#btnTutorSend").onclick = () => askTutor($("#tutorInput").value);
+$("#tutorInput").addEventListener("keydown", (e) => { if (e.key === "Enter") askTutor($("#tutorInput").value); });
+$("#btnNewChat").onclick = () => { tutorHistory = []; localStorage.removeItem("tutorHistory"); renderTutor(); };
 renderTutor();
 
 let savedWords = JSON.parse(localStorage.getItem("savedWords") || "[]");
-function loadSavedWords() {
-  const box = $("#dictSaved");
-  if (!savedWords.length) { box.innerHTML = '<div class="empty"><span class="big">⭐</span>No saved words yet.</div>'; return; }
-  box.innerHTML = savedWords.map(function(w){ return '<span class="pill brand" style="margin:4px;cursor:pointer" data-word="' + esc(w) + '">' + esc(w) + '</span>'; }).join("");
-  box.querySelectorAll("[data-word]").forEach(function(el){
-    el.onclick = function(){ $("#dictInput").value = el.dataset.word; searchWord(); };
-  });
-}
+function loadSavedWords() { $("#dictSaved").innerHTML = savedWords.map(w => `<span class="pill brand" style="margin:4px">${esc(w)}</span>`).join("") || "No saved words."; }
 async function searchWord() {
-  const word = $("#dictInput").value.trim();
-  if (!word) return;
-  const box = $("#dictResult");
-  box.innerHTML = '<div class="card"><div class="loading"><span class="spinner"></span>Searching…</div></div>';
+  const word = $("#dictInput").value.trim(); if (!word) return;
+  $("#dictResult").innerHTML = `<div class="loading"><span class="spinner"></span>Searching…</div>`;
   try {
-    const r = await fetch("https://api.dictionaryapi.dev/api/v2/entries/en/" + encodeURIComponent(word));
-    if (!r.ok) throw new Error("not found");
-    const data = await r.json();
-    const e = data[0];
-    const phonetic = e.phonetic || (e.phonetics.find(function(p){ return p.text; }) || {}).text || "";
-    const audio = (e.phonetics.find(function(p){ return p.audio; }) || {}).audio || "";
-    let html = '<div class="card">' +
-      '<div class="row between"><div><h3 style="margin:0">' + esc(e.word) + '</h3>' +
-      '<p class="sub" style="margin:4px 0 0">' + esc(phonetic) + '</p></div>' +
-      '<button class="pill brand" id="saveWordBtn">⭐ Save</button></div>' +
-      (audio ? '<audio controls src="' + audio + '" style="width:100%;margin-top:10px"></audio>' : "") +
-    '</div>';
-    e.meanings.forEach(function(m){
-      html += '<div class="card"><span class="pill">' + esc(m.partOfSpeech) + '</span>';
-      m.definitions.slice(0, 5).forEach(function(d, i){
-        html += '<p style="margin:10px 0 4px"><b>' + (i+1) + '.</b> ' + esc(d.definition) + '</p>';
-        if (d.example) html += '<p class="sub" style="margin:0 0 4px;font-style:italic">"' + esc(d.example) + '"</p>';
-      });
-      if (m.synonyms && m.synonyms.length) html += '<p class="sub" style="margin-top:8px"><b>Synonyms:</b> ' + m.synonyms.slice(0,8).map(esc).join(", ") + '</p>';
-      if (m.antonyms && m.antonyms.length) html += '<p class="sub"><b>Antonyms:</b> ' + m.antonyms.slice(0,8).map(esc).join(", ") + '</p>';
-      html += '</div>';
-    });
-    box.innerHTML = html;
-    const sb = $("#saveWordBtn");
-    if (sb) sb.onclick = function(){
-      const w = e.word.toLowerCase();
-      if (savedWords.indexOf(w) < 0) { savedWords.push(w); localStorage.setItem("savedWords", JSON.stringify(savedWords)); loadSavedWords(); toast("Saved", "ok"); }
-      else toast("Already saved");
-    };
-  } catch (err) {
-    box.innerHTML = '<div class="card"><div class="empty"><span class="big">😕</span>Word not found. Check the spelling.</div></div>';
-  }
+    const r = await fetch("https://api.dictionaryapi.dev/api/v2/entries/en/" + word); const data = await r.json(); const e = data[0];
+    let html = `<div class="card"><h3>${esc(e.word)}</h3><button class="pill brand" onclick="savedWords.push('${e.word}');localStorage.setItem('savedWords',JSON.stringify(savedWords));loadSavedWords();">⭐ Save</button>`;
+    e.meanings.forEach(m => { html += `<p><b>${m.partOfSpeech}</b>: ${esc(m.definitions[0].definition)}</p>`; });
+    $("#dictResult").innerHTML = html + `</div>`;
+  } catch { $("#dictResult").innerHTML = `<div class="card">Word not found.</div>`; }
 }
 $("#btnDictSearch").onclick = searchWord;
-$("#dictInput").addEventListener("keydown", function(e){ if (e.key === "Enter") searchWord(); });
-  let QUIZ = {};
 
 async function loadQuestionSubjects() {
-  const sel = $("#qSubject");
-  if (!sel) return;
-  try {
-    const snap = await getDocs(collection(db, "questions"));
-    const subjects = {};
-    snap.forEach(function(d){
-      const q = d.data();
-      if (q.subject) subjects[q.subject] = (subjects[q.subject] || 0) + 1;
-    });
-    const list = Object.keys(subjects).sort();
-    if (!list.length) {
-      sel.innerHTML = '<option value="">No questions yet — ask the admin to upload</option>';
-      return;
-    }
-    sel.innerHTML = list.map(function(s){ return '<option value="' + esc(s) + '">' + esc(s) + ' (' + subjects[s] + ')</option>'; }).join("");
-    updateQuizTopics();
-  } catch (e) {
-    sel.innerHTML = '<option value="">Could not load subjects</option>';
-  }
+  const snap = await getDocs(collection(db, "questions")); const subs = new Set();
+  snap.forEach(d => { if(d.data().subject) subs.add(d.data().subject); });
+  $("#qSubject").innerHTML = [...subs].map(s => `<option>${esc(s)}</option>`).join("") || `<option value="">No questions yet</option>`;
 }
-
-async function updateQuizTopics() {
-  const subj = $("#qSubject") ? $("#qSubject").value : "";
-  const topicSel = $("#qTopic");
-  if (!topicSel) return;
-  if (!subj) { topicSel.innerHTML = '<option value="all">All topics</option>'; return; }
-  try {
-    const snap = await getDocs(query(collection(db, "questions"), where("subject", "==", subj)));
-    const topics = {};
-    snap.forEach(function(d){ const q = d.data(); if (q.topic) topics[q.topic] = true; });
-    const list = Object.keys(topics).sort();
-    topicSel.innerHTML = '<option value="all">All topics</option>' + list.map(function(t){ return '<option value="' + esc(t) + '">' + esc(t) + '</option>'; }).join("");
-  } catch (e) {}
-}
-
-if ($("#qSubject")) $("#qSubject").addEventListener("change", updateQuizTopics);
-
-function shuffleArr(a) {
-  const arr = a.slice();
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    const tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
-  }
-  return arr;
-}
-
-async function startQuiz() {
-  const subj = $("#qSubject").value;
-  const topic = $("#qTopic").value;
-  const count = parseInt($("#qCount").value) || 10;
-  const diff = $("#qDiff").value;
-  const mode = $("#qMode").value;
-  const area = $("#quizArea");
-
-  if (!subj && mode !== "mixed") {
-    area.innerHTML = '<div class="card"><div class="empty"><span class="big">📭</span>No questions available. Ask the Super Admin to upload some.</div></div>';
-    return;
-  }
-
-  area.innerHTML = '<div class="card"><div class="loading"><span class="spinner"></span>Loading questions…</div></div>';
-
-  try {
-    let q;
-    if (mode === "mixed") {
-      q = query(collection(db, "questions"), limit(200));
-    } else {
-      q = query(collection(db, "questions"), where("subject", "==", subj), limit(300));
-    }
-    const snap = await getDocs(q);
-    let pool = [];
-    snap.forEach(function(d){ pool.push({ id: d.id, data: d.data() }); });
-
-    if (topic && topic !== "all") pool = pool.filter(function(x){ return x.data.topic === topic; });
-    if (diff && diff !== "all") pool = pool.filter(function(x){ return x.data.difficulty === diff; });
-
-    if (pool.length < 1) {
-      area.innerHTML = '<div class="card"><div class="empty"><span class="big">📭</span>No questions match those filters.</div></div>';
-      return;
-    }
-
-    pool = shuffleArr(pool).slice(0, Math.min(count, pool.length));
-
-    QUIZ = {
-      questions: pool,
-      index: 0,
-      score: 0,
-      mode: mode,
-      answers: [],
-      startTime: Date.now(),
-      secondsPerQ: mode === "timed" ? 60 : null,
-      timer: null
-    };
-
-    renderQuestion();
-  } catch (e) {
-    area.innerHTML = '<div class="card"><div class="empty"><span class="big">⚠️</span>Could not load questions. Check your internet.</div></div>';
-  }
-}
-
+let QUIZ = {};
+$("#btnStartQuiz").onclick = async () => {
+  const subj = $("#qSubject").value; if (!subj) return toast("No questions available", "err");
+  const snap = await getDocs(query(collection(db, "questions"), limit(100)));
+  let pool = []; snap.forEach(d => { if(d.data().subject === subj) pool.push(d.data()); });
+  pool.sort(() => Math.random() - 0.5); QUIZ = { q: pool.slice(0, parseInt($("#qCount").value)), i: 0, score: 0 };
+  renderQuestion();
+};
 function renderQuestion() {
-  const area = $("#quizArea");
-  const q = QUIZ.questions[QUIZ.index];
-  if (!q) return finishQuiz();
-  const d = q.data;
-  const letters = ["A","B","C","D"];
-
-  area.innerHTML = '<div class="card">' +
-    '<div class="row between" style="margin-bottom:10px">' +
-      '<span class="pill">Question ' + (QUIZ.index + 1) + ' / ' + QUIZ.questions.length + '</span>' +
-      '<span class="pill brand" id="qTimer">' + (QUIZ.secondsPerQ ? QUIZ.secondsPerQ + 's' : 'Score ' + QUIZ.score) + '</span>' +
-    '</div>' +
-    '<p style="font-size:15.5px;font-weight:600;line-height:1.55;margin:6px 0 14px">' + esc(d.question || "") + '</p>' +
-    '<div class="grid" style="gap:10px">' +
-      letters.map(function(L){
-        const opt = d["option" + L] || d["option" + (letters.indexOf(L) + 1)] || "";
-        return '<button class="btn ghost answer-btn" data-answer="' + L + '" style="text-align:left;margin:0">' +
-          '<b style="color:var(--brand)">' + L + '.</b> ' + esc(opt) + '</button>';
-      }).join("") +
-    '</div>' +
-  '</div>';
-
-  area.querySelectorAll(".answer-btn").forEach(function(b){
-    b.onclick = function(){ answerQuestion(b.dataset.answer); };
-  });
-
-  if (QUIZ.secondsPerQ) {
-    if (QUIZ.timer) clearInterval(QUIZ.timer);
-    let left = QUIZ.secondsPerQ;
-    QUIZ.timer = setInterval(function(){
-      left--;
-      const t = $("#qTimer");
-      if (t) t.textContent = left + "s";
-      if (left <= 0) { clearInterval(QUIZ.timer); answerQuestion(null); }
-    }, 1000);
-  }
+  if (QUIZ.i >= QUIZ.q.length) return finishQuiz();
+  const q = QUIZ.q[QUIZ.i];
+  $("#quizArea").innerHTML = `<div class="card"><p>${esc(q.question)}</p><div class="grid">${["A","B","C","D"].map(L => `<button class="btn ghost" onclick="answerQ('${L}','${q.answer}')">${L}. ${esc(q["option"+L] || "")}</button>`).join("")}</div></div>`;
 }
-
-function answerQuestion(picked) {
-  if (QUIZ.timer) { clearInterval(QUIZ.timer); QUIZ.timer = null; }
-  const q = QUIZ.questions[QUIZ.index];
-  const d = q.data;
-  const correct = (d.answer || d.correct || "").toString().trim().toUpperCase();
-  const isRight = picked && picked === correct;
-  if (isRight) QUIZ.score++;
-  QUIZ.answers.push({ id: q.id, picked: picked, correct: correct, right: isRight, question: d.question, explanation: d.explanation || "" });
-  QUIZ.index++;
-  if (QUIZ.index >= QUIZ.questions.length) finishQuiz();
-  else renderQuestion();
-}
-
-async function finishQuiz() {
-  const total = QUIZ.questions.length;
-  const score = QUIZ.score;
-  const pct = Math.round((score / total) * 100);
-  const area = $("#quizArea");
-
-  let reviewHtml = "";
-  QUIZ.answers.forEach(function(a, i){
-    reviewHtml += '<div style="padding:12px;border-bottom:1px solid var(--line)">' +
-      '<div class="row between"><b style="font-size:13.5px;flex:1">' + (i + 1) + '. ' + esc((a.question || "").slice(0, 90)) + '</b>' +
-      '<span class="pill ' + (a.right ? "ok" : "err") + '">' + (a.right ? "Correct" : "Wrong") + '</span></div>' +
-      (a.explanation ? '<p class="sub" style="margin:8px 0 0">💡 ' + esc(a.explanation) + '</p>' : "") +
-    '</div>';
-  });
-
-  area.innerHTML = '<div class="card" style="text-align:center">' +
-    '<div class="empty" style="padding:20px"><span class="big">' + (pct >= 70 ? "🎉" : pct >= 40 ? "👍" : "💪") + '</span></div>' +
-    '<h3 style="font-size:32px;margin:0">' + score + ' / ' + total + '</h3>' +
-    '<p class="sub" style="font-size:15px">You scored <b>' + pct + '%</b></p>' +
-    '<button class="btn" id="btnRetryQuiz">Try again</button>' +
-  '</div>' +
-  '<div class="card"><h3>Review</h3>' + reviewHtml + '</div>';
-
-  const rb = $("#btnRetryQuiz");
-  if (rb) rb.onclick = function(){ startQuiz(); };
-
-  if (ME) {
-    const today = new Date().toISOString().slice(0, 10);
-    try {
-      await addDoc(collection(db, "quizResults"), {
-        uid: ME.uid, name: ME.displayName || "Student", photo: ME.photoURL || "",
-        score: score, total: total, pct: pct, date: today, createdAt: serverTimestamp()
-      });
-    } catch (e) {}
-  }
-  loadQuizHistory();
-  loadLeaderboard();
-}
-
-async function loadQuizHistory() {
-  const box = $("#quizHistory");
-  if (!box || !ME) return;
-  try {
-    const snap = await getDocs(query(collection(db, "quizResults"), where("uid", "==", ME.uid), limit(20)));
-    const rows = [];
-    snap.forEach(function(d){ rows.push(d.data()); });
-    rows.sort(function(a, b){ return (b.createdAt && b.createdAt.seconds || 0) - (a.createdAt && a.createdAt.seconds || 0); });
-    if (!rows.length) {
-      box.innerHTML = '<div class="empty"><span class="big">📊</span>No results yet. Start a practice session.</div>';
-      return;
-    }
-    box.innerHTML = '<table><thead><tr><th>Date</th><th>Score</th><th>%</th></tr></thead><tbody>' +
-      rows.map(function(r){ return '<tr><td>' + esc(r.date || "") + '</td><td>' + r.score + '/' + r.total + '</td><td>' + r.pct + '%</td></tr>'; }).join("") +
-    '</tbody></table>';
-  } catch (e) {}
-}
-
-if ($("#btnStartQuiz")) $("#btnStartQuiz").onclick = startQuiz;
+function answerQ(pick, ans) { if (pick === ans) QUIZ.score++; QUIZ.i++; renderQuestion(); }
+function finishQuiz() { $("#quizArea").innerHTML = `<div class="card"><h3>Score: ${QUIZ.score}/${QUIZ.q.length}</h3><button class="btn" onclick="$('#btnStartQuiz').click()">Retry</button></div>`; }
+function loadQuizHistory() {}
 
 async function loadLeaderboard() {
-  const box = $("#lbList");
-  if (!box) return;
-  box.innerHTML = '<div class="loading"><span class="spinner"></span>Loading…</div>';
-  const tabEl = document.querySelector(".lb-tab.active");
-  const range = tabEl ? tabEl.dataset.lb : "all";
-  try {
-    const snap = await getDocs(collection(db, "quizResults"));
-    let rows = [];
-    snap.forEach(function(d){ rows.push(d.data()); });
-    const now = new Date();
-    const todayStr = now.toISOString().slice(0, 10);
-    const weekAgo = new Date(now.getTime() - 7 * 86400000).toISOString().slice(0, 10);
-
-    if (range === "daily") rows = rows.filter(function(r){ return r.date === todayStr; });
-    else if (range === "weekly") rows = rows.filter(function(r){ return r.date >= weekAgo; });
-
-    const byUser = {};
-    rows.forEach(function(r){
-      if (!byUser[r.uid]) byUser[r.uid] = { name: r.name || "Student", photo: r.photo || "", points: 0, sessions: 0 };
-      byUser[r.uid].points += (r.pct || 0);
-      byUser[r.uid].sessions += 1;
-    });
-    const list = Object.keys(byUser).map(function(k){ return { uid: k, name: byUser[k].name, photo: byUser[k].photo, points: byUser[k].points, sessions: byUser[k].sessions }; });
-    list.sort(function(a, b){ return b.points - a.points; });
-
-    if (!list.length) {
-      box.innerHTML = '<div class="empty"><span class="big">🏆</span>No scores yet. Be the first!</div>';
-      return;
-    }
-    box.innerHTML = list.slice(0, 50).map(function(u, i){
-      const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : "#" + (i + 1);
-      const av = u.photo || defaultAvatar(u.name);
-      return '<div class="row" style="padding:12px;border-bottom:1px solid var(--line)">' +
-        '<div style="width:38px;text-align:center;font-weight:800;color:var(--brand)">' + medal + '</div>' +
-        '<img src="' + av + '" class="avatar" style="width:34px;height:34px" />' +
-        '<div style="flex:1"><b>' + esc(u.name) + '</b><div class="sub" style="margin:0;font-size:11.5px">' + u.sessions + ' sessions</div></div>' +
-        '<span class="pill brand">' + u.points + ' pts</span>' +
-      '</div>';
-    }).join("");
-  } catch (e) {
-    box.innerHTML = '<div class="empty"><span class="big">⚠️</span>Could not load leaderboard.</div>';
-  }
+  const snap = await getDocs(collection(db, "quizResults")); let rows = [];
+  snap.forEach(d => rows.push(d.data())); rows.sort((a,b) => b.pct - a.pct);
+  $("#lbList").innerHTML = rows.length ? rows.slice(0,20).map((u,i) => `<div class="row between" style="padding:10px;border-bottom:1px solid var(--line)"><b>#${i+1} ${esc(u.name)}</b><span class="pill brand">${u.pct}%</span></div>`).join("") : "No scores yet.";
 }
-document.querySelectorAll(".lb-tab").forEach(function(b){ b.onclick = function(){ document.querySelectorAll(".lb-tab").forEach(function(x){ x.classList.remove("active"); }); b.classList.add("active"); loadLeaderboard(); }; });
 
 async function loadRooms() {
-  const box = $("#roomList");
-  if (!box) return;
-  box.innerHTML = '<div class="card"><div class="loading"><span class="spinner"></span>Loading chats…</div></div>';
-  try {
-    const snap = await getDocs(collection(db, "groups")); // Removed orderBy to fix loading issue
-    
-    if (snap.empty) {
-      box.innerHTML = '<div class="card"><div class="empty"><span class="big">💬</span>No chats yet. Tap ＋ to create a group.</div></div>';
-      return;
-    }
-    
-    const rooms = [];
-    snap.forEach(function(d){ rooms.push({ id: d.id, data: d.data() }); });
-    
-    // Sort them in JavaScript instead of Firebase
-    rooms.sort(function(a, b){ 
-      const timeA = a.data.lastMsgAt ? a.data.lastMsgAt.seconds : 0;
-      const timeB = b.data.lastMsgAt ? b.data.lastMsgAt.seconds : 0;
-      return timeB - timeA; 
-    });
-
-    box.innerHTML = rooms.map(function(r){
-      const d = r.data;
-      const av = d.photo || defaultAvatar(d.name || "G");
-      return '<div class="card room-item" data-room="' + r.id + '" data-name="' + esc(d.name || "Group") + '" style="cursor:pointer;margin-bottom:10px">' +
-        '<div class="row">' +
-          '<img src="' + av + '" class="avatar" style="width:44px;height:44px" />' +
-          '<div style="flex:1;min-width:0">' +
-            '<b style="display:block">' + esc(d.name || "Group") + '</b>' +
-            '<span class="sub" style="display:block;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(d.lastMsg || "No messages yet") + '</span>' +
-          '</div>' +
-          (d.isPublic ? '<span class="pill brand">Public</span>' : '<span class="pill">Private</span>') +
-        '</div>' +
-      '</div>';
-    }).join("");
-    
-    box.querySelectorAll(".room-item").forEach(function(el){
-      el.onclick = function(){ openRoom(el.dataset.room, el.dataset.name); };
-    });
-  } catch (e) {
-    box.innerHTML = '<div class="card"><div class="empty"><span class="big">⚠️</span>Could not load chats. Error: ' + e.message + '</div></div>';
-  }
+  const snap = await getDocs(collection(db, "groups")); const rooms = [];
+  snap.forEach(d => rooms.push({ id: d.id, data: d.data() }));
+  $("#roomList").innerHTML = rooms.map(r => `<div class="card" onclick="openRoom('${r.id}','${esc(r.data.name)}')"><b>${esc(r.data.name)}</b></div>`).join("") || "No chats.";
 }
-let roomUnsub = null, typingUnsub = null, activeRoom = null;
-
-async function openRoom(roomId, roomName) {
-  activeRoom = roomId;
-  $("#chatHome").classList.add("hide");
-  $("#chatRoom").classList.remove("hide");
-  $("#roomTitle").textContent = roomName;
-  $("#roomSub").textContent = "Public group";
-  $("#msgScroll").innerHTML = '<div class="loading"><span class="spinner"></span>Loading messages…</div>';
-
+let roomUnsub = null;
+async function openRoom(id, name) {
+  $("#chatHome").classList.add("hide"); $("#chatRoom").classList.remove("hide"); $("#roomTitle").textContent = name;
   if (roomUnsub) roomUnsub();
-  if (typingUnsub) typingUnsub();
-
-  roomUnsub = onSnapshot(query(collection(db, "groups", roomId, "messages"), limit(200)), function(snap){
-    const scroll = $("#msgScroll");
-    const wasAtBottom = scroll.scrollHeight - scroll.scrollTop - scroll.clientHeight < 120;
-    if (snap.empty) {
-      scroll.innerHTML = '<div class="empty" style="color:#7a8bb5"><span class="big">💬</span>No messages yet. Say hi!</div>';
-      return;
-    }
-    let html = "";
-    snap.forEach(function(d){
-      const m = d.data();
-      const mine = m.uid === ME.uid;
-      const time = m.createdAt ? new Date(m.createdAt.seconds * 1000).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "";
-      const isAI = m.fromAI;
-      html += '<div style="align-self:' + (mine ? "flex-end" : "flex-start") + ';max-width:82%;">' +
-        (mine ? "" : '<div style="font-size:11px;color:' + (isAI ? "#7ee2a8" : "#8ba0d4") + ';margin-bottom:3px;font-weight:700">' + esc(m.name || "User") + (isAI ? " 🤖" : "") + '</div>') +
-        '<div class="msg-bubble" data-msgid="' + d.id + '" data-mine="' + mine + '" style="background:' + (mine ? "var(--bubble-me)" : "var(--bubble-them)") + ';color:' + (mine ? "#fff" : "var(--text)") + ';padding:9px 13px;border-radius:14px;font-size:14px;line-height:1.4;word-wrap:break-word;position:relative;box-shadow:0 1px 2px rgba(0,0,0,.2)">' +
-          (m.reply ? '<div style="border-left:3px solid rgba(255,255,255,.5);padding-left:8px;margin-bottom:6px;font-size:12.5px;opacity:.85">' + esc(m.reply.slice(0, 80)) + '</div>' : "") +
-          (m.image ? '<img src="' + m.image + '" style="max-width:100%;border-radius:8px;margin-bottom:6px" />' : "") +
-          esc(m.text || "") +
-          '<div style="font-size:10px;opacity:.7;text-align:right;margin-top:4px">' + time + (mine ? " ✓✓" : "") + '</div>' +
-        '</div>' +
-      '</div>';
-    });
-    scroll.innerHTML = html;
-    scroll.querySelectorAll(".msg-bubble").forEach(function(el){
-      el.oncontextmenu = function(e){ e.preventDefault(); deleteMsg(roomId, el.dataset.msgid, el.dataset.mine === "true"); };
-    });
-    if (wasAtBottom) scroll.scrollTop = scroll.scrollHeight;
-  });
-
-  typingUnsub = onSnapshot(doc(db, "groups", roomId, "meta", "typing"), function(snap){
-    if (!snap.exists()) { $("#typingBar").textContent = ""; return; }
-    const d = snap.data();
-    const others = Object.keys(d).filter(function(k){ return k !== ME.uid && (Date.now() - (d[k] || 0)) < 4000; });
-    $("#typingBar").textContent = others.length ? "typing…" : "";
+  roomUnsub = onSnapshot(query(collection(db, "groups", id, "messages"), limit(50)), snap => {
+    $("#msgScroll").innerHTML = snap.docs.map(d => `<div style="align-self:${d.data().uid===ME.uid?'flex-end':'flex-start'};background:var(--card-solid);padding:8px;border-radius:8px;margin-bottom:4px">${esc(d.data().text)}</div>`).join("");
   });
 }
-
-async function deleteMsg(roomId, msgId, mine) {
-  if (!ME) return;
-  if (ME.role !== "superadmin" && !mine) { toast("You can only delete your own messages.", "err"); return; }
-  if (!confirm("Delete this message?")) return;
-  await deleteDoc(doc(db, "groups", roomId, "messages", msgId));
-}
-
-if ($("#btnChatBack")) $("#btnChatBack").onclick = function(){
-  if (roomUnsub) { roomUnsub(); roomUnsub = null; }
-  if (typingUnsub) { typingUnsub(); typingUnsub = null; }
-  activeRoom = null;
-  $("#chatRoom").classList.add("hide");
-  $("#chatHome").classList.remove("hide");
-  loadRooms();
-};
-
-if ($("#btnSend")) $("#btnSend").onclick = async function(){
-  const input = $("#msgInput");
-  const text = input.value.trim();
-  if (!text || !activeRoom || !ME) return;
-  input.value = "";
-  let reply = "";
-  if (text.toLowerCase().indexOf("@ai ") === 0 || text.toLowerCase() === "@ai") {
-    reply = "AI assistant";
-  }
-  await addDoc(collection(db, "groups", activeRoom, "messages"), {
-    uid: ME.uid, name: ME.displayName || "Student", text: text, reply: reply,
-    createdAt: serverTimestamp()
-  });
-  await updateDoc(doc(db, "groups", activeRoom), { lastMsg: (ME.displayName || "User") + ": " + text.slice(0, 60), lastMsgAt: serverTimestamp() });
-
-  if (text.toLowerCase().indexOf("@ai ") === 0) {
-    const question = text.slice(4);
-    try {
-      const res = await fetch(AI_ENDPOINT, {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: [{ role: "user", content: question }] })
-      });
-      if (res.ok) {
-        const data = await res.json();
-        const answer = data.reply || data.content || "No response";
-        await addDoc(collection(db, "groups", activeRoom, "messages"), {
-          uid: "ai", name: "AI Tutor", text: answer, fromAI: true, createdAt: serverTimestamp()
-        });
-      }
-    } catch (e) {}
-  }
-};
-if ($("#msgInput")) $("#msgInput").addEventListener("keydown", function(e){ if (e.key === "Enter") $("#btnSend").click(); });
-
-if ($("#btnNewGroup")) $("#btnNewGroup").onclick = async function(){
-  if (!ME) return;
-  const name = prompt("Group name:");
-  if (!name) return;
-  const isPublic = confirm("Make this group public? (OK = Public, Cancel = Private)");
-  await addDoc(collection(db, "groups"), {
-    name: name, isPublic: isPublic, owner: ME.uid, ownerName: ME.displayName || "Student",
-    createdAt: serverTimestamp(), lastMsg: "Group created"
-  });
-  toast("Group created", "ok");
-  loadRooms();
-};
-
-if ($("#btnRoomInfo")) $("#btnRoomInfo").onclick = function(){
-  if (!activeRoom || !ME) return;
-  if (ME.role === "superadmin") {
-    if (confirm("Delete this group? (Cannot be undone)")) {
-      deleteDoc(doc(db, "groups", activeRoom));
-      toast("Group deleted");
-      $("#btnChatBack").click();
-    }
-  } else {
-    toast("Only the Super Admin can manage groups.");
-  }
+$("#btnChatBack").onclick = () => { if(roomUnsub) roomUnsub(); $("#chatHome").classList.remove("hide"); $("#chatRoom").classList.add("hide"); };
+$("#btnSend").onclick = async () => {
+  const text = $("#msgInput").value.trim(); if (!text || !$("#roomTitle").textContent) return;
+  $("#msgInput").value = "";
+  await addDoc(collection(db, "groups", "default", "messages"), { text, uid: ME.uid, name: ME.displayName, createdAt: serverTimestamp() });
 };
 
 async function loadAdminUsers() {
-  const box = $("#adminUsers");
-  if (!box || !ME || ME.role !== "superadmin") return;
-  box.innerHTML = '<div class="loading"><span class="spinner"></span>Loading…</div>';
-  try {
-    const snap = await getDocs(collection(db, "users"));
-    if (snap.empty) { box.innerHTML = '<div class="empty">No users yet.</div>'; return; }
-    
-    const users = [];
-    snap.forEach(function(d){ users.push({ id: d.id, data: d.data() }); });
-    
-    box.innerHTML = '<table><thead><tr><th>User</th><th>Role</th><th>Status</th><th></th></tr></thead><tbody>' +
-      users.map(function(u){
-        const d = u.data;
-        const av = d.photoURL || defaultAvatar(d.displayName);
-        const online = d.online ? '<span class="pill ok">Online</span>' : '<span class="pill">Offline</span>';
-        return '<tr>' +
-          '<td><div class="row"><img src="' + av + '" class="avatar" style="width:28px;height:28px" /><div><b>' + esc(d.displayName || "User") + '</b><div class="sub" style="margin:0;font-size:11px">' + esc(d.email || "") + '</div></div></div></td>' +
-          '<td><span class="pill ' + (d.role === "superadmin" ? "brand" : "") + '">' + esc(d.role || "student") + '</span></td>' +
-          '<td>' + online + '</td>' +
-          '<td>' + (d.role === "superadmin" ? "" : '<button class="icon-btn" data-suspend="' + u.id + '" title="Suspend">⛔</button>') + '</td>' +
-        '</tr>';
-      }).join("") +
-    '</tbody></table>';
-    
-    box.querySelectorAll("[data-suspend]").forEach(function(b){
-      b.onclick = async function(){
-        if (!confirm("Suspend this user?")) return;
-        await updateDoc(doc(db, "users", b.dataset.suspend), { suspended: true });
-        toast("User suspended");
-        loadAdminUsers();
-      };
-    });
-  } catch (e) {
-    box.innerHTML = '<div class="empty">Could not load users. Error: ' + e.message + '</div>';
-  }
+  const snap = await getDocs(collection(db, "users"));
+  $("#adminUsers").innerHTML = `<table>` + snap.docs.map(d => `<tr><td>${esc(d.data().displayName)}</td><td>${esc(d.data().role)}</td></tr>`).join("") + `</table>`;
 }
-
 async function loadAdminGroups() {
-  const box = $("#adminGroups");
-  if (!box || !ME || ME.role !== "superadmin") return;
-  box.innerHTML = '<div class="loading"><span class="spinner"></span>Loading…</div>';
-  try {
-    const snap = await getDocs(collection(db, "groups"));
-    if (snap.empty) { box.innerHTML = '<div class="empty">No groups yet.</div>'; return; }
-    const rows = [];
-    snap.forEach(function(d){ rows.push({ id: d.id, data: d.data() }); });
-    box.innerHTML = rows.map(function(r){
-      return '<div class="row between" style="padding:10px 0;border-bottom:1px solid var(--line)">' +
-        '<div><b>' + esc(r.data.name || "Group") + '</b><div class="sub" style="margin:0;font-size:11.5px">Owner: ' + esc(r.data.ownerName || "—") + '</div></div>' +
-        '<button class="btn danger" style="margin:0;padding:6px 12px;font-size:12.5px;width:auto" data-del-group="' + r.id + '">Delete</button>' +
-      '</div>';
-    }).join("");
-    box.querySelectorAll("[data-del-group]").forEach(function(b){
-      b.onclick = async function(){
-        if (!confirm("Delete this group?")) return;
-        await deleteDoc(doc(db, "groups", b.dataset.delGroup));
-        toast("Deleted");
-        loadAdminGroups();
-      };
-    });
-  } catch (e) {
-    box.innerHTML = '<div class="empty">Could not load groups.</div>';
-  }
+  const snap = await getDocs(collection(db, "groups"));
+  $("#adminGroups").innerHTML = snap.docs.map(d => `<div>${esc(d.data().name)}</div>`).join("");
 }
+async function loadAdminSettings() {}
 
-async function loadAdminSettings() {
-  if (!ME || ME.role !== "superadmin") return;
-  try {
-    const snap = await getDoc(doc(db, "appSettings", "global"));
-    if (snap.exists()) {
-      const s = snap.data();
-      if ($("#setAI")) $("#setAI").checked = s.aiEnabled !== false;
-      if ($("#setDict")) $("#setDict").checked = s.dictEnabled !== false;
-      if ($("#setChat")) $("#setChat").checked = s.chatEnabled !== false;
-    }
-  } catch (e) {}
-}
-
-if ($("#btnSaveSettings")) $("#btnSaveSettings").onclick = async function(){
-  if (!ME || ME.role !== "superadmin") return;
-  await setDoc(doc(db, "appSettings", "global"), {
-    aiEnabled: $("#setAI").checked,
-    dictEnabled: $("#setDict").checked,
-    chatEnabled: $("#setChat").checked,
-    updatedAt: serverTimestamp()
-  });
-  toast("Settings saved", "ok");
-};
-
-if ($("#btnQImport")) $("#btnQImport").onclick = async function(){
-  if (!ME || ME.role !== "superadmin") return;
-  const f = $("#qUpload").files[0];
-  if (!f) return toast("Pick a file first.", "err");
-  const out = $("#qImportOut");
-  out.innerHTML = '<div class="loading"><span class="spinner"></span>Importing…</div>';
-  try {
-    const text = await f.text();
-    let questions = [];
-    if (f.name.endsWith(".json")) {
-      questions = JSON.parse(text);
-    } else {
-      const lines = text.split("\n").filter(function(l){ return l.trim(); });
-      const header = lines[0].split(",");
-      for (let i = 1; i < lines.length; i++) {
-        const cols = lines[i].match(/(".*?"|[^,]+)(?=\s*,|\s*$)/g) || lines[i].split(",");
-        const row = {};
-        header.forEach(function(h, j){ row[h.trim()] = (cols[j] || "").replace(/^"|"$/g, "").trim(); });
-        questions.push(row);
-      }
-    }
-    let added = 0;
-    for (const q of questions) {
-      if (!q.question || !q.answer) continue;
-      await addDoc(collection(db, "questions"), {
-        subject: q.subject || "General",
-        topic: q.topic || "General",
-        difficulty: q.difficulty || "medium",
-        question: q.question,
-        optionA: q.optionA || q.A || "",
-        optionB: q.optionB || q.B || "",
-        optionC: q.optionC || q.C || "",
-        optionD: q.optionD || q.D || "",
-        answer: q.answer,
-        explanation: q.explanation || "",
-        createdAt: serverTimestamp()
-      });
-      added++;
-    }
-    out.innerHTML = '<div class="msg ok">✅ Imported ' + added + ' questions.</div>';
-    loadQuestionSubjects();
-  } catch (e) {
-    out.innerHTML = '<div class="msg err">Import failed: ' + e.message + '</div>';
-  }
-};
-
-loadQuestionSubjects();
-  /* ================= REAL-TIME NOTIFICATIONS & ANNOUNCEMENTS ================= */
-
-let notifTimeout = null;
-
-function showInAppNotification(title, body, imgUrl = "") {
+let allNotifs = [], unreadCount = 0;
+function showInAppNotification(title, body) {
   if (ME && ME.notif && ME.notif.enabled === false) return;
-
-  const banner = $("#notifBanner");
-  $("#notifTitle").textContent = title;
-  $("#notifBody").textContent = body;
-  $("#notifImg").src = imgUrl || defaultAvatar(title);
-  
-  banner.classList.add("show");
-    addToNotifCenter(title, body);
-  
-  try {
-    const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
-    audio.volume = 0.5;
-    audio.play();
-  } catch(e) {}
-
-  clearTimeout(notifTimeout);
-  notifTimeout = setTimeout(() => {
-    banner.classList.remove("show");
-  }, 5000);
+  const b = $("#notifBanner"); $("#notifTitle").textContent = title; $("#notifBody").textContent = body;
+  b.classList.add("show"); setTimeout(() => b.classList.remove("show"), 4000);
+  allNotifs.unshift({ title, body, read: false }); unreadCount++;
+  $("#notifBadge").textContent = unreadCount; $("#notifBadge").classList.remove("hide");
 }
-
-let announceUnsub = null;
-function listenForAnnouncements() {
-  if (!ME) return;
-  if (announceUnsub) announceUnsub();
-  
-  announceUnsub = onSnapshot(doc(db, "appSettings", "announcements"), (snap) => {
-    if (snap.exists()) {
-      const data = snap.data();
-      if (Date.now() - (data.timestamp || 0) < 30000) {
-        showInAppNotification("📢 Announcement from Admin", data.text, defaultAvatar("A"));
-      }
-    }
-  });
-}
-
-let msgNotifUnsubs = [];
-function listenForNewMessages() {
-  if (!ME) return;
-  
-  msgNotifUnsubs.forEach(unsub => unsub());
-  msgNotifUnsubs = [];
-
-  getDocs(collection(db, "groups")).then(snap => {
-    snap.forEach(groupDoc => {
-      const groupId = groupDoc.id;
-      const groupData = groupDoc.data();
-      
-      const q = query(
-        collection(db, "groups", groupId, "messages"), 
-        orderBy("createdAt", "desc"), 
-        limit(1)
-      );
-
-      const unsub = onSnapshot(q, (msgSnap) => {
-        msgSnap.docChanges().forEach(change => {
-          if (change.type === "added") {
-            const msg = change.doc.data();
-            if (msg.uid !== ME.uid) {
-              // Ignore if we are currently looking at this room
-              const activeRoomEl = $("#chatRoom");
-              const isChatOpen = activeRoomEl && !activeRoomEl.classList.contains("hide");
-              const roomTitle = $("#roomTitle").textContent;
-              
-              if (isChatOpen && roomTitle === groupData.name) return;
-
-              showInAppNotification(
-                groupData.name || "Group Chat",
-                msg.name + ": " + msg.text,
-                msg.photo || defaultAvatar(msg.name)
-              );
-            }
-          }
-        });
-      });
-      msgNotifUnsubs.push(unsub);
-    });
-  });
-}
+$("#btnNotifBell").onclick = () => $("#notifPanel").classList.toggle("hide");
+$("#btnCloseNotif").onclick = () => $("#notifPanel").classList.add("hide");
 
 $("#btnSendAnnounce").onclick = async () => {
-  if (!ME || ME.role !== "superadmin") return;
-  const text = $("#announceInput").value.trim();
-  if (!text) return toast("Type a message first", "err");
-  
-  await setDoc(doc(db, "appSettings", "announcements"), {
-    text: text,
-    timestamp: Date.now(),
-    sentBy: ME.displayName
-  });
-  
-  $("#announceInput").value = "";
-  toast("Announcement sent!", "ok");
+  const text = $("#announceInput").value.trim(); if (!text) return;
+  await setDoc(doc(db, "appSettings", "announcements"), { text, timestamp: Date.now() });
+  $("#announceInput").value = ""; toast("Sent", "ok");
 };
-  /* ================= NOTIFICATION CENTER ================= */
-let allNotifs = [];
-let unreadCount = 0;
 
-function updateNotifBadge() {
-  const badge = $("#notifBadge");
-  if (badge) {
-    if (unreadCount > 0) {
-      badge.textContent = unreadCount > 9 ? "9+" : unreadCount;
-      badge.classList.remove("hide");
-    } else {
-      badge.classList.add("hide");
-    }
-  }
-}
-
-function renderNotifList() {
-  const list = $("#notifList");
-  if (!list) return;
-  if (allNotifs.length === 0) {
-    list.innerHTML = '<div class="empty" style="padding:20px"><span class="big" style="font-size:32px">🔔</span>No notifications yet.</div>';
-    return;
-  }
-  list.innerHTML = allNotifs.map((n, i) => `
-    <div class="notif-item ${n.read ? '' : 'unread'}" data-idx="${i}">
-      <b>${esc(n.title)}</b>
-      <p>${esc(n.body)}</p>
-      <span>${n.time}</span>
-    </div>
-  `).join("");
-
-  list.querySelectorAll(".notif-item").forEach(el => {
-    el.onclick = () => {
-      const idx = parseInt(el.dataset.idx);
-      if (!allNotifs[idx].read) {
-        allNotifs[idx].read = true;
-        unreadCount--;
-        updateNotifBadge();
-        renderNotifList();
-      }
-    };
-  });
-}
-
-function addToNotifCenter(title, body) {
-  const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  allNotifs.unshift({ title, body, time, read: false });
-  if (allNotifs.length > 50) allNotifs.pop();
-  unreadCount++;
-  updateNotifBadge();
-  renderNotifList();
-}
-
-const bellBtn = $("#btnNotifBell");
-const panel = $("#notifPanel");
-const closeBtn = $("#btnCloseNotif");
-
-if (bellBtn && panel) {
-  bellBtn.onclick = (e) => {
-    e.stopPropagation();
-    panel.classList.toggle("hide");
-  };
-}
-if (closeBtn && panel) {
-  closeBtn.onclick = () => panel.classList.add("hide");
-}
-document.addEventListener("click", (e) => {
-  if (panel && !e.target.closest("#notifPanel") && !e.target.closest("#btnNotifBell")) {
-    panel.classList.add("hide");
-  }
+onSnapshot(doc(db, "appSettings", "announcements"), snap => {
+  if (snap.exists() && Date.now() - snap.data().timestamp < 5000) showInAppNotification("📢 Announcement", snap.data().text);
 });
-  
-
 </script>
 </body>
 </html>
