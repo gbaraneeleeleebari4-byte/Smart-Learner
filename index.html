@@ -200,6 +200,20 @@ input.mini:focus,select.mini:focus{outline:none;border-color:var(--brand);
 .toast.on{opacity:1;transform:translateX(-50%) translateY(-8px)}
 .toast.err{background:linear-gradient(135deg, #7f1d3a, #5c0f28);border-color:rgba(255,93,108,.5)}
 .toast.ok{background:linear-gradient(135deg, #0e5f43, #074d33);border-color:rgba(56,211,159,.5)}
+  /* Notification Banner */
+.notif-banner {
+  position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
+  width: 90%; max-width: 400px; background: var(--card-solid); 
+  border: 1px solid var(--brand); border-radius: 14px; padding: 12px 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,.5); z-index: 9999;
+  display: flex; align-items: center; gap: 12px;
+  transition: top 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.notif-banner.show { top: 16px; }
+.notif-banner img { width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--brand); }
+.notif-banner .notif-text { flex: 1; min-width: 0; }
+.notif-banner .notif-title { font-size: 13px; font-weight: 800; color: var(--brand); margin-bottom: 2px; }
+.notif-banner .notif-body { font-size: 13px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 ::-webkit-scrollbar{width:8px;height:8px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:rgba(120,150,255,.3);border-radius:4px}
