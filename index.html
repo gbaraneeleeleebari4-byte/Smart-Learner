@@ -268,6 +268,10 @@ input.mini:focus,select.mini:focus{outline:none;border-color:var(--brand);
       <b id="hdrTitle">Dashboard</b>
       <span id="hdrSub">Welcome back</span>
     </div>
+        <div style="position:relative;cursor:pointer" id="btnNotifBell">
+      <button class="icon-btn" style="position:relative">🔔</button>
+      <span id="notifBadge" class="hide" style="position:absolute;top:-4px;right:-4px;background:var(--err);color:#fff;font-size:10px;font-weight:800;padding:2px 5px;border-radius:10px;border:2px solid var(--card);">0</span>
+    </div>
     <button class="icon-btn" id="btnTheme" title="Toggle theme">🌙</button>
     <img class="avatar" id="hdrAvatar" alt="" />
   </header>
