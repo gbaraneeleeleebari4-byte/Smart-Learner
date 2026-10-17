@@ -1563,6 +1563,105 @@ if ($("#btnQImport")) $("#btnQImport").onclick = async function(){
 };
 
 loadQuestionSubjects();
+  /* ================= REAL-TIME NOTIFICATIONS & ANNOUNCEMENTS ================= */
+
+let notifTimeout = null;
+
+function showInAppNotification(title, body, imgUrl = "") {
+  if (ME && ME.notif && ME.notif.enabled === false) return;
+
+  const banner = $("#notifBanner");
+  $("#notifTitle").textContent = title;
+  $("#notifBody").textContent = body;
+  $("#notifImg").src = imgUrl || defaultAvatar(title);
+  
+  banner.classList.add("show");
+  
+  try {
+    const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+    audio.volume = 0.5;
+    audio.play();
+  } catch(e) {}
+
+  clearTimeout(notifTimeout);
+  notifTimeout = setTimeout(() => {
+    banner.classList.remove("show");
+  }, 5000);
+}
+
+let announceUnsub = null;
+function listenForAnnouncements() {
+  if (!ME) return;
+  if (announceUnsub) announceUnsub();
+  
+  announceUnsub = onSnapshot(doc(db, "appSettings", "announcements"), (snap) => {
+    if (snap.exists()) {
+      const data = snap.data();
+      if (Date.now() - (data.timestamp || 0) < 30000) {
+        showInAppNotification("📢 Announcement from Admin", data.text, defaultAvatar("A"));
+      }
+    }
+  });
+}
+
+let msgNotifUnsubs = [];
+function listenForNewMessages() {
+  if (!ME) return;
+  
+  msgNotifUnsubs.forEach(unsub => unsub());
+  msgNotifUnsubs = [];
+
+  getDocs(collection(db, "groups")).then(snap => {
+    snap.forEach(groupDoc => {
+      const groupId = groupDoc.id;
+      const groupData = groupDoc.data();
+      
+      const q = query(
+        collection(db, "groups", groupId, "messages"), 
+        orderBy("createdAt", "desc"), 
+        limit(1)
+      );
+
+      const unsub = onSnapshot(q, (msgSnap) => {
+        msgSnap.docChanges().forEach(change => {
+          if (change.type === "added") {
+            const msg = change.doc.data();
+            if (msg.uid !== ME.uid) {
+              // Ignore if we are currently looking at this room
+              const activeRoomEl = $("#chatRoom");
+              const isChatOpen = activeRoomEl && !activeRoomEl.classList.contains("hide");
+              const roomTitle = $("#roomTitle").textContent;
+              
+              if (isChatOpen && roomTitle === groupData.name) return;
+
+              showInAppNotification(
+                groupData.name || "Group Chat",
+                msg.name + ": " + msg.text,
+                msg.photo || defaultAvatar(msg.name)
+              );
+            }
+          }
+        });
+      });
+      msgNotifUnsubs.push(unsub);
+    });
+  });
+}
+
+$("#btnSendAnnounce").onclick = async () => {
+  if (!ME || ME.role !== "superadmin") return;
+  const text = $("#announceInput").value.trim();
+  if (!text) return toast("Type a message first", "err");
+  
+  await setDoc(doc(db, "appSettings", "announcements"), {
+    text: text,
+    timestamp: Date.now(),
+    sentBy: ME.displayName
+  });
+  
+  $("#announceInput").value = "";
+  toast("Announcement sent!", "ok");
+};
 
 </script>
 </body>
