@@ -1293,14 +1293,23 @@ async function loadRooms() {
   if (!box) return;
   box.innerHTML = '<div class="card"><div class="loading"><span class="spinner"></span>Loading chats…</div></div>';
   try {
-    const snap = await getDocs(collection(db, "groups"));
+    const snap = await getDocs(collection(db, "groups")); // Removed orderBy to fix loading issue
+    
     if (snap.empty) {
       box.innerHTML = '<div class="card"><div class="empty"><span class="big">💬</span>No chats yet. Tap ＋ to create a group.</div></div>';
       return;
     }
+    
     const rooms = [];
     snap.forEach(function(d){ rooms.push({ id: d.id, data: d.data() }); });
-    rooms.sort(function(a, b){ return (b.data.lastMsgAt && b.data.lastMsgAt.seconds || 0) - (a.data.lastMsgAt && a.data.lastMsgAt.seconds || 0); });
+    
+    // Sort them in JavaScript instead of Firebase
+    rooms.sort(function(a, b){ 
+      const timeA = a.data.lastMsgAt ? a.data.lastMsgAt.seconds : 0;
+      const timeB = b.data.lastMsgAt ? b.data.lastMsgAt.seconds : 0;
+      return timeB - timeA; 
+    });
+
     box.innerHTML = rooms.map(function(r){
       const d = r.data;
       const av = d.photo || defaultAvatar(d.name || "G");
@@ -1315,14 +1324,14 @@ async function loadRooms() {
         '</div>' +
       '</div>';
     }).join("");
+    
     box.querySelectorAll(".room-item").forEach(function(el){
       el.onclick = function(){ openRoom(el.dataset.room, el.dataset.name); };
     });
   } catch (e) {
-    box.innerHTML = '<div class="card"><div class="empty"><span class="big">⚠️</span>Could not load chats.</div></div>';
+    box.innerHTML = '<div class="card"><div class="empty"><span class="big">⚠️</span>Could not load chats. Error: ' + e.message + '</div></div>';
   }
 }
-
 let roomUnsub = null, typingUnsub = null, activeRoom = null;
 
 async function openRoom(roomId, roomName) {
@@ -1336,7 +1345,7 @@ async function openRoom(roomId, roomName) {
   if (roomUnsub) roomUnsub();
   if (typingUnsub) typingUnsub();
 
-  roomUnsub = onSnapshot(query(collection(db, "groups", roomId, "messages"), orderBy("createdAt", "asc"), limit(200)), function(snap){
+  roomUnsub = onSnapshot(query(collection(db, "groups", roomId, "messages"), limit(200)), function(snap){
     const scroll = $("#msgScroll");
     const wasAtBottom = scroll.scrollHeight - scroll.scrollTop - scroll.clientHeight < 120;
     if (snap.empty) {
