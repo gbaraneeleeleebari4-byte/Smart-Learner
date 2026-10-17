@@ -592,7 +592,7 @@ input.mini:focus,select.mini:focus{outline:none;border-color:var(--brand);
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword,
-  signOut, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail, updateProfile
+  signOut, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, sendPasswordResetEmail, updateProfile
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc, collection, addDoc,
