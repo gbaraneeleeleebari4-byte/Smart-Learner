@@ -564,6 +564,14 @@ input.mini:focus,select.mini:focus{outline:none;border-color:var(--brand);
 </div>
 
 <div id="toast" class="toast"></div>
+  <!-- NOTIFICATION CENTER PANEL -->
+<div id="notifPanel" class="hide" style="position:fixed;top:70px;right:16px;width:calc(100% - 32px);max-width:380px;background:var(--card-solid);border:1px solid var(--line-strong);border-radius:16px;box-shadow:var(--shadow);z-index:9998;max-height:80vh;overflow-y:auto;">
+  <div style="padding:14px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;">
+    <h3 style="margin:0;font-size:16px;">Notifications</h3>
+    <button id="btnCloseNotif" style="color:var(--muted);font-size:20px;">&times;</button>
+  </div>
+  <div id="notifList" style="padding:8px;"></div>
+</div>
   <!-- IN-APP NOTIFICATION BANNER -->
 <div id="notifBanner" class="notif-banner">
   <img id="notifImg" src="" alt="avatar" />
