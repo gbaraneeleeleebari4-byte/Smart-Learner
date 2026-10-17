@@ -691,13 +691,28 @@ $("#btnSignup").onclick = async function(){
   } catch (e) { authMsg("#suMsg", prettyAuthError(e)); $("#btnSignup").textContent = "Create account"; }
 };
 
-$("#btnGoogle").onclick = async function(){
+// Add signInWithRedirect to your imports at the top:
+// import { ..., signInWithRedirect, getRedirectResult } from "...firebase-auth.js";
+
+$("#btnGoogle").onclick = async () => {
   authHide("#authMsg");
   try {
-    const cred = await signInWithPopup(auth, new GoogleAuthProvider());
-    await ensureUserDoc(cred.user, cred.user.displayName || "Student");
-  } catch (e) { authMsg("#authMsg", prettyAuthError(e)); }
+    const provider = new GoogleAuthProvider();
+    // Use redirect instead of popup for mobile
+    await signInWithRedirect(auth, provider);
+  } catch (e) { 
+    authMsg("#authMsg", prettyAuthError(e)); 
+  }
 };
+
+// ADD THIS somewhere in your script to catch the result when the page reloads:
+getRedirectResult(auth).then(async (result) => {
+  if (result && result.user) {
+    await ensureUserDoc(result.user, result.user.displayName || "Student");
+  }
+}).catch((error) => {
+  console.error("Google redirect error:", error);
+});
 
 $("#btnForgot").onclick = async function(){
   const email = $("#loginEmail").value.trim();
