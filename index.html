@@ -693,17 +693,26 @@ $("#btnSignup").onclick = async function(){
 
 $("#btnGoogle").onclick = async () => {
   authHide("#authMsg");
-  try {
-    const provider = new GoogleAuthProvider();
-    // Switch back to Popup
-    const result = await signInWithPopup(auth, provider);
-    await ensureUserDoc(result.user, result.user.displayName || "Student");
-  } catch (e) { 
-    // If the user closed the popup or clicked twice, just ignore the error quietly
-    if (e.code === 'auth/cancelled-popup-request' || e.code === 'auth/popup-closed-by-user') {
-      return; 
+  const provider = new GoogleAuthProvider();
+  
+  // Detect if the user is on a mobile device
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+  if (isMobile) {
+    // On mobile, try Redirect directly (more reliable than Popup on phones)
+    try {
+      await signInWithRedirect(auth, provider);
+    } catch (e) {
+      authMsg("#authMsg", prettyAuthError(e));
     }
-    authMsg("#authMsg", prettyAuthError(e)); 
+  } else {
+    // On desktop, use Popup
+    try {
+      const result = await signInWithPopup(auth, provider);
+      await ensureUserDoc(result.user, result.user.displayName || "Student");
+    } catch (e) { 
+      authMsg("#authMsg", prettyAuthError(e)); 
+    }
   }
 };
 
