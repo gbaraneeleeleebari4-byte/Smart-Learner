@@ -761,6 +761,8 @@ onAuthStateChanged(auth, async function(user){
     }
     loadCalculator();
     loadSavedWords();
+        listenForAnnouncements();
+    listenForNewMessages();
   });
 
   await updateDoc(doc(db, "users", user.uid), { online: true, lastSeen: serverTimestamp() });
