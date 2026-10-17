@@ -1683,6 +1683,67 @@ $("#btnSendAnnounce").onclick = async () => {
   $("#announceInput").value = "";
   toast("Announcement sent!", "ok");
 };
+  /* ================= NOTIFICATION CENTER ================= */
+let allNotifs = [];
+let unreadCount = 0;
+
+function updateNotifBadge() {
+  const badge = $("#notifBadge");
+  if (unreadCount > 0) {
+    badge.textContent = unreadCount > 9 ? "9+" : unreadCount;
+    badge.classList.remove("hide");
+  } else {
+    badge.classList.add("hide");
+  }
+}
+
+function renderNotifList() {
+  const list = $("#notifList");
+  if (allNotifs.length === 0) {
+    list.innerHTML = '<div class="empty" style="padding:20px"><span class="big" style="font-size:32px">🔔</span>No notifications yet.</div>';
+    return;
+  }
+  list.innerHTML = allNotifs.map((n, i) => `
+    <div class="notif-item ${n.read ? '' : 'unread'}" data-idx="${i}">
+      <b>${esc(n.title)}</b>
+      <p>${esc(n.body)}</p>
+      <span>${n.time}</span>
+    </div>
+  `).join("");
+
+  list.querySelectorAll(".notif-item").forEach(el => {
+    el.onclick = () => {
+      const idx = parseInt(el.dataset.idx);
+      if (!allNotifs[idx].read) {
+        allNotifs[idx].read = true;
+        unreadCount--;
+        updateNotifBadge();
+        renderNotifList();
+      }
+    };
+  });
+}
+
+function addToNotifCenter(title, body) {
+  const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  allNotifs.unshift({ title, body, time, read: false });
+  if (allNotifs.length > 50) allNotifs.pop(); // Keep last 50
+  unreadCount++;
+  updateNotifBadge();
+  renderNotifList();
+}
+
+$("#btnNotifBell").onclick = () => {
+  $("#notifPanel").classList.toggle("hide");
+};
+$("#btnCloseNotif").onclick = () => {
+  $("#notifPanel").classList.add("hide");
+};
+document.addEventListener("click", (e) => {
+  if (!e.target.closest("#notifPanel") && !e.target.closest("#btnNotifBell")) {
+    $("#notifPanel").classList.add("hide");
+  }
+});
 
 </script>
 </body>
