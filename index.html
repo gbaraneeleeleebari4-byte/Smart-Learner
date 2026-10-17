@@ -1457,8 +1457,10 @@ async function loadAdminUsers() {
   try {
     const snap = await getDocs(collection(db, "users"));
     if (snap.empty) { box.innerHTML = '<div class="empty">No users yet.</div>'; return; }
+    
     const users = [];
     snap.forEach(function(d){ users.push({ id: d.id, data: d.data() }); });
+    
     box.innerHTML = '<table><thead><tr><th>User</th><th>Role</th><th>Status</th><th></th></tr></thead><tbody>' +
       users.map(function(u){
         const d = u.data;
@@ -1472,6 +1474,7 @@ async function loadAdminUsers() {
         '</tr>';
       }).join("") +
     '</tbody></table>';
+    
     box.querySelectorAll("[data-suspend]").forEach(function(b){
       b.onclick = async function(){
         if (!confirm("Suspend this user?")) return;
@@ -1481,7 +1484,7 @@ async function loadAdminUsers() {
       };
     });
   } catch (e) {
-    box.innerHTML = '<div class="empty">Could not load users.</div>';
+    box.innerHTML = '<div class="empty">Could not load users. Error: ' + e.message + '</div>';
   }
 }
 
