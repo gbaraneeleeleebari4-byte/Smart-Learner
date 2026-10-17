@@ -690,7 +690,13 @@ $("#btnSignup").onclick = async function(){
     await ensureUserDoc(cred.user, name);
   } catch (e) { authMsg("#suMsg", prettyAuthError(e)); $("#btnSignup").textContent = "Create account"; }
 };
-
+getRedirectResult(auth).then(async (result) => {
+  if (result && result.user) {
+    await ensureUserDoc(result.user, result.user.displayName || "Student");
+  }
+}).catch((error) => {
+  console.error("Redirect error:", error);
+});
 $("#btnGoogle").onclick = async () => {
   authHide("#authMsg");
   const provider = new GoogleAuthProvider();
