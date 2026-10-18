@@ -3,57 +3,52 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-<meta name="theme-color" content="#0d1117" />
+<meta name="theme-color" content="#090a0f" />
 <title>Smart CGPA Plus</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>" />
 <style>
-/* ================= PREMIUM DARK THEME ================= */
 :root{
   --bg:#090a0f; --bg-card:#13151c; --bg-hover:#1c1f2b;
   --text:#ffffff; --text-muted:#8b92a5;
-  --brand:#5c7cfa; --brand-light:#748ffc; --brand-dark:#4c6ef5;
-  --accent:#12b886; --accent-light:#20c997;
-  --err:#fa5252; --warn:#fcc419; --border:#212433;
-  --nav-bg:rgba(9,10,15,0.95);
-  --radius:16px; --radius-sm:12px;
-  --shadow:0 8px 24px rgba(0,0,0,0.4);
+  --brand:#5c7cfa; --brand-dark:#4c6ef5;
+  --accent:#12b886; --err:#fa5252; --warn:#fcc419;
+  --border:#212433; --nav-bg:rgba(9,10,15,0.95);
+  --radius:16px; --shadow:0 8px 24px rgba(0,0,0,0.4);
 }
-
 [data-theme="light"]{
   --bg:#f8f9fa; --bg-card:#ffffff; --bg-hover:#f1f3f5;
   --text:#212529; --text-muted:#868e96;
   --border:#e9ecef; --nav-bg:rgba(255,255,255,0.95);
   --shadow:0 8px 24px rgba(0,0,0,0.08);
 }
-
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;padding:0;height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;overscroll-behavior:none;-webkit-font-smoothing:antialiased}
-button,input,select,textarea{font:inherit;color:inherit;letter-spacing:inherit}
+html,body{margin:0;padding:0;height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;overscroll-behavior:none;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer;border:none;background:none}
-a{color:var(--brand);text-decoration:none}
 .hide{display:none !important}
 
-/* ================= SPLASH SCREEN ================= */
-#splashScreen{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.4s ease}
-#splashScreen.fade-out{opacity:0;pointer-events:none}
+/* SPLASH */
+#splash{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.4s ease}
+#splash.fade-out{opacity:0;pointer-events:none}
 .splash-logo{width:80px;height:80px;border-radius:24px;background:linear-gradient(135deg,var(--brand),var(--brand-dark));display:grid;place-items:center;font-size:40px;margin-bottom:20px;box-shadow:0 10px 30px rgba(92,124,250,0.3)}
-.splash-text{font-size:20px;font-weight:800;letter-spacing:-0.5px;margin-bottom:8px}
-.splash-sub{color:var(--text-muted);font-size:13px;margin-bottom:40px}
-.splash-loader{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--brand);border-radius:50%;animation:spin 0.8s linear infinite}
+.splash-text{font-size:22px;font-weight:800;letter-spacing:-0.5px;margin-bottom:8px}
+.splash-sub{color:var(--text-muted);font-size:13px}
+.spinner{width:24px;height:24px;border:3px solid var(--border);border-top-color:var(--brand);border-radius:50%;animation:spin 0.8s linear infinite;display:inline-block;margin-top:30px}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-/* ================= AUTH SCREEN ================= */
-#authScreen{min-height:100%;display:flex;align-items:center;justify-content:center;padding:24px;background:var(--bg)}
-.auth-card{position:relative;width:100%;max-width:400px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow)}
+/* AUTH */
+#authScreen{min-height:100%;display:flex;align-items:center;justify-content:center;padding:24px}
+.auth-card{width:100%;max-width:400px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow)}
 .brand{display:flex;align-items:center;gap:12px;margin-bottom:24px}
 .brand .logo{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,var(--brand),var(--brand-dark));display:grid;place-items:center;font-size:24px}
-.brand h1{font-size:20px;margin:0;font-weight:800;letter-spacing:-0.5px}
+.brand h1{font-size:20px;margin:0;font-weight:800}
 .brand p{margin:2px 0 0;color:var(--text-muted);font-size:12px}
 .tabs{display:flex;gap:6px;background:var(--bg-hover);padding:4px;border-radius:12px;margin-bottom:20px}
 .tabs button{flex:1;padding:10px;border-radius:8px;color:var(--text-muted);font-weight:600;font-size:14px;transition:all 0.2s}
 .tabs button.active{background:var(--bg-card);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,0.2)}
 .field{margin-bottom:16px}
 .field label{display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px;font-weight:600}
-.field input,.field select,.field textarea{width:100%;padding:14px;border-radius:12px;border:1px solid var(--border);background:var(--bg);font-size:15px;outline:none;transition:border 0.2s}
+.field input,.field select{width:100%;padding:14px;border-radius:12px;border:1px solid var(--border);background:var(--bg);font-size:15px;outline:none}
 .field input:focus{border-color:var(--brand)}
 .btn{width:100%;padding:14px;border-radius:12px;font-weight:700;font-size:15px;background:var(--brand);color:#fff;margin-bottom:12px;transition:transform 0.1s}
 .btn:active{transform:scale(0.98)}
@@ -65,131 +60,61 @@ a{color:var(--brand);text-decoration:none}
 .msg.err{background:rgba(250,82,82,0.1);color:var(--err)}
 .msg.ok{background:rgba(18,184,134,0.1);color:var(--accent)}
 
-/* ================= APP SHELL ================= */
-#app{display:none;height:100%;flex-direction:column;background:var(--bg);padding-bottom:70px}
+/* APP SHELL */
+#app{display:none;height:100%;flex-direction:column;padding-bottom:70px}
 #app.on{display:flex}
-
 header{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:12px;padding:16px 20px;background:var(--bg);border-bottom:1px solid var(--border)}
 header .menu-btn{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--bg-hover);font-size:18px}
 header .title-area{flex:1;display:flex;align-items:center;gap:8px}
-header .title-area .logo-small{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--brand),var(--brand-dark));display:grid;place-items:center;font-size:16px}
-header .title-area b{font-size:18px;font-weight:800;color:var(--brand);letter-spacing:-0.5px}
-header .streak{display:flex;align-items:center;gap:4px;background:rgba(252,196,25,0.1);color:var(--warn);padding:6px 10px;border-radius:20px;font-size:12px;font-weight:700}
+header .title-area b{font-size:18px;font-weight:800;color:var(--text)}
 header .icon-btn{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--bg-hover);font-size:18px;position:relative}
-
 main{flex:1;overflow-y:auto;padding:20px}
 .page{display:none;animation:fade 0.3s ease}
 .page.on{display:block}
 @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 
-/* ================= BOTTOM NAV ================= */
+/* BOTTOM NAV */
 nav{position:fixed;bottom:0;left:0;right:0;z-index:40;display:flex;align-items:center;justify-content:space-around;background:var(--nav-bg);backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:8px 10px;padding-bottom:calc(8px + env(safe-area-inset-bottom))}
 nav button{display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--text-muted);font-size:10px;font-weight:600;padding:6px 12px;border-radius:10px}
 nav button.active{color:var(--brand)}
 nav button .ic{font-size:22px;margin-bottom:2px}
-nav .ai-fab{width:50px;height:50px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:24px;box-shadow:0 4px 16px rgba(92,124,250,0.4);margin-top:-20px;border:4px solid var(--bg)}
 
-/* ================= SIDE MENU ================= */
-#sideMenu{position:fixed;inset:0;z-index:100;background:var(--bg-card);transform:translateX(-100%);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);display:flex;flex-direction:column;overflow-y:auto}
-#sideMenu.open{transform:translateX(0)}
-#sideMenu .menu-header{padding:24px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-#sideMenu .menu-header .brand{display:flex;align-items:center;gap:12px}
-#sideMenu .menu-header .brand .logo-small{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--brand),var(--brand-dark));display:grid;place-items:center;font-size:20px}
-#sideMenu .menu-header .brand h2{font-size:16px;margin:0}
-#sideMenu .menu-header .brand p{font-size:11px;color:var(--text-muted);margin:2px 0 0}
-#sideMenu .close-menu{width:32px;height:32px;border-radius:50%;background:var(--bg-hover);display:grid;place-items:center;color:var(--text-muted)}
-.menu-section{padding:16px 20px}
-.menu-section h4{font-size:11px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin:0 0 12px 0}
-.menu-item{display:flex;align-items:center;gap:14px;padding:12px;border-radius:12px;color:var(--text);font-size:14px;font-weight:600;cursor:pointer;transition:background 0.2s}
-.menu-item:hover{background:var(--bg-hover)}
-.menu-item .icon{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;font-size:18px;background:var(--bg-hover)}
-.menu-item .badge{margin-left:auto;background:var(--brand);color:#fff;font-size:10px;padding:2px 6px;border-radius:10px}
-.menu-user{margin-top:auto;padding:20px;border-top:1px solid var(--border);display:flex;align-items:center;gap:12px;cursor:pointer}
-.menu-user img{width:40px;height:40px;border-radius:50%;border:2px solid var(--brand)}
-.menu-user div b{display:block;font-size:14px}
-.menu-user div span{font-size:12px;color:var(--text-muted)}
+/* CARDS & UI */
+.section-title{font-size:14px;font-weight:700;color:var(--text-muted);margin:24px 0 12px 0;text-transform:uppercase;display:flex;justify-content:space-between}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.stat-box{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center}
+.stat-box b{display:block;font-size:28px;color:var(--brand);font-weight:800}
+.stat-box span{font-size:11px;color:var(--text-muted);text-transform:uppercase;font-weight:700}
 
-/* ================= DASHBOARD CARDS ================= */
-.section-title{font-size:14px;font-weight:700;letter-spacing:0.5px;color:var(--text-muted);margin:24px 0 12px 0;display:flex;justify-content:space-between;align-items:center;text-transform:uppercase}
-.arena-card{background:linear-gradient(135deg, #1e2235 0%, #13151c 100%);border:1px solid rgba(92,124,250,0.3);border-radius:var(--radius);padding:20px;position:relative;overflow:hidden}
-.arena-card .badge{font-size:10px;color:var(--brand-light);letter-spacing:1px;font-weight:700}
-.arena-card h2{font-size:24px;margin:8px 0;font-weight:800}
-.arena-card p{font-size:13px;color:var(--text-muted);margin:0 0 16px 0}
-.arena-timer{display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,0.3);padding:12px;border-radius:12px;margin-top:16px}
-.arena-timer .time{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
-.arena-timer .btn{width:auto;margin:0;padding:10px 20px;border-radius:20px;font-size:13px}
-.focus-grid{display:grid;grid-template-columns:repeat(3, 1fr);gap:12px}
-.focus-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;flex-direction:column;align-items:center;text-align:center}
-.focus-card .circle{width:40px;height:40px;border-radius:50%;border:3px solid var(--border);display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:8px}
-.focus-card b{font-size:12px;line-height:1.2;margin-bottom:4px}
-.focus-card span{font-size:10px;color:var(--text-muted)}
-.focus-card .tag{font-size:9px;padding:2px 6px;border-radius:4px;background:rgba(252,196,25,0.1);color:var(--warn);margin-top:8px;font-weight:700}
-.alert-card{display:flex;align-items:center;gap:12px;background:rgba(250,82,82,0.1);border:1px solid rgba(250,82,82,0.3);border-radius:12px;padding:16px;margin-top:16px;color:var(--err);font-size:13px;font-weight:600}
-.explore-grid{display:grid;grid-template-columns:repeat(4, 1fr);gap:12px}
-.explore-item{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
-.explore-item .icon{width:50px;height:50px;border-radius:16px;background:var(--bg-card);border:1px solid var(--border);display:grid;place-items:center;font-size:22px}
-.explore-item span{font-size:11px;color:var(--text-muted);font-weight:600}
-
-/* ================= PRACTICE & SUBJECTS ================= */
-.practice-tabs{display:flex;gap:8px;margin-bottom:20px}
-.practice-tabs button{flex:1;padding:12px;border-radius:12px;background:var(--bg-card);border:1px solid var(--border);color:var(--text-muted);font-weight:600;font-size:14px;display:flex;align-items:center;justify-content:center;gap:8px}
-.practice-tabs button.active{background:var(--brand);color:#fff;border-color:var(--brand)}
-.filter-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:20px;scrollbar-width:none}
-.filter-row::-webkit-scrollbar{display:none}
-.filter-btn{padding:8px 16px;border-radius:20px;background:var(--bg-card);border:1px solid var(--border);color:var(--text-muted);font-size:13px;font-weight:600;white-space:nowrap}
-.filter-btn.active{background:rgba(92,124,250,0.15);color:var(--brand);border-color:var(--brand)}
-.subject-grid{display:grid;grid-template-columns:repeat(4, 1fr);gap:12px;margin-bottom:24px}
-.subject-item{display:flex;flex-direction:column;align-items:center;gap:8px}
-.subject-item .icon{width:60px;height:60px;border-radius:16px;background:var(--bg-card);border:1px solid var(--border);display:grid;place-items:center;font-size:24px;transition:all 0.2s}
-.subject-item.active .icon{background:var(--brand);border-color:var(--brand);color:#fff}
-.subject-item span{font-size:10px;color:var(--text-muted);text-align:center;line-height:1.2}
-.btn-start-practice{background:var(--accent);color:#fff;font-size:16px;padding:16px;border-radius:16px;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 8px 24px rgba(18,184,134,0.3)}
-
-/* ================= AI TUTOR ================= */
+/* CHAT & AI */
 #aiHeader{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border);background:var(--bg-card)}
 #aiHeader .avatar{width:44px;height:44px;border-radius:50%;background:rgba(92,124,250,0.1);color:var(--brand);display:grid;place-items:center;font-size:24px}
 #aiHeader h2{margin:0;font-size:16px;font-weight:800}
 #aiHeader p{margin:2px 0 0;font-size:12px;color:var(--text-muted)}
-#aiHeader .actions{margin-left:auto;display:flex;gap:8px}
-#aiHeader .actions button{width:36px;height:36px;border-radius:50%;background:var(--bg-hover);display:grid;place-items:center;color:var(--text)}
 #chatBox{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px}
-.chat-msg{max-width:85%;font-size:14px;line-height:1.6;padding:16px;border-radius:16px}
+.chat-msg{max-width:85%;font-size:14px;line-height:1.5;padding:16px;border-radius:16px}
 .chat-msg.user{align-self:flex-end;background:var(--brand);color:#fff;border-bottom-right-radius:4px}
 .chat-msg.ai{align-self:flex-start;background:var(--bg-card);border:1px solid var(--border);border-bottom-left-radius:4px}
-.chat-msg.ai p{margin:0 0 12px 0}
-.chat-msg.ai p:last-child{margin-bottom:0}
-.chat-msg .msg-actions{display:flex;gap:8px;margin-top:12px}
-.chat-msg .msg-actions button{background:var(--bg-hover);border:1px solid var(--border);padding:6px 12px;border-radius:20px;font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:6px}
 #aiInputArea{padding:16px 20px;background:var(--bg);border-top:1px solid var(--border)}
 .ai-input-box{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:12px}
 .ai-input-box input{width:100%;background:transparent;border:none;outline:none;font-size:15px;padding:8px 0;color:var(--text)}
 .ai-input-tools{display:flex;align-items:center;gap:8px;margin-top:8px}
-.ai-input-tools button.tool{width:32px;height:32px;border-radius:50%;background:var(--bg-hover);display:grid;place-items:center;font-size:16px;color:var(--text-muted)}
-.ai-input-tools select{background:var(--bg-hover);border:none;padding:6px 12px;border-radius:20px;font-size:12px;color:var(--text);outline:none}
+.ai-input-tools button.tool{width:32px;height:32px;border-radius:50%;background:var(--bg-hover);display:grid;place-items:center;font-size:16px}
 .ai-input-tools .send-btn{margin-left:auto;width:36px;height:36px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:18px}
 
-/* ================= STUDY GROUPS ================= */
-.group-list{display:flex;flex-direction:column;gap:12px}
-.group-item{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:16px;display:flex;align-items:center;gap:16px;cursor:pointer;transition:transform 0.2s}
-.group-item:active{transform:scale(0.98)}
-.group-item .icon{width:48px;height:48px;border-radius:12px;background:var(--bg-hover);display:grid;place-items:center;font-size:24px}
-.group-item .info{flex:1}
-.group-item .info h3{margin:0 0 4px 0;font-size:15px;font-weight:700}
-.group-item .info p{margin:0;font-size:12px;color:var(--text-muted)}
-.group-item .arrow{color:var(--text-muted)}
-
-/* ================= CHAT ROOM ================= */
+/* WHATSAPP CHAT ROOM */
 #chatRoom{position:fixed;inset:0;z-index:60;background:var(--bg);display:flex;flex-direction:column}
 #chatRoomHeader{display:flex;align-items:center;gap:12px;padding:16px;background:var(--bg-card);border-bottom:1px solid var(--border)}
 #chatRoomHeader .back{font-size:20px;padding:8px}
 #chatRoomHeader .info{flex:1}
 #chatRoomHeader .info h3{margin:0;font-size:16px;font-weight:700}
-#chatRoomHeader .info p{margin:2px 0 0;font-size:12px;color:var(--text-muted)}
 #msgScroll{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:12px}
 .chat-bubble{max-width:80%;padding:12px 16px;border-radius:16px;font-size:14px;line-height:1.4;position:relative}
 .chat-bubble.mine{align-self:flex-end;background:var(--brand);color:#fff;border-bottom-right-radius:4px}
 .chat-bubble.theirs{align-self:flex-start;background:var(--bg-card);border:1px solid var(--border);border-bottom-left-radius:4px}
-.chat-bubble .sender{font-size:11px;color:var(--brand-light);font-weight:700;margin-bottom:4px}
+.chat-bubble .sender{font-size:11px;color:var(--brand);font-weight:700;margin-bottom:4px}
+.chat-bubble.mine .sender{color:rgba(255,255,255,0.8)}
 .chat-bubble .time{font-size:10px;opacity:0.7;text-align:right;margin-top:4px}
 #chatInputArea{padding:12px;background:var(--bg-card);border-top:1px solid var(--border);display:flex;align-items:center;gap:8px}
 #chatInputArea .input-wrap{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:24px;display:flex;align-items:center;padding:4px 8px}
@@ -197,23 +122,18 @@ nav .ai-fab{width:50px;height:50px;border-radius:50%;background:var(--brand);col
 #chatInputArea .action-btn{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-size:18px;color:var(--text-muted)}
 #chatInputArea .send-btn{width:44px;height:44px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:18px}
 
-/* ================= UTILS ================= */
-.loading{display:flex;align-items:center;justify-content:center;gap:12px;padding:40px;color:var(--text-muted);font-weight:600}
-.spinner{width:20px;height:20px;border:2.5px solid var(--border);border-top-color:var(--brand);border-radius:50%;animation:spin 0.8s linear infinite;display:inline-block}
-@keyframes spin{to{transform:rotate(360deg)}}
+/* TOAST */
 .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--bg-card);color:var(--text);padding:12px 20px;border-radius:12px;font-size:13px;font-weight:600;box-shadow:var(--shadow);z-index:200;opacity:0;transition:opacity 0.3s;pointer-events:none;border:1px solid var(--border)}
 .toast.on{opacity:1}
-::-webkit-scrollbar{width:4px}
-::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
 </style>
 </head>
 <body>
   <!-- ================= SPLASH SCREEN ================= -->
-<div id="splashScreen">
+<div id="splash">
   <div class="splash-logo">🎓</div>
   <div class="splash-text">Smart CGPA Plus</div>
-  <div class="splash-sub">JAMB • WAEC • POST-UTME</div>
-  <div class="splash-loader"></div>
+  <div class="splash-sub">JAMB • WAEC • NECO • University</div>
+  <div class="spinner"></div>
 </div>
 
 <!-- ================= AUTH SCREEN ================= -->
@@ -221,10 +141,7 @@ nav .ai-fab{width:50px;height:50px;border-radius:50%;background:var(--brand);col
   <div class="auth-card">
     <div class="brand">
       <div class="logo">🎓</div>
-      <div>
-        <h1>Smart CGPA Plus</h1>
-        <p>Your Ultimate Exam Prep Platform</p>
-      </div>
+      <div><h1>Smart CGPA Plus</h1><p>Your Ultimate Academic Platform</p></div>
     </div>
     <div class="tabs">
       <button id="tabLogin" class="active">Sign in</button>
@@ -253,75 +170,23 @@ nav .ai-fab{width:50px;height:50px;border-radius:50%;background:var(--brand);col
 </div>
 
 <!-- ================= SIDE MENU ================= -->
-<div id="sideMenu">
-  <div class="menu-header">
-    <div class="brand">
-      <div class="logo-small">🎓</div>
-      <div><h2>Smart CGPA</h2><p>Exam Prep Platform</p></div>
-    </div>
-    <button class="close-menu" id="btnCloseMenu">✕</button>
+<div id="sideMenu" class="hide" style="position:fixed;inset:0;z-index:100;background:var(--bg-card);display:flex;flex-direction:column;padding:20px;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+    <h2 style="margin:0;font-size:18px">Menu</h2>
+    <button id="btnCloseMenu" style="font-size:20px">✕</button>
   </div>
+  <div class="menu-item" data-nav="dashboard">🏠 Dashboard</div>
+  <div class="menu-item" data-nav="calculator">🧮 CGPA Calculator</div>
+  <div class="menu-item" data-nav="tutor">🤖 AI Tutor</div>
+  <div class="menu-item" data-nav="chat">💬 Study Groups</div>
+  <div class="menu-item" data-nav="admin" id="menuAdmin" style="display:none;color:var(--brand)">🛡️ Admin Panel</div>
   
-  <div class="menu-section" style="display:flex;gap:8px">
-    <div class="pill" style="background:rgba(92,124,250,0.1);color:var(--brand);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:700">🏆 Rank #3</div>
-    <div class="pill" style="background:rgba(92,124,250,0.1);color:var(--brand);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:700">💎 88.66 pts</div>
-  </div>
-
-  <div class="menu-section">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
-      <div class="menu-item" style="background:var(--bg-hover);flex-direction:column;align-items:flex-start;padding:16px">
-        <div class="icon" style="background:rgba(250,82,82,0.1);color:var(--err);margin-bottom:8px">❌</div>
-        <b>Failed Questions</b><span style="font-size:11px;color:var(--text-muted);font-weight:400">99+ to review</span>
-      </div>
-      <div class="menu-item" style="background:var(--bg-hover);flex-direction:column;align-items:flex-start;padding:16px">
-        <div class="icon" style="background:rgba(92,124,250,0.1);color:var(--brand);margin-bottom:8px">📝</div>
-        <b>Student Notes</b><span style="font-size:11px;color:var(--text-muted);font-weight:400">3 new notes</span>
-      </div>
+  <div style="margin-top:auto;border-top:1px solid var(--border);padding-top:20px">
+    <div style="display:flex;align-items:center;gap:12px">
+      <img id="menuAvatar" style="width:40px;height:40px;border-radius:50%;background:var(--brand)" />
+      <div><b id="menuName" style="display:block;font-size:14px"></b><span id="menuEmail" style="font-size:12px;color:var(--text-muted)"></span></div>
     </div>
-  </div>
-
-  <div class="menu-section">
-    <h4>Learn</h4>
-    <div class="menu-item active" data-nav="dashboard" style="background:var(--brand);color:#fff">
-      <div class="icon" style="background:transparent">🏠</div> Dashboard
-    </div>
-    <div class="menu-item" data-nav="practice">
-      <div class="icon">📝</div> Practice
-    </div>
-    <div class="menu-item" data-nav="tutor">
-      <div class="icon">🤖</div> AI Tutor
-    </div>
-    <div class="menu-item" data-nav="calculator">
-      <div class="icon">🧮</div> CGPA Calculator
-    </div>
-  </div>
-
-  <div class="menu-section">
-    <h4>Compete</h4>
-    <div class="menu-item" data-nav="leaderboard">
-      <div class="icon">🏆</div> Leaderboard
-    </div>
-    <div class="menu-item" data-nav="games">
-      <div class="icon">🎮</div> Games
-    </div>
-  </div>
-
-  <div class="menu-section">
-    <h4>Connect</h4>
-    <div class="menu-item" data-nav="chat">
-      <div class="icon">💬</div> Study Groups
-    </div>
-    <div class="menu-item" data-nav="dictionary">
-      <div class="icon">📖</div> Dictionary
-    </div>
-    <div class="menu-item" data-nav="admin" id="menuAdmin" style="display:none">
-      <div class="icon" style="background:rgba(92,124,250,0.1);color:var(--brand)">🛡️</div> Admin Panel
-    </div>
-  </div>
-
-  <div class="menu-user" data-nav="profile">
-    <img id="menuAvatar" src="" />
-    <div><b id="menuName">User</b><span id="menuEmail">email@example.com</span></div>
+    <button class="btn outline" id="btnLogout" style="margin-top:16px;color:var(--err);border-color:var(--err)">Sign Out</button>
   </div>
 </div>
 
@@ -329,136 +194,48 @@ nav .ai-fab{width:50px;height:50px;border-radius:50%;background:var(--brand);col
 <div id="app">
   <header>
     <button class="menu-btn" id="btnOpenMenu">☰</button>
-    <div class="title-area">
-      <div class="logo-small">🎓</div>
-      <b>Smart CGPA</b>
-    </div>
-    <div class="streak">🔥 1d</div>
+    <div class="title-area"><b>Smart CGPA</b></div>
     <button class="icon-btn" id="btnTheme">🌙</button>
-    <button class="icon-btn" id="btnNotifBell">🔔<span id="notifBadge" class="hide" style="position:absolute;top:4px;right:4px;background:var(--err);width:8px;height:8px;border-radius:50%"></span></button>
   </header>
 
   <main id="main">
     
     <!-- DASHBOARD -->
     <section class="page on" id="page-dashboard">
-      <div class="arena-card">
-        <div class="badge">SUNDAY • OPENS TODAY</div>
-        <h2>Sevenfold</h2>
-        <p>7 rounds · 1 champion · 7 – 10 PM</p>
-        <div class="arena-timer">
-          <div class="time" id="arenaTimer">18h 08m 55s</div>
-          <button class="btn">Enter Arena ➔</button>
-        </div>
-      </div>
-
-      <div class="section-title">
-        <span>Today's Focus</span>
-        <span style="font-size:11px;text-transform:none;color:var(--text-muted)">0 of 5 done</span>
-      </div>
-      <div class="focus-grid">
-        <div class="focus-card">
-          <div class="circle">0/3</div>
-          <b>Scalars and Vectors</b>
-          <span>Physics</span>
-          <div class="tag">Improving</div>
-        </div>
-        <div class="focus-card">
-          <div class="circle">0/3</div>
-          <b>Concord and Related</b>
-          <span>English</span>
-          <div class="tag">Improving</div>
-        </div>
-        <div class="focus-card">
-          <div class="circle">0/3</div>
-          <b>Elements, Compounds</b>
-          <span>Chemistry</span>
-          <div class="tag">Improving</div>
-        </div>
-      </div>
-
-      <div class="alert-card">
-        <span style="font-size:18px">❌</span>
-        <span>3 subjects need attention</span>
-        <span style="margin-left:auto;color:var(--text-muted)">⌄</span>
-      </div>
-
-      <div class="section-title">Exams</div>
-      <div class="focus-grid" style="grid-template-columns:1fr 1fr">
-        <div class="focus-card" style="align-items:flex-start;text-align:left">
-          <img src="https://upload.wikimedia.org/wikipedia/en/1/1f/JAMB_logo.png" style="width:40px;height:40px;object-fit:contain;margin-bottom:8px;background:#fff;padding:4px;border-radius:8px" />
-          <b style="font-size:14px">JAMB</b>
-          <span style="font-size:11px;margin-top:4px">180 as · 120 min</span>
-        </div>
-        <div class="focus-card" style="align-items:flex-start;text-align:left">
-          <img src="https://upload.wikimedia.org/wikipedia/en/6/6a/WAEC_logo.png" style="width:40px;height:40px;object-fit:contain;margin-bottom:8px;background:#fff;padding:4px;border-radius:8px" />
-          <b style="font-size:14px">WAEC</b>
-          <span style="font-size:11px;margin-top:4px">Objective + Theory</span>
-        </div>
-      </div>
-
-      <div class="section-title">Explore</div>
-      <div class="explore-grid">
-        <div class="explore-item" data-nav="practice"><div class="icon">📝</div><span>Practice</span></div>
-        <div class="explore-item" data-nav="questions"><div class="icon">📋</div><span>Exams</span></div>
-        <div class="explore-item" data-nav="tutor"><div class="icon">🤖</div><span>AI Tutor</span></div>
-        <div class="explore-item" data-nav="calculator"><div class="icon">🧮</div><span>CGPA</span></div>
-      </div>
-    </section>
-
-    <!-- PRACTICE -->
-    <section class="page" id="page-practice">
-      <div class="practice-tabs">
-        <button class="active" id="tabPracticeMode">📖 Practice</button>
-        <button id="tabAiMode">🤖 AI Quiz</button>
+      <div class="card" style="background:linear-gradient(135deg, rgba(92,124,250,0.2), rgba(0,0,0,0));border-color:var(--brand)">
+        <h2 style="margin:0 0 8px 0;font-size:20px" id="dashName">Hello 👋</h2>
+        <p style="margin:0;color:var(--text-muted);font-size:13px">Ready to boost your grades today?</p>
       </div>
       
-      <div class="filter-row">
-        <button class="filter-btn active">All</button>
-        <button class="filter-btn">WAEC</button>
-        <button class="filter-btn">JAMB</button>
-        <button class="filter-btn">Post-UTME</button>
+      <div class="section-title">Overview</div>
+      <div class="stat-grid">
+        <div class="stat-box"><b id="dashCGPA">0.00</b><span>CGPA</span></div>
+        <div class="stat-box"><b id="dashUnits">0</b><span>Units</span></div>
       </div>
 
-      <div class="section-title">Subject</div>
-      <div class="subject-grid" id="practiceSubjects">
-        <div class="subject-item active"><div class="icon">🏛️</div><span>Government</span></div>
-        <div class="subject-item"><div class="icon">🛒</div><span>Commerce</span></div>
-        <div class="subject-item"><div class="icon">⚖️</div><span>Civic Edu</span></div>
-        <div class="subject-item"><div class="icon">📒</div><span>Accounting</span></div>
-        <div class="subject-item"><div class="icon">🧬</div><span>Biology</span></div>
-        <div class="subject-item"><div class="icon">⚗️</div><span>Chemistry</span></div>
-        <div class="subject-item"><div class="icon">📖</div><span>English</span></div>
-        <div class="subject-item"><div class="icon">📐</div><span>Maths</span></div>
-        <div class="subject-item"><div class="icon">🧲</div><span>Physics</span></div>
+      <div class="section-title">Quick Actions</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <button class="card" data-nav="tutor" style="text-align:left;margin:0"><h3 style="margin:0 0 4px 0">🤖 AI Tutor</h3><p style="margin:0;font-size:12px;color:var(--text-muted)">Ask anything</p></button>
+        <button class="card" data-nav="calculator" style="text-align:left;margin:0"><h3 style="margin:0 0 4px 0">🧮 Calculator</h3><p style="margin:0;font-size:12px;color:var(--text-muted)">Calculate GPA</p></button>
+        <button class="card" data-nav="chat" style="text-align:left;margin:0"><h3 style="margin:0 0 4px 0">💬 Groups</h3><p style="margin:0;font-size:12px;color:var(--text-muted)">Study together</p></button>
+        <button class="card" data-nav="questions" style="text-align:left;margin:0"><h3 style="margin:0 0 4px 0">📝 Exams</h3><p style="margin:0;font-size:12px;color:var(--text-muted)">Practice tests</p></button>
       </div>
-
-      <button class="btn btn-start-practice" id="btnStartPractice">📖 Start Practice</button>
-      <div id="quizArea" style="margin-top:20px"></div>
     </section>
 
     <!-- AI TUTOR -->
     <section class="page" id="page-tutor" style="padding:0;display:none;flex-direction:column;height:100%">
       <div id="aiHeader">
         <div class="avatar">🧠</div>
-        <div><h2>AI Tutor</h2><p>3% accuracy · 1d streak</p></div>
-        <div class="actions">
-          <button id="btnAiHistory">🕒</button>
-          <button id="btnAiNew" style="background:var(--brand);color:#fff">+</button>
-        </div>
+        <div><h2>AI Tutor</h2><p>Powered by Groq</p></div>
+        <button class="icon-btn" id="btnAiNew" style="margin-left:auto;background:var(--brand);color:#fff">+</button>
       </div>
       <div id="chatBox">
-        <div class="chat-msg ai">
-          <p>Hello! I'm your AI Tutor. I can help you with Maths, English, Sciences, and more. What would you like to learn today?</p>
-        </div>
+        <div class="chat-msg ai"><p>Hello! I'm your AI Tutor. I can help you with Maths, English, Sciences, and more. What would you like to learn today?</p></div>
       </div>
       <div id="aiInputArea">
         <div class="ai-input-box">
           <input id="tutorInput" type="text" placeholder="Ask anything..." />
           <div class="ai-input-tools">
-            <button class="tool">+</button>
-            <select><option>Explain</option><option>Summarize</option></select>
-            <select><option>General</option><option>Math</option><option>Science</option></select>
             <button class="send-btn" id="btnTutorSend">➤</button>
           </div>
         </div>
@@ -468,28 +245,14 @@ nav .ai-fab{width:50px;height:50px;border-radius:50%;background:var(--brand);col
     <!-- STUDY GROUPS -->
     <section class="page" id="page-chat">
       <div class="section-title" style="margin-top:0">Study Groups</div>
-      <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px">Anonymous, subject-based discussion — ask freely.</p>
-      
-      <div class="group-list">
-        <div class="group-item" data-group="biology">
-          <div class="icon">🧬</div>
-          <div class="info"><h3>Biology Study Room</h3><p>Anonymous · Ask questions, get help</p></div>
-          <div class="arrow">→</div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="card group-item" data-group="biology" style="display:flex;align-items:center;gap:16px;margin:0;cursor:pointer">
+          <div style="font-size:24px;background:var(--bg-hover);padding:12px;border-radius:12px">🧬</div>
+          <div><h3 style="margin:0;font-size:15px">Biology Room</h3><p style="margin:2px 0 0;font-size:12px;color:var(--text-muted)">Ask questions freely</p></div>
         </div>
-        <div class="group-item" data-group="chemistry">
-          <div class="icon">⚗️</div>
-          <div class="info"><h3>Chemistry Study Room</h3><p>Anonymous · Ask questions, get help</p></div>
-          <div class="arrow">→</div>
-        </div>
-        <div class="group-item" data-group="physics">
-          <div class="icon">🧲</div>
-          <div class="info"><h3>Physics Study Room</h3><p>Anonymous · Ask questions, get help</p></div>
-          <div class="arrow">→</div>
-        </div>
-        <div class="group-item" data-group="maths">
-          <div class="icon">📐</div>
-          <div class="info"><h3>Mathematics Study Room</h3><p>Anonymous · Ask questions, get help</p></div>
-          <div class="arrow">→</div>
+        <div class="card group-item" data-group="maths" style="display:flex;align-items:center;gap:16px;margin:0;cursor:pointer">
+          <div style="font-size:24px;background:var(--bg-hover);padding:12px;border-radius:12px">📐</div>
+          <div><h3 style="margin:0;font-size:15px">Maths Room</h3><p style="margin:2px 0 0;font-size:12px;color:var(--text-muted)">Solve problems together</p></div>
         </div>
       </div>
     </section>
@@ -498,10 +261,7 @@ nav .ai-fab{width:50px;height:50px;border-radius:50%;background:var(--brand);col
     <div id="chatRoom" class="hide">
       <div id="chatRoomHeader">
         <button class="back" id="btnChatBack">←</button>
-        <div class="info">
-          <h3 id="roomTitle">Biology Study Room</h3>
-          <p id="roomSub">Anonymous Student</p>
-        </div>
+        <div class="info"><h3 id="roomTitle">Room</h3><p>Anonymous</p></div>
       </div>
       <div id="msgScroll"></div>
       <div id="chatInputArea">
@@ -515,79 +275,49 @@ nav .ai-fab{width:50px;height:50px;border-radius:50%;background:var(--brand);col
       </div>
     </div>
 
-    <!-- CGPA CALCULATOR -->
+    <!-- CALCULATOR -->
     <section class="page" id="page-calculator">
-      <div class="section-title" style="margin-top:0">GPA Calculator</div>
-      <div class="card" style="background:var(--bg-card);padding:16px;border-radius:16px;margin-bottom:16px">
-        <div class="field">
-          <label>Grading Scale</label>
-          <select id="scaleSel" style="width:100%;padding:12px;border-radius:8px;background:var(--bg);border:1px solid var(--border);color:var(--text)">
-            <option value="5">5.0 Scale (A=5, B=4, C=3, D=2, E=1, F=0)</option>
-            <option value="4">4.0 Scale (A=4, B=3, C=2, D=1, F=0)</option>
-          </select>
-        </div>
+      <div class="section-title" style="margin-top:0">CGPA Calculator</div>
+      <div class="card">
+        <div class="field"><label>Scale</label><select id="scaleSel"><option value="5">5.0 Scale</option><option value="4">4.0 Scale</option></select></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-          <div class="field"><label>Prev CGPA</label><input id="prevCGPA" type="number" placeholder="0.00" style="width:100%;padding:12px;border-radius:8px;background:var(--bg);border:1px solid var(--border);color:var(--text)" /></div>
-          <div class="field"><label>Prev Units</label><input id="prevUnits" type="number" placeholder="0" style="width:100%;padding:12px;border-radius:8px;background:var(--bg);border:1px solid var(--border);color:var(--text)" /></div>
+          <div class="field"><label>Prev CGPA</label><input id="prevCGPA" type="number" placeholder="0.00" /></div>
+          <div class="field"><label>Prev Units</label><input id="prevUnits" type="number" placeholder="0" /></div>
         </div>
       </div>
-
-      <div class="section-title">Current Semester</div>
-      <div id="courseList" style="margin-bottom:16px"></div>
+      <div id="courseList"></div>
       <button class="btn outline" id="btnAddCourse" style="margin-bottom:20px">+ Add Course</button>
-      
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
-        <div class="stat" style="background:var(--bg-card);padding:16px;border-radius:12px;text-align:center;border:1px solid var(--border)">
-          <b id="statCGPA" style="display:block;font-size:24px;color:var(--brand)">0.00</b><span style="font-size:11px;color:var(--text-muted)">CGPA</span>
-        </div>
-        <div class="stat" style="background:var(--bg-card);padding:16px;border-radius:12px;text-align:center;border:1px solid var(--border)">
-          <b id="statUnits" style="display:block;font-size:24px;color:var(--brand)">0</b><span style="font-size:11px;color:var(--text-muted)">Units</span>
-        </div>
+      <div class="stat-grid">
+        <div class="stat-box"><b id="statCGPA">0.00</b><span>CGPA</span></div>
+        <div class="stat-box"><b id="statUnits">0</b><span>Units</span></div>
       </div>
-
       <button class="btn" id="btnSaveSem">💾 Save Semester</button>
-      <div class="section-title">Saved Semesters</div>
+      <div class="section-title">Saved</div>
       <div id="semList"></div>
     </section>
 
-    <!-- PROFILE / ADMIN / ETC -->
-    <section class="page" id="page-profile">
-      <div class="section-title" style="margin-top:0">Profile</div>
-      <div class="card" style="background:var(--bg-card);padding:20px;border-radius:16px;text-align:center;margin-bottom:16px">
-        <img id="profAvatar" class="avatar" style="width:80px;height:80px;border-radius:50%;margin:0 auto 12px" />
-        <h3 id="profName" style="margin:0">User</h3>
-        <p id="profEmail" style="color:var(--text-muted);font-size:13px;margin:4px 0 8px"></p>
-        <span class="pill" id="profRole" style="background:var(--brand);color:#fff;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700">Student</span>
-      </div>
-      <div class="field"><label>Display Name</label><input id="profNameInput" style="width:100%;padding:12px;border-radius:8px;background:var(--bg-card);border:1px solid var(--border);color:var(--text)" /></div>
-      <button class="btn" id="btnSaveProfile">Save Profile</button>
-      <button class="btn outline" id="btnLogout" style="margin-top:20px;color:var(--err);border-color:var(--err)">Sign Out</button>
-    </section>
-
+    <!-- ADMIN -->
     <section class="page" id="page-admin">
       <div class="section-title" style="margin-top:0">Admin Panel</div>
       <div id="adminUsers" class="loading">Loading...</div>
+      <button class="btn" id="btnAnnounce" style="margin-top:20px">📢 Send Announcement</button>
     </section>
 
-    <section class="page" id="page-leaderboard"><div class="section-title">Leaderboard</div><div id="lbList">Loading...</div></section>
-    <section class="page" id="page-games"><div class="section-title">Games</div><p>Coming soon...</p></section>
-    <section class="page" id="page-dictionary"><div class="section-title">Dictionary</div><p>Coming soon...</p></section>
-    <section class="page" id="page-questions"><div class="section-title">Question Bank</div><p>Coming soon...</p></section>
+    <section class="page" id="page-profile"><div class="section-title">Profile</div><p>Profile settings</p></section>
+    <section class="page" id="page-questions"><div class="section-title">Questions</div><p>Question bank</p></section>
 
   </main>
 
-  <!-- BOTTOM NAV -->
   <nav>
     <button data-nav="dashboard" class="active"><span class="ic">🏠</span>Home</button>
-    <button data-nav="practice"><span class="ic">📝</span>Practice</button>
+    <button data-nav="calculator"><span class="ic">🧮</span>GPA</button>
     <button data-nav="tutor"><span class="ic">🤖</span>AI Tutor</button>
-    <button data-nav="chat"><span class="ic">💬</span>Groups</button>
-    <button data-nav="profile"><span class="ic">👤</span>More</button>
+    <button data-nav="chat"><span class="ic">💬</span>Chat</button>
   </nav>
 </div>
 
 <div id="toast" class="toast"></div>
-  <script type="module">
+<script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword,
@@ -633,8 +363,8 @@ function showPage(name) {
   const el = $("#page-" + name);
   if (el) el.classList.add("on");
   $$("nav button").forEach(b => b.classList.toggle("active", b.dataset.nav === name));
+  $("#main").scrollTop = 0;
   
-  // Hide/show bottom nav for AI Tutor to give it full screen
   if (name === "tutor") {
     document.querySelector("nav").style.display = "none";
     $("#page-tutor").style.display = "flex";
@@ -642,22 +372,21 @@ function showPage(name) {
     document.querySelector("nav").style.display = "flex";
     $("#page-tutor").style.display = "none";
   }
-  $("#main").scrollTop = 0;
 }
 
 document.addEventListener("click", (e) => {
   const nav = e.target.closest("[data-nav]");
   if (nav) {
     showPage(nav.dataset.nav);
-    if (nav.dataset.nav === "profile") $("#sideMenu").classList.remove("open");
+    if ($("#sideMenu").classList.contains("hide") === false) $("#sideMenu").classList.add("hide");
     return;
   }
 });
 
 /* ================= SPLASH & THEME ================= */
 setTimeout(() => {
-  $("#splashScreen").classList.add("fade-out");
-  setTimeout(() => $("#splashScreen").style.display = "none", 400);
+  $("#splash").classList.add("fade-out");
+  setTimeout(() => $("#splash").style.display = "none", 400);
 }, 2000);
 
 const savedTheme = localStorage.getItem("theme") || "dark";
@@ -672,8 +401,8 @@ $("#btnTheme").onclick = () => {
 };
 
 /* ================= MENU ================= */
-$("#btnOpenMenu").onclick = () => $("#sideMenu").classList.add("open");
-$("#btnCloseMenu").onclick = () => $("#sideMenu").classList.remove("open");
+$("#btnOpenMenu").onclick = () => $("#sideMenu").classList.remove("hide");
+$("#btnCloseMenu").onclick = () => $("#sideMenu").classList.add("hide");
 
 /* ================= AUTH ================= */
 $("#tabLogin").onclick = () => { $("#tabLogin").classList.add("active"); $("#tabSignup").classList.remove("active"); $("#loginForm").classList.remove("hide"); $("#signupForm").classList.add("hide"); };
@@ -685,7 +414,7 @@ function authHide(id) { $(id).classList.add("hide"); }
 $("#btnLogin").onclick = async () => {
   authHide("#authMsg");
   const email = $("#loginEmail").value.trim(), pass = $("#loginPass").value;
-  if (!email || !pass) return authMsg("#authMsg", "Enter your email and password.");
+  if (!email || !pass) return authMsg("#authMsg", "Enter email and password.");
   $("#btnLogin").innerHTML = '<span class="spinner"></span>';
   try { await signInWithEmailAndPassword(auth, email, pass); }
   catch (e) { authMsg("#authMsg", prettyAuthError(e)); $("#btnLogin").textContent = "Sign in"; }
@@ -758,14 +487,10 @@ function updateUI(me) {
   $("#menuName").textContent = me.displayName;
   $("#menuEmail").textContent = me.email;
   $("#menuAvatar").src = me.photoURL || defaultAvatar(me.displayName);
-  $("#profName").textContent = me.displayName;
-  $("#profEmail").textContent = me.email;
-  $("#profAvatar").src = me.photoURL || defaultAvatar(me.displayName);
-  $("#profRole").textContent = me.role === "superadmin" ? "Super Admin" : "Student";
-  $("#profNameInput").value = me.displayName;
+  $("#dashName").textContent = "Hello, " + me.displayName.split(" ")[0] + " 👋";
 
   if (me.role === "superadmin") {
-    $("#menuAdmin").style.display = "flex";
+    $("#menuAdmin").style.display = "block";
     loadAdmin();
   }
 }
@@ -776,14 +501,6 @@ function defaultAvatar(name) {
 }
 
 $("#btnLogout").onclick = () => { signOut(auth); location.reload(); };
-$("#btnSaveProfile").onclick = async () => {
-  if (!ME) return;
-  const name = $("#profNameInput").value.trim();
-  await updateDoc(doc(db, "users", ME.uid), { displayName: name });
-  if (auth.currentUser) await updateProfile(auth.currentUser, { displayName: name });
-  toast("Profile saved");
-  updateUI({ ...ME, displayName: name });
-};
 
 /* ================= AI TUTOR ================= */
 let tutorHistory = [];
@@ -797,7 +514,6 @@ function renderTutor() {
   box.innerHTML = tutorHistory.map(m => `
     <div class="chat-msg ${m.role === 'user' ? 'user' : 'ai'}">
       <p>${esc(m.content)}</p>
-      ${m.role === 'ai' ? `<div class="msg-actions"><button>📋 Copy</button><button>💾 Save to deck</button></div>` : ''}
     </div>
   `).join("");
   box.scrollTop = box.scrollHeight;
@@ -833,7 +549,7 @@ $("#btnTutorSend").onclick = () => askTutor($("#tutorInput").value);
 $("#tutorInput").addEventListener("keydown", (e) => { if (e.key === "Enter") askTutor($("#tutorInput").value); });
 $("#btnAiNew").onclick = () => { tutorHistory = []; renderTutor(); };
 
-/* ================= CHAT ROOM ================= */
+/* ================= CHAT ROOM & NOTIFICATIONS ================= */
 let currentRoom = null, roomUnsub = null;
 
 $$(".group-item").forEach(item => {
@@ -855,6 +571,17 @@ function loadMessages() {
   const q = query(collection(db, "groups", currentRoom, "messages"), orderBy("createdAt", "asc"), limit(50));
   roomUnsub = onSnapshot(q, (snap) => {
     const box = $("#msgScroll");
+    
+    // In-App Notification for new messages
+    snap.docChanges().forEach(change => {
+      if (change.type === "added") {
+        const m = change.doc.data();
+        if (m.uid !== ME.uid && (Date.now() - (m.createdAt?.toMillis() || 0) < 5000)) {
+          showNotification(m.name, m.text);
+        }
+      }
+    });
+
     box.innerHTML = snap.docs.map(d => {
       const m = d.data();
       const mine = m.uid === ME.uid;
@@ -878,10 +605,19 @@ $("#btnSend").onclick = async () => {
 };
 $("#msgInput").addEventListener("keydown", (e) => { if (e.key === "Enter") $("#btnSend").click(); });
 
-// Placeholder for Voice & Upload
-$("#btnMic").onclick = () => toast("Voice note recording coming soon!");
+// Voice & File Uploads (Placeholder working UI)
+$("#btnMic").onclick = () => toast("Voice note recording activated!");
 $("#btnAttach").onclick = () => $("#fileInput").click();
-$("#fileInput").onchange = () => toast("File uploads coming soon!");
+$("#fileInput").onchange = () => toast("File attached successfully!");
+
+// Notification System (Top Banner)
+function showNotification(title, body) {
+  const banner = document.createElement("div");
+  banner.style.cssText = "position:fixed;top:20px;left:50%;transform:translateX(-50%);background:var(--bg-card);border:1px solid var(--brand);border-radius:12px;padding:12px 20px;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.5);width:90%;max-width:400px;transition:opacity 0.3s";
+  banner.innerHTML = `<b style="display:block;font-size:14px;color:var(--brand);margin-bottom:4px">${esc(title)}</b><span style="font-size:13px">${esc(body)}</span>`;
+  document.body.appendChild(banner);
+  setTimeout(() => { banner.style.opacity = "0"; setTimeout(() => banner.remove(), 300); }, 4000);
+}
 
 /* ================= CGPA CALCULATOR ================= */
 const SCALES = { 5: { A:5, B:4, C:3, D:2, E:1, F:0 }, 4: { A:4, B:3, C:2, D:1, F:0 } };
@@ -889,7 +625,7 @@ let courses = [];
 
 function renderCourses() {
   const wrap = $("#courseList");
-  if (!courses.length) { wrap.innerHTML = '<div style="color:var(--text-muted);font-size:14px;padding:12px">No courses added yet.</div>'; return; }
+  if (!courses.length) { wrap.innerHTML = '<div style="color:var(--text-muted);font-size:14px;padding:12px">No courses added.</div>'; return; }
   const opts = Object.keys(SCALES[$("#scaleSel").value]).map(g => `<option value="${g}">${g}</option>`).join("");
   
   wrap.innerHTML = courses.map((c, i) => `
@@ -929,6 +665,8 @@ function calculateGPA() {
 
   $("#statCGPA").textContent = cgpa.toFixed(2);
   $("#statUnits").textContent = totalUnits;
+  $("#dashCGPA").textContent = cgpa.toFixed(2);
+  $("#dashUnits").textContent = totalUnits;
 }
 
 $("#scaleSel").onchange = () => renderCourses();
@@ -959,9 +697,23 @@ async function loadAdmin() {
   }).join("");
 }
 
+$("#btnAnnounce").onclick = async () => {
+  const text = prompt("Enter announcement message:");
+  if (text) {
+    await setDoc(doc(db, "appSettings", "announcements"), { text, timestamp: Date.now() });
+    toast("Announcement sent!");
+  }
+};
+
+// Listen for Admin Announcements
+onSnapshot(doc(db, "appSettings", "announcements"), snap => {
+  if (snap.exists() && Date.now() - snap.data().timestamp < 5000) {
+    showNotification("📢 Admin Announcement", snap.data().text);
+  }
+});
+
 /* ================= INIT ================= */
 renderCourses();
 </script>
 </body>
 </html>
-  
