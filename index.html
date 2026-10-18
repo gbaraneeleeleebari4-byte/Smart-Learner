@@ -3,112 +3,228 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-<meta name="theme-color" content="#4f7cff" />
+<meta name="theme-color" content="#0d1117" />
 <title>Smart CGPA Plus</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>" />
 <style>
+/* ================= PREMIUM DARK THEME ================= */
 :root{
-  --bg-1:#0f1a3d; --bg-2:#1a2a5e; --bg-3:#0a1230;
-  --bg:#0f1733; --card:rgba(28,40,80,.85); --card-solid:#1c2850; --card-2:#243461;
-  --line:rgba(120,150,255,.18); --line-strong:rgba(120,150,255,.35);
-  --text:#f2f5ff; --text-2:#c9d3f5; --muted:#8ba0d4;
-  --brand:#5b8dff; --brand-2:#8b5cff; --brand-3:#4dd4ff;
-  --ok:#38d39f; --warn:#ffb84d; --err:#ff5d6c; --chatbg:#101a38;
-  --shadow-sm:0 2px 8px rgba(0,0,0,.25); --shadow:0 10px 30px rgba(0,0,0,.4);
-  --radius:16px; --radius-lg:22px;
+  --bg:#090a0f; --bg-card:#13151c; --bg-hover:#1c1f2b;
+  --text:#ffffff; --text-muted:#8b92a5;
+  --brand:#5c7cfa; --brand-light:#748ffc; --brand-dark:#4c6ef5;
+  --accent:#12b886; --accent-light:#20c997;
+  --err:#fa5252; --warn:#fcc419; --border:#212433;
+  --nav-bg:rgba(9,10,15,0.95);
+  --radius:16px; --radius-sm:12px;
+  --shadow:0 8px 24px rgba(0,0,0,0.4);
 }
+
 [data-theme="light"]{
-  --bg-1:#eef2ff; --bg-2:#e2e9ff; --bg-3:#f5f7ff; --bg:#f2f5ff;
-  --card:rgba(255,255,255,.92); --card-solid:#ffffff; --card-2:#f2f5ff;
-  --line:rgba(60,90,180,.14); --line-strong:rgba(60,90,180,.28);
-  --text:#0d1530; --text-2:#2a3a68; --muted:#5a6785;
-  --brand:#3a6bff; --brand-2:#7a4cff; --brand-3:#00b8d4;
-  --ok:#0ea37a; --warn:#d97706; --err:#e11d48; --chatbg:#e8edf7;
-  --shadow-sm:0 2px 8px rgba(20,40,100,.08); --shadow:0 10px 30px rgba(20,40,100,.14);
+  --bg:#f8f9fa; --bg-card:#ffffff; --bg-hover:#f1f3f5;
+  --text:#212529; --text-muted:#868e96;
+  --border:#e9ecef; --nav-bg:rgba(255,255,255,0.95);
+  --shadow:0 8px 24px rgba(0,0,0,0.08);
 }
+
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;padding:0;height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,system-ui,sans-serif;overscroll-behavior:none;-webkit-font-smoothing:antialiased;letter-spacing:-.01em}
+html,body{margin:0;padding:0;height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;overscroll-behavior:none;-webkit-font-smoothing:antialiased}
 button,input,select,textarea{font:inherit;color:inherit;letter-spacing:inherit}
 button{cursor:pointer;border:none;background:none}
 a{color:var(--brand);text-decoration:none}
 .hide{display:none !important}
 
-#authScreen{min-height:100%;display:flex;align-items:center;justify-content:center;padding:24px;background:radial-gradient(1000px 600px at 15% -10%, rgba(91,141,255,.45), transparent 60%),radial-gradient(900px 500px at 110% 10%, rgba(139,92,255,.40), transparent 55%),radial-gradient(700px 500px at 50% 120%, rgba(77,212,255,.25), transparent 60%),linear-gradient(160deg, var(--bg-1), var(--bg-3));position:relative;overflow:hidden}
-.auth-card{position:relative;width:100%;max-width:420px;background:var(--card);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid var(--line-strong);border-radius:var(--radius-lg);padding:32px 28px 28px;box-shadow:var(--shadow)}
-.brand{display:flex;align-items:center;gap:14px;margin-bottom:8px}
-.brand .logo{width:54px;height:54px;border-radius:16px;background:linear-gradient(135deg, var(--brand), var(--brand-2) 60%, var(--brand-3));display:grid;place-items:center;font-size:26px;box-shadow:0 8px 24px rgba(91,141,255,.5), inset 0 1px 0 rgba(255,255,255,.35)}
-.brand h1{font-size:21px;margin:0;letter-spacing:-.4px;font-weight:800}
-.brand p{margin:2px 0 0;color:var(--muted);font-size:12.5px;font-weight:500}
-.tabs{display:flex;gap:6px;background:rgba(255,255,255,.06);padding:5px;border-radius:14px;margin:22px 0 8px;border:1px solid var(--line)}
-.tabs button{flex:1;padding:10px;border-radius:10px;color:var(--muted);font-weight:700;font-size:14px;transition:all .2s}
-.tabs button.active{background:linear-gradient(135deg, var(--brand), var(--brand-2));color:#fff;box-shadow:0 6px 16px rgba(91,141,255,.45)}
-.field{margin:14px 0}
-.field label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:7px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
-.field input,.field select,.field textarea{width:100%;padding:13px 15px;border-radius:12px;border:1px solid var(--line-strong);background:rgba(255,255,255,.05);outline:none;font-size:15px;transition:all .18s;color:var(--text)}
-.field input:focus{border-color:var(--brand);background:rgba(91,141,255,.08);box-shadow:0 0 0 4px rgba(91,141,255,.18)}
-.btn{width:100%;padding:14px;border-radius:13px;font-weight:800;font-size:15px;background:linear-gradient(135deg, var(--brand), var(--brand-2));color:#fff;margin-top:10px;transition:transform .12s, box-shadow .18s;box-shadow:0 8px 22px rgba(91,141,255,.4);position:relative;overflow:hidden}
-.btn:active{transform:scale(.985)}
-.btn.ghost{background:rgba(255,255,255,.08);color:var(--text);border:1px solid var(--line-strong);box-shadow:var(--shadow-sm)}
-.btn.danger{background:linear-gradient(135deg, #ff5d6c, #d92646)}
-.btn.google{background:#fff;color:#1f1f1f;display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid #dadce0;font-weight:700}
-.divider{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:12px;margin:18px 0 6px;font-weight:600}
-.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line-strong)}
-.msg{font-size:13.5px;margin-top:14px;padding:11px 14px;border-radius:11px;text-align:center;font-weight:500;line-height:1.45}
-.msg.err{background:rgba(255,93,108,.14);color:#ffb4bd;border:1px solid rgba(255,93,108,.35)}
-.msg.ok{background:rgba(56,211,159,.14);color:#a8f0d5;border:1px solid rgba(56,211,159,.35)}
+/* ================= SPLASH SCREEN ================= */
+#splashScreen{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.4s ease}
+#splashScreen.fade-out{opacity:0;pointer-events:none}
+.splash-logo{width:80px;height:80px;border-radius:24px;background:linear-gradient(135deg,var(--brand),var(--brand-dark));display:grid;place-items:center;font-size:40px;margin-bottom:20px;box-shadow:0 10px 30px rgba(92,124,250,0.3)}
+.splash-text{font-size:20px;font-weight:800;letter-spacing:-0.5px;margin-bottom:8px}
+.splash-sub{color:var(--text-muted);font-size:13px;margin-bottom:40px}
+.splash-loader{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--brand);border-radius:50%;animation:spin 0.8s linear infinite}
 
-#app{display:none;height:100%;flex-direction:column;background:var(--bg)}
+/* ================= AUTH SCREEN ================= */
+#authScreen{min-height:100%;display:flex;align-items:center;justify-content:center;padding:24px;background:var(--bg)}
+.auth-card{position:relative;width:100%;max-width:400px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow)}
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+.brand .logo{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,var(--brand),var(--brand-dark));display:grid;place-items:center;font-size:24px}
+.brand h1{font-size:20px;margin:0;font-weight:800;letter-spacing:-0.5px}
+.brand p{margin:2px 0 0;color:var(--text-muted);font-size:12px}
+.tabs{display:flex;gap:6px;background:var(--bg-hover);padding:4px;border-radius:12px;margin-bottom:20px}
+.tabs button{flex:1;padding:10px;border-radius:8px;color:var(--text-muted);font-weight:600;font-size:14px;transition:all 0.2s}
+.tabs button.active{background:var(--bg-card);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,0.2)}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px;font-weight:600}
+.field input,.field select,.field textarea{width:100%;padding:14px;border-radius:12px;border:1px solid var(--border);background:var(--bg);font-size:15px;outline:none;transition:border 0.2s}
+.field input:focus{border-color:var(--brand)}
+.btn{width:100%;padding:14px;border-radius:12px;font-weight:700;font-size:15px;background:var(--brand);color:#fff;margin-bottom:12px;transition:transform 0.1s}
+.btn:active{transform:scale(0.98)}
+.btn.outline{background:transparent;border:1px solid var(--border);color:var(--text)}
+.btn.google{background:#fff;color:#000;display:flex;align-items:center;justify-content:center;gap:10px}
+.divider{display:flex;align-items:center;gap:10px;color:var(--text-muted);font-size:12px;margin:16px 0}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--border)}
+.msg{font-size:13px;margin-top:12px;padding:10px;border-radius:8px;text-align:center;font-weight:500}
+.msg.err{background:rgba(250,82,82,0.1);color:var(--err)}
+.msg.ok{background:rgba(18,184,134,0.1);color:var(--accent)}
+
+/* ================= APP SHELL ================= */
+#app{display:none;height:100%;flex-direction:column;background:var(--bg);padding-bottom:70px}
 #app.on{display:flex}
-header{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--card-solid);border-bottom:1px solid var(--line)}
-header .logo{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg, var(--brand), var(--brand-2));display:grid;place-items:center;font-size:20px}
-header .titles{flex:1;min-width:0}
-header .titles b{display:block;font-size:16px;font-weight:800}
-header .titles span{font-size:11.5px;color:var(--muted)}
-.icon-btn{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:rgba(255,255,255,.08);border:1px solid var(--line-strong);font-size:18px;color:var(--text)}
-.avatar{width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid var(--brand)}
-main{flex:1;overflow-y:auto;padding:18px;padding-bottom:100px}
-.page{display:none}
-.page.on{display:block;animation:fade .28s ease}
-@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-nav{position:fixed;bottom:0;left:0;right:0;z-index:40;display:flex;background:var(--card-solid);border-top:1px solid var(--line);padding:8px 6px;padding-bottom:calc(8px + env(safe-area-inset-bottom))}
-nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 2px;color:var(--muted);font-size:10.5px;font-weight:700;border-radius:12px}
-nav button.active{color:var(--brand);background:rgba(91,141,255,.1)}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-bottom:16px}
-.card h3{margin:0 0 6px;font-size:17px;font-weight:800}
-.card .sub{color:var(--muted);font-size:13px;margin:0 0 14px;font-weight:500}
-.grid{display:grid;gap:12px}
-.grid.k2{grid-template-columns:1fr 1fr}
-.grid.k3{grid-template-columns:repeat(3,1fr)}
-.stat{background:linear-gradient(135deg, rgba(91,141,255,.14), rgba(139,92,255,.10));border:1px solid var(--line-strong);border-radius:14px;padding:16px 12px;text-align:center}
-.stat b{display:block;font-size:24px;font-weight:800;color:var(--brand)}
-.stat span{font-size:10.5px;color:var(--muted);text-transform:uppercase;font-weight:700}
-.pill{display:inline-block;padding:5px 11px;border-radius:999px;font-size:11px;font-weight:700;background:rgba(255,255,255,.08);border:1px solid var(--line-strong);color:var(--muted)}
-.pill.brand{background:rgba(91,141,255,.22);color:#bfd0ff}
-.pill.ok{background:rgba(56,211,159,.15);color:#7ee2a8}
-.pill.err{background:rgba(255,93,108,.15);color:#ffb4bd}
-.row{display:flex;align-items:center;gap:10px}
-.row.between{justify-content:space-between}
-.empty{text-align:center;padding:44px 20px;color:var(--muted)}
-.empty .big{font-size:48px;display:block;margin-bottom:12px}
-.spinner{width:20px;height:20px;border:2.5px solid rgba(255,255,255,.2);border-top-color:var(--brand);border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+
+header{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:12px;padding:16px 20px;background:var(--bg);border-bottom:1px solid var(--border)}
+header .menu-btn{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--bg-hover);font-size:18px}
+header .title-area{flex:1;display:flex;align-items:center;gap:8px}
+header .title-area .logo-small{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--brand),var(--brand-dark));display:grid;place-items:center;font-size:16px}
+header .title-area b{font-size:18px;font-weight:800;color:var(--brand);letter-spacing:-0.5px}
+header .streak{display:flex;align-items:center;gap:4px;background:rgba(252,196,25,0.1);color:var(--warn);padding:6px 10px;border-radius:20px;font-size:12px;font-weight:700}
+header .icon-btn{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--bg-hover);font-size:18px;position:relative}
+
+main{flex:1;overflow-y:auto;padding:20px}
+.page{display:none;animation:fade 0.3s ease}
+.page.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ================= BOTTOM NAV ================= */
+nav{position:fixed;bottom:0;left:0;right:0;z-index:40;display:flex;align-items:center;justify-content:space-around;background:var(--nav-bg);backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:8px 10px;padding-bottom:calc(8px + env(safe-area-inset-bottom))}
+nav button{display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--text-muted);font-size:10px;font-weight:600;padding:6px 12px;border-radius:10px}
+nav button.active{color:var(--brand)}
+nav button .ic{font-size:22px;margin-bottom:2px}
+nav .ai-fab{width:50px;height:50px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:24px;box-shadow:0 4px 16px rgba(92,124,250,0.4);margin-top:-20px;border:4px solid var(--bg)}
+
+/* ================= SIDE MENU ================= */
+#sideMenu{position:fixed;inset:0;z-index:100;background:var(--bg-card);transform:translateX(-100%);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);display:flex;flex-direction:column;overflow-y:auto}
+#sideMenu.open{transform:translateX(0)}
+#sideMenu .menu-header{padding:24px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+#sideMenu .menu-header .brand{display:flex;align-items:center;gap:12px}
+#sideMenu .menu-header .brand .logo-small{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--brand),var(--brand-dark));display:grid;place-items:center;font-size:20px}
+#sideMenu .menu-header .brand h2{font-size:16px;margin:0}
+#sideMenu .menu-header .brand p{font-size:11px;color:var(--text-muted);margin:2px 0 0}
+#sideMenu .close-menu{width:32px;height:32px;border-radius:50%;background:var(--bg-hover);display:grid;place-items:center;color:var(--text-muted)}
+.menu-section{padding:16px 20px}
+.menu-section h4{font-size:11px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin:0 0 12px 0}
+.menu-item{display:flex;align-items:center;gap:14px;padding:12px;border-radius:12px;color:var(--text);font-size:14px;font-weight:600;cursor:pointer;transition:background 0.2s}
+.menu-item:hover{background:var(--bg-hover)}
+.menu-item .icon{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;font-size:18px;background:var(--bg-hover)}
+.menu-item .badge{margin-left:auto;background:var(--brand);color:#fff;font-size:10px;padding:2px 6px;border-radius:10px}
+.menu-user{margin-top:auto;padding:20px;border-top:1px solid var(--border);display:flex;align-items:center;gap:12px;cursor:pointer}
+.menu-user img{width:40px;height:40px;border-radius:50%;border:2px solid var(--brand)}
+.menu-user div b{display:block;font-size:14px}
+.menu-user div span{font-size:12px;color:var(--text-muted)}
+
+/* ================= DASHBOARD CARDS ================= */
+.section-title{font-size:14px;font-weight:700;letter-spacing:0.5px;color:var(--text-muted);margin:24px 0 12px 0;display:flex;justify-content:space-between;align-items:center;text-transform:uppercase}
+.arena-card{background:linear-gradient(135deg, #1e2235 0%, #13151c 100%);border:1px solid rgba(92,124,250,0.3);border-radius:var(--radius);padding:20px;position:relative;overflow:hidden}
+.arena-card .badge{font-size:10px;color:var(--brand-light);letter-spacing:1px;font-weight:700}
+.arena-card h2{font-size:24px;margin:8px 0;font-weight:800}
+.arena-card p{font-size:13px;color:var(--text-muted);margin:0 0 16px 0}
+.arena-timer{display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,0.3);padding:12px;border-radius:12px;margin-top:16px}
+.arena-timer .time{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
+.arena-timer .btn{width:auto;margin:0;padding:10px 20px;border-radius:20px;font-size:13px}
+.focus-grid{display:grid;grid-template-columns:repeat(3, 1fr);gap:12px}
+.focus-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.focus-card .circle{width:40px;height:40px;border-radius:50%;border:3px solid var(--border);display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:8px}
+.focus-card b{font-size:12px;line-height:1.2;margin-bottom:4px}
+.focus-card span{font-size:10px;color:var(--text-muted)}
+.focus-card .tag{font-size:9px;padding:2px 6px;border-radius:4px;background:rgba(252,196,25,0.1);color:var(--warn);margin-top:8px;font-weight:700}
+.alert-card{display:flex;align-items:center;gap:12px;background:rgba(250,82,82,0.1);border:1px solid rgba(250,82,82,0.3);border-radius:12px;padding:16px;margin-top:16px;color:var(--err);font-size:13px;font-weight:600}
+.explore-grid{display:grid;grid-template-columns:repeat(4, 1fr);gap:12px}
+.explore-item{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.explore-item .icon{width:50px;height:50px;border-radius:16px;background:var(--bg-card);border:1px solid var(--border);display:grid;place-items:center;font-size:22px}
+.explore-item span{font-size:11px;color:var(--text-muted);font-weight:600}
+
+/* ================= PRACTICE & SUBJECTS ================= */
+.practice-tabs{display:flex;gap:8px;margin-bottom:20px}
+.practice-tabs button{flex:1;padding:12px;border-radius:12px;background:var(--bg-card);border:1px solid var(--border);color:var(--text-muted);font-weight:600;font-size:14px;display:flex;align-items:center;justify-content:center;gap:8px}
+.practice-tabs button.active{background:var(--brand);color:#fff;border-color:var(--brand)}
+.filter-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:20px;scrollbar-width:none}
+.filter-row::-webkit-scrollbar{display:none}
+.filter-btn{padding:8px 16px;border-radius:20px;background:var(--bg-card);border:1px solid var(--border);color:var(--text-muted);font-size:13px;font-weight:600;white-space:nowrap}
+.filter-btn.active{background:rgba(92,124,250,0.15);color:var(--brand);border-color:var(--brand)}
+.subject-grid{display:grid;grid-template-columns:repeat(4, 1fr);gap:12px;margin-bottom:24px}
+.subject-item{display:flex;flex-direction:column;align-items:center;gap:8px}
+.subject-item .icon{width:60px;height:60px;border-radius:16px;background:var(--bg-card);border:1px solid var(--border);display:grid;place-items:center;font-size:24px;transition:all 0.2s}
+.subject-item.active .icon{background:var(--brand);border-color:var(--brand);color:#fff}
+.subject-item span{font-size:10px;color:var(--text-muted);text-align:center;line-height:1.2}
+.btn-start-practice{background:var(--accent);color:#fff;font-size:16px;padding:16px;border-radius:16px;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 8px 24px rgba(18,184,134,0.3)}
+
+/* ================= AI TUTOR ================= */
+#aiHeader{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border);background:var(--bg-card)}
+#aiHeader .avatar{width:44px;height:44px;border-radius:50%;background:rgba(92,124,250,0.1);color:var(--brand);display:grid;place-items:center;font-size:24px}
+#aiHeader h2{margin:0;font-size:16px;font-weight:800}
+#aiHeader p{margin:2px 0 0;font-size:12px;color:var(--text-muted)}
+#aiHeader .actions{margin-left:auto;display:flex;gap:8px}
+#aiHeader .actions button{width:36px;height:36px;border-radius:50%;background:var(--bg-hover);display:grid;place-items:center;color:var(--text)}
+#chatBox{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px}
+.chat-msg{max-width:85%;font-size:14px;line-height:1.6;padding:16px;border-radius:16px}
+.chat-msg.user{align-self:flex-end;background:var(--brand);color:#fff;border-bottom-right-radius:4px}
+.chat-msg.ai{align-self:flex-start;background:var(--bg-card);border:1px solid var(--border);border-bottom-left-radius:4px}
+.chat-msg.ai p{margin:0 0 12px 0}
+.chat-msg.ai p:last-child{margin-bottom:0}
+.chat-msg .msg-actions{display:flex;gap:8px;margin-top:12px}
+.chat-msg .msg-actions button{background:var(--bg-hover);border:1px solid var(--border);padding:6px 12px;border-radius:20px;font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:6px}
+#aiInputArea{padding:16px 20px;background:var(--bg);border-top:1px solid var(--border)}
+.ai-input-box{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:12px}
+.ai-input-box input{width:100%;background:transparent;border:none;outline:none;font-size:15px;padding:8px 0;color:var(--text)}
+.ai-input-tools{display:flex;align-items:center;gap:8px;margin-top:8px}
+.ai-input-tools button.tool{width:32px;height:32px;border-radius:50%;background:var(--bg-hover);display:grid;place-items:center;font-size:16px;color:var(--text-muted)}
+.ai-input-tools select{background:var(--bg-hover);border:none;padding:6px 12px;border-radius:20px;font-size:12px;color:var(--text);outline:none}
+.ai-input-tools .send-btn{margin-left:auto;width:36px;height:36px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:18px}
+
+/* ================= STUDY GROUPS ================= */
+.group-list{display:flex;flex-direction:column;gap:12px}
+.group-item{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:16px;display:flex;align-items:center;gap:16px;cursor:pointer;transition:transform 0.2s}
+.group-item:active{transform:scale(0.98)}
+.group-item .icon{width:48px;height:48px;border-radius:12px;background:var(--bg-hover);display:grid;place-items:center;font-size:24px}
+.group-item .info{flex:1}
+.group-item .info h3{margin:0 0 4px 0;font-size:15px;font-weight:700}
+.group-item .info p{margin:0;font-size:12px;color:var(--text-muted)}
+.group-item .arrow{color:var(--text-muted)}
+
+/* ================= CHAT ROOM ================= */
+#chatRoom{position:fixed;inset:0;z-index:60;background:var(--bg);display:flex;flex-direction:column}
+#chatRoomHeader{display:flex;align-items:center;gap:12px;padding:16px;background:var(--bg-card);border-bottom:1px solid var(--border)}
+#chatRoomHeader .back{font-size:20px;padding:8px}
+#chatRoomHeader .info{flex:1}
+#chatRoomHeader .info h3{margin:0;font-size:16px;font-weight:700}
+#chatRoomHeader .info p{margin:2px 0 0;font-size:12px;color:var(--text-muted)}
+#msgScroll{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:12px}
+.chat-bubble{max-width:80%;padding:12px 16px;border-radius:16px;font-size:14px;line-height:1.4;position:relative}
+.chat-bubble.mine{align-self:flex-end;background:var(--brand);color:#fff;border-bottom-right-radius:4px}
+.chat-bubble.theirs{align-self:flex-start;background:var(--bg-card);border:1px solid var(--border);border-bottom-left-radius:4px}
+.chat-bubble .sender{font-size:11px;color:var(--brand-light);font-weight:700;margin-bottom:4px}
+.chat-bubble .time{font-size:10px;opacity:0.7;text-align:right;margin-top:4px}
+#chatInputArea{padding:12px;background:var(--bg-card);border-top:1px solid var(--border);display:flex;align-items:center;gap:8px}
+#chatInputArea .input-wrap{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:24px;display:flex;align-items:center;padding:4px 8px}
+#chatInputArea .input-wrap input{flex:1;background:transparent;border:none;outline:none;padding:8px;font-size:14px;color:var(--text)}
+#chatInputArea .action-btn{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-size:18px;color:var(--text-muted)}
+#chatInputArea .send-btn{width:44px;height:44px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:18px}
+
+/* ================= UTILS ================= */
+.loading{display:flex;align-items:center;justify-content:center;gap:12px;padding:40px;color:var(--text-muted);font-weight:600}
+.spinner{width:20px;height:20px;border:2.5px solid var(--border);border-top-color:var(--brand);border-radius:50%;animation:spin 0.8s linear infinite;display:inline-block}
 @keyframes spin{to{transform:rotate(360deg)}}
-.loading{display:flex;align-items:center;justify-content:center;gap:12px;padding:36px;color:var(--muted);font-weight:600}
-input.mini,select.mini{padding:10px 12px;border-radius:10px;border:1px solid var(--line-strong);background:var(--card-2);font-size:14px;width:100%;color:var(--text)}
-.toast{position:fixed;left:50%;bottom:110px;transform:translateX(-50%);z-index:200;background:#1c2850;color:#fff;padding:14px 22px;border-radius:14px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .28s;max-width:88vw;text-align:center;border:1px solid var(--line-strong)}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--bg-card);color:var(--text);padding:12px 20px;border-radius:12px;font-size:13px;font-weight:600;box-shadow:var(--shadow);z-index:200;opacity:0;transition:opacity 0.3s;pointer-events:none;border:1px solid var(--border)}
 .toast.on{opacity:1}
-.notif-banner{position:fixed;top:-100px;left:50%;transform:translateX(-50%);width:90%;max-width:400px;background:var(--card-solid);border:1px solid var(--brand);border-radius:14px;padding:12px 16px;box-shadow:0 10px 25px rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;gap:12px;transition:top 0.4s ease}
-.notif-banner.show{top:16px}
-.notif-item{padding:12px;border-bottom:1px solid var(--line);cursor:pointer}
-.notif-item.unread{background:rgba(91,141,255,.08);border-left:3px solid var(--brand)}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
 </style>
 </head>
 <body>
+  <!-- ================= SPLASH SCREEN ================= -->
+<div id="splashScreen">
+  <div class="splash-logo">🎓</div>
+  <div class="splash-text">Smart CGPA Plus</div>
+  <div class="splash-sub">JAMB • WAEC • POST-UTME</div>
+  <div class="splash-loader"></div>
+</div>
 
-<div id="authScreen">
+<!-- ================= AUTH SCREEN ================= -->
+<div id="authScreen" class="hide">
   <div class="auth-card">
     <div class="brand">
       <div class="logo">🎓</div>
-      <div><h1>Smart CGPA Plus</h1><p>School • JAMB • WAEC • NECO • University</p></div>
+      <div>
+        <h1>Smart CGPA Plus</h1>
+        <p>Your Ultimate Exam Prep Platform</p>
+      </div>
     </div>
     <div class="tabs">
       <button id="tabLogin" class="active">Sign in</button>
@@ -118,7 +234,7 @@ input.mini,select.mini{padding:10px 12px;border-radius:10px;border:1px solid var
       <div class="field"><label>Email</label><input id="loginEmail" type="email" placeholder="you@example.com" /></div>
       <div class="field"><label>Password</label><input id="loginPass" type="password" placeholder="••••••••" /></div>
       <button class="btn" id="btnLogin">Sign in</button>
-      <button class="btn ghost" id="btnForgot" style="margin-top:10px">Forgot password?</button>
+      <button class="btn outline" id="btnForgot" style="margin-top:8px">Forgot password?</button>
       <div class="divider">or</div>
       <button class="btn google" id="btnGoogle">
         <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.5l6.7-6.7C35.6 2.4 30.2 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.8 6.1C12.3 13.2 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4 6.9-10 6.9-17.5z"/><path fill="#FBBC05" d="M10.4 28.7c-.5-1.4-.8-2.9-.8-4.7s.3-3.3.8-4.7l-7.8-6.1C1 16.4 0 20.1 0 24s1 7.6 2.6 10.8l7.8-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2.1 1.4-4.8 2.2-8.4 2.2-6.3 0-11.7-3.7-13.6-9.1l-7.8 6.1C6.5 42.6 14.6 48 24 48z"/></svg>
@@ -129,161 +245,349 @@ input.mini,select.mini{padding:10px 12px;border-radius:10px;border:1px solid var
     <div id="signupForm" class="hide">
       <div class="field"><label>Full name</label><input id="suName" type="text" placeholder="Your name" /></div>
       <div class="field"><label>Email</label><input id="suEmail" type="email" placeholder="you@example.com" /></div>
-      <div class="field"><label>Password (min 6 characters)</label><input id="suPass" type="password" placeholder="••••••••" /></div>
+      <div class="field"><label>Password</label><input id="suPass" type="password" placeholder="••••••••" /></div>
       <button class="btn" id="btnSignup">Create account</button>
       <div id="suMsg" class="msg hide"></div>
     </div>
   </div>
 </div>
 
+<!-- ================= SIDE MENU ================= -->
+<div id="sideMenu">
+  <div class="menu-header">
+    <div class="brand">
+      <div class="logo-small">🎓</div>
+      <div><h2>Smart CGPA</h2><p>Exam Prep Platform</p></div>
+    </div>
+    <button class="close-menu" id="btnCloseMenu">✕</button>
+  </div>
+  
+  <div class="menu-section" style="display:flex;gap:8px">
+    <div class="pill" style="background:rgba(92,124,250,0.1);color:var(--brand);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:700">🏆 Rank #3</div>
+    <div class="pill" style="background:rgba(92,124,250,0.1);color:var(--brand);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:700">💎 88.66 pts</div>
+  </div>
+
+  <div class="menu-section">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
+      <div class="menu-item" style="background:var(--bg-hover);flex-direction:column;align-items:flex-start;padding:16px">
+        <div class="icon" style="background:rgba(250,82,82,0.1);color:var(--err);margin-bottom:8px">❌</div>
+        <b>Failed Questions</b><span style="font-size:11px;color:var(--text-muted);font-weight:400">99+ to review</span>
+      </div>
+      <div class="menu-item" style="background:var(--bg-hover);flex-direction:column;align-items:flex-start;padding:16px">
+        <div class="icon" style="background:rgba(92,124,250,0.1);color:var(--brand);margin-bottom:8px">📝</div>
+        <b>Student Notes</b><span style="font-size:11px;color:var(--text-muted);font-weight:400">3 new notes</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="menu-section">
+    <h4>Learn</h4>
+    <div class="menu-item active" data-nav="dashboard" style="background:var(--brand);color:#fff">
+      <div class="icon" style="background:transparent">🏠</div> Dashboard
+    </div>
+    <div class="menu-item" data-nav="practice">
+      <div class="icon">📝</div> Practice
+    </div>
+    <div class="menu-item" data-nav="tutor">
+      <div class="icon">🤖</div> AI Tutor
+    </div>
+    <div class="menu-item" data-nav="calculator">
+      <div class="icon">🧮</div> CGPA Calculator
+    </div>
+  </div>
+
+  <div class="menu-section">
+    <h4>Compete</h4>
+    <div class="menu-item" data-nav="leaderboard">
+      <div class="icon">🏆</div> Leaderboard
+    </div>
+    <div class="menu-item" data-nav="games">
+      <div class="icon">🎮</div> Games
+    </div>
+  </div>
+
+  <div class="menu-section">
+    <h4>Connect</h4>
+    <div class="menu-item" data-nav="chat">
+      <div class="icon">💬</div> Study Groups
+    </div>
+    <div class="menu-item" data-nav="dictionary">
+      <div class="icon">📖</div> Dictionary
+    </div>
+    <div class="menu-item" data-nav="admin" id="menuAdmin" style="display:none">
+      <div class="icon" style="background:rgba(92,124,250,0.1);color:var(--brand)">🛡️</div> Admin Panel
+    </div>
+  </div>
+
+  <div class="menu-user" data-nav="profile">
+    <img id="menuAvatar" src="" />
+    <div><b id="menuName">User</b><span id="menuEmail">email@example.com</span></div>
+  </div>
+</div>
+
+<!-- ================= APP SHELL ================= -->
 <div id="app">
   <header>
-    <div class="logo">🎓</div>
-    <div class="titles"><b id="hdrTitle">Dashboard</b><span id="hdrSub">Welcome back</span></div>
-    <div style="position:relative;cursor:pointer" id="btnNotifBell">
-      <button class="icon-btn" style="position:relative">🔔</button>
-      <span id="notifBadge" class="hide" style="position:absolute;top:-4px;right:-4px;background:var(--err);color:#fff;font-size:10px;font-weight:800;padding:2px 5px;border-radius:10px;border:2px solid var(--card-solid);">0</span>
+    <button class="menu-btn" id="btnOpenMenu">☰</button>
+    <div class="title-area">
+      <div class="logo-small">🎓</div>
+      <b>Smart CGPA</b>
     </div>
+    <div class="streak">🔥 1d</div>
     <button class="icon-btn" id="btnTheme">🌙</button>
-    <img class="avatar" id="hdrAvatar" alt="" />
+    <button class="icon-btn" id="btnNotifBell">🔔<span id="notifBadge" class="hide" style="position:absolute;top:4px;right:4px;background:var(--err);width:8px;height:8px;border-radius:50%"></span></button>
   </header>
 
   <main id="main">
+    
+    <!-- DASHBOARD -->
     <section class="page on" id="page-dashboard">
-      <div class="card"><div class="row between"><div><h3 id="dashName">Hello 👋</h3><p class="sub" id="dashSub" style="margin:0">Let's track your academic progress.</p></div><span class="pill brand" id="dashRole">Student</span></div></div>
-      <div class="grid k3">
-        <div class="stat"><b id="statCGPA">0.00</b><span>CGPA</span></div>
-        <div class="stat"><b id="statUnits">0</b><span>Units</span></div>
-        <div class="stat"><b id="statSem">0</b><span>Semesters</span></div>
+      <div class="arena-card">
+        <div class="badge">SUNDAY • OPENS TODAY</div>
+        <h2>Sevenfold</h2>
+        <p>7 rounds · 1 champion · 7 – 10 PM</p>
+        <div class="arena-timer">
+          <div class="time" id="arenaTimer">18h 08m 55s</div>
+          <button class="btn">Enter Arena ➔</button>
+        </div>
       </div>
-      <div class="card" style="margin-top:16px"><h3>Quick actions</h3><div class="grid k2">
-        <button class="btn ghost" data-go="calculator">🧮 Calculator</button>
-        <button class="btn ghost" data-go="tutor">🤖 AI Tutor</button>
-        <button class="btn ghost" data-go="dictionary">📖 Dictionary</button>
-        <button class="btn ghost" data-go="questions">📝 Question Bank</button>
-      </div></div>
-      <div class="card"><h3>Academic feedback</h3><p class="sub" id="feedback" style="margin:0">Add your first semester to see personalised feedback.</p></div>
-    </section>
 
-    <section class="page" id="page-calculator">
-      <div class="card"><h3>Grading scale</h3><select id="scaleSel" class="mini">
-        <option value="5">5-point (A=5, B=4, C=3, D=2, E=1, F=0)</option>
-        <option value="4">4-point (A=4, B=3, C=2, D=1, F=0)</option>
-        <option value="7">7-point (A=7 … F=0)</option>
-      </select></div>
-      <div class="card"><h3>Previous record (optional)</h3><div class="grid k2">
-        <div class="field" style="margin:0"><label>Previous CGPA</label><input id="prevCGPA" type="number" step="0.01" placeholder="0.00" /></div>
-        <div class="field" style="margin:0"><label>Previous units</label><input id="prevUnits" type="number" placeholder="0" /></div>
-      </div></div>
-      <div class="card">
-        <div class="row between"><div><h3>Current semester</h3></div><button class="icon-btn" id="btnAddCourse">＋</button></div>
-        <div id="courseList" style="margin-top:14px"></div>
-        <div class="grid k2" style="margin-top:10px"><button class="btn" id="btnSaveSem">💾 Save semester</button><button class="btn ghost" id="btnClearSem">Clear</button></div>
+      <div class="section-title">
+        <span>Today's Focus</span>
+        <span style="font-size:11px;text-transform:none;color:var(--text-muted)">0 of 5 done</span>
       </div>
-      <div class="card"><h3>Saved semesters</h3><div id="semList"></div></div>
-      <div class="card"><h3>🎯 CGPA goal planner</h3><div class="grid k3">
-        <div class="field" style="margin:0"><label>Target</label><input id="goalCGPA" type="number" step="0.01" /></div>
-        <div class="field" style="margin:0"><label>Units</label><input id="goalUnits" type="number" /></div>
-        <div class="field" style="margin:0"><label>Current</label><input id="goalCur" type="number" step="0.01" /></div>
-      </div><button class="btn" id="btnGoal" style="margin-top:12px">Calculate required GPA</button><div id="goalOut" class="msg hide"></div></div>
-    </section>
-
-    <section class="page" id="page-tutor">
-      <div class="card"><div class="row between"><div><h3>🤖 AI Academic Tutor</h3></div><button class="icon-btn" id="btnNewChat">＋</button></div></div>
-      <div id="chatBox" style="display:flex;flex-direction:column;gap:12px;padding:4px 0 12px"></div>
-      <div class="card" style="position:sticky;bottom:8px"><div class="row"><input id="tutorInput" class="mini" placeholder="Ask a question…" style="flex:1" /><button class="icon-btn" id="btnTutorSend" style="background:var(--brand);color:#fff">➤</button></div></div>
-    </section>
-
-    <section class="page" id="page-dictionary">
-      <div class="card"><h3>📖 English Dictionary</h3><div class="row"><input id="dictInput" class="mini" placeholder="Search any word…" style="flex:1" /><button class="btn" id="btnDictSearch" style="width:auto;padding:12px 18px;margin:0">Search</button></div></div>
-      <div id="dictResult"></div>
-      <div class="card"><h3>Saved words</h3><div id="dictSaved"></div></div>
-    </section>
-
-    <section class="page" id="page-questions">
-      <div class="card"><h3>📝 Question Bank</h3><div class="grid k2">
-        <div class="field" style="margin:0"><label>Subject</label><select id="qSubject" class="mini"></select></div>
-        <div class="field" style="margin:0"><label>Topic</label><select id="qTopic" class="mini"><option value="all">All topics</option></select></div>
-        <div class="field" style="margin:0"><label>Questions</label><select id="qCount" class="mini"><option>10</option><option>20</option><option>30</option><option>40</option><option>50</option></select></div>
-        <div class="field" style="margin:0"><label>Difficulty</label><select id="qDiff" class="mini"><option value="all">All</option><option value="easy">Easy</option><option value="medium">Medium</option><option value="hard">Hard</option></select></div>
-      </div><div class="field"><label>Mode</label><select id="qMode" class="mini"><option value="practice">Practice (no timer)</option><option value="timed">Timed exam (1 min / question)</option><option value="mixed">Mixed subjects</option></select></div><button class="btn" id="btnStartQuiz">Start practice</button></div>
-      <div id="quizArea"></div>
-      <div class="card"><h3>Recent results</h3><div id="quizHistory"></div></div>
-    </section>
-
-    <section class="page" id="page-games">
-      <div class="card"><h3>🎮 Learning Games</h3></div>
-      <div class="grid k2">
-        <button class="card" id="gameSpeed" style="text-align:left;cursor:pointer"><h3>⚡ Speed Quiz</h3></button>
-        <button class="card" id="gameStreak" style="text-align:left;cursor:pointer"><h3>🔥 Streak Master</h3></button>
-      </div><div id="gameArea"></div>
-    </section>
-
-    <section class="page" id="page-leaderboard">
-      <div class="card"><h3>🏆 Leaderboard</h3>
-        <div class="tabs" style="margin:0"><button class="lb-tab active" data-lb="daily">Daily</button><button class="lb-tab" data-lb="weekly">Weekly</button><button class="lb-tab" data-lb="all">All-time</button></div>
+      <div class="focus-grid">
+        <div class="focus-card">
+          <div class="circle">0/3</div>
+          <b>Scalars and Vectors</b>
+          <span>Physics</span>
+          <div class="tag">Improving</div>
+        </div>
+        <div class="focus-card">
+          <div class="circle">0/3</div>
+          <b>Concord and Related</b>
+          <span>English</span>
+          <div class="tag">Improving</div>
+        </div>
+        <div class="focus-card">
+          <div class="circle">0/3</div>
+          <b>Elements, Compounds</b>
+          <span>Chemistry</span>
+          <div class="tag">Improving</div>
+        </div>
       </div>
-      <div class="card"><div id="lbList" class="loading"><span class="spinner"></span>Loading…</div></div>
+
+      <div class="alert-card">
+        <span style="font-size:18px">❌</span>
+        <span>3 subjects need attention</span>
+        <span style="margin-left:auto;color:var(--text-muted)">⌄</span>
+      </div>
+
+      <div class="section-title">Exams</div>
+      <div class="focus-grid" style="grid-template-columns:1fr 1fr">
+        <div class="focus-card" style="align-items:flex-start;text-align:left">
+          <img src="https://upload.wikimedia.org/wikipedia/en/1/1f/JAMB_logo.png" style="width:40px;height:40px;object-fit:contain;margin-bottom:8px;background:#fff;padding:4px;border-radius:8px" />
+          <b style="font-size:14px">JAMB</b>
+          <span style="font-size:11px;margin-top:4px">180 as · 120 min</span>
+        </div>
+        <div class="focus-card" style="align-items:flex-start;text-align:left">
+          <img src="https://upload.wikimedia.org/wikipedia/en/6/6a/WAEC_logo.png" style="width:40px;height:40px;object-fit:contain;margin-bottom:8px;background:#fff;padding:4px;border-radius:8px" />
+          <b style="font-size:14px">WAEC</b>
+          <span style="font-size:11px;margin-top:4px">Objective + Theory</span>
+        </div>
+      </div>
+
+      <div class="section-title">Explore</div>
+      <div class="explore-grid">
+        <div class="explore-item" data-nav="practice"><div class="icon">📝</div><span>Practice</span></div>
+        <div class="explore-item" data-nav="questions"><div class="icon">📋</div><span>Exams</span></div>
+        <div class="explore-item" data-nav="tutor"><div class="icon">🤖</div><span>AI Tutor</span></div>
+        <div class="explore-item" data-nav="calculator"><div class="icon">🧮</div><span>CGPA</span></div>
+      </div>
     </section>
 
-    <section class="page" id="page-chat" style="padding:0">
-      <div id="chatHome" style="padding:16px">
-        <div class="card" style="margin-bottom:16px"><div class="row between"><div><h3>💬 Messages</h3></div><button class="icon-btn" id="btnNewGroup">＋</button></div></div>
-        <div id="roomList"></div>
+    <!-- PRACTICE -->
+    <section class="page" id="page-practice">
+      <div class="practice-tabs">
+        <button class="active" id="tabPracticeMode">📖 Practice</button>
+        <button id="tabAiMode">🤖 AI Quiz</button>
       </div>
-      <div id="chatRoom" class="hide" style="position:fixed;inset:0;z-index:60;background:var(--chatbg);display:flex;flex-direction:column">
-        <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--card-solid);border-bottom:1px solid var(--line)"><button class="icon-btn" id="btnChatBack">←</button><div style="flex:1;min-width:0"><b id="roomTitle" style="display:block;font-size:15px"></b><span id="roomSub" style="font-size:11.5px;color:var(--muted)"></span></div><button class="icon-btn" id="btnRoomInfo">⋮</button></div>
-        <div id="msgScroll" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:8px"></div>
-        <div id="typingBar" style="padding:4px 16px;font-size:12px;color:var(--muted);min-height:20px"></div>
-        <div style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--card-solid);border-top:1px solid var(--line)"><button class="icon-btn" id="btnEmoji">😊</button><button class="icon-btn" id="btnAttach">📎</button><input id="msgInput" class="mini" placeholder="Message" style="flex:1" /><button class="icon-btn" id="btnMic">🎤</button><button class="icon-btn" id="btnSend" style="background:var(--brand);color:#fff">➤</button></div>
+      
+      <div class="filter-row">
+        <button class="filter-btn active">All</button>
+        <button class="filter-btn">WAEC</button>
+        <button class="filter-btn">JAMB</button>
+        <button class="filter-btn">Post-UTME</button>
+      </div>
+
+      <div class="section-title">Subject</div>
+      <div class="subject-grid" id="practiceSubjects">
+        <div class="subject-item active"><div class="icon">🏛️</div><span>Government</span></div>
+        <div class="subject-item"><div class="icon">🛒</div><span>Commerce</span></div>
+        <div class="subject-item"><div class="icon">⚖️</div><span>Civic Edu</span></div>
+        <div class="subject-item"><div class="icon">📒</div><span>Accounting</span></div>
+        <div class="subject-item"><div class="icon">🧬</div><span>Biology</span></div>
+        <div class="subject-item"><div class="icon">⚗️</div><span>Chemistry</span></div>
+        <div class="subject-item"><div class="icon">📖</div><span>English</span></div>
+        <div class="subject-item"><div class="icon">📐</div><span>Maths</span></div>
+        <div class="subject-item"><div class="icon">🧲</div><span>Physics</span></div>
+      </div>
+
+      <button class="btn btn-start-practice" id="btnStartPractice">📖 Start Practice</button>
+      <div id="quizArea" style="margin-top:20px"></div>
+    </section>
+
+    <!-- AI TUTOR -->
+    <section class="page" id="page-tutor" style="padding:0;display:none;flex-direction:column;height:100%">
+      <div id="aiHeader">
+        <div class="avatar">🧠</div>
+        <div><h2>AI Tutor</h2><p>3% accuracy · 1d streak</p></div>
+        <div class="actions">
+          <button id="btnAiHistory">🕒</button>
+          <button id="btnAiNew" style="background:var(--brand);color:#fff">+</button>
+        </div>
+      </div>
+      <div id="chatBox">
+        <div class="chat-msg ai">
+          <p>Hello! I'm your AI Tutor. I can help you with Maths, English, Sciences, and more. What would you like to learn today?</p>
+        </div>
+      </div>
+      <div id="aiInputArea">
+        <div class="ai-input-box">
+          <input id="tutorInput" type="text" placeholder="Ask anything..." />
+          <div class="ai-input-tools">
+            <button class="tool">+</button>
+            <select><option>Explain</option><option>Summarize</option></select>
+            <select><option>General</option><option>Math</option><option>Science</option></select>
+            <button class="send-btn" id="btnTutorSend">➤</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STUDY GROUPS -->
+    <section class="page" id="page-chat">
+      <div class="section-title" style="margin-top:0">Study Groups</div>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px">Anonymous, subject-based discussion — ask freely.</p>
+      
+      <div class="group-list">
+        <div class="group-item" data-group="biology">
+          <div class="icon">🧬</div>
+          <div class="info"><h3>Biology Study Room</h3><p>Anonymous · Ask questions, get help</p></div>
+          <div class="arrow">→</div>
+        </div>
+        <div class="group-item" data-group="chemistry">
+          <div class="icon">⚗️</div>
+          <div class="info"><h3>Chemistry Study Room</h3><p>Anonymous · Ask questions, get help</p></div>
+          <div class="arrow">→</div>
+        </div>
+        <div class="group-item" data-group="physics">
+          <div class="icon">🧲</div>
+          <div class="info"><h3>Physics Study Room</h3><p>Anonymous · Ask questions, get help</p></div>
+          <div class="arrow">→</div>
+        </div>
+        <div class="group-item" data-group="maths">
+          <div class="icon">📐</div>
+          <div class="info"><h3>Mathematics Study Room</h3><p>Anonymous · Ask questions, get help</p></div>
+          <div class="arrow">→</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHAT ROOM (Overlay) -->
+    <div id="chatRoom" class="hide">
+      <div id="chatRoomHeader">
+        <button class="back" id="btnChatBack">←</button>
+        <div class="info">
+          <h3 id="roomTitle">Biology Study Room</h3>
+          <p id="roomSub">Anonymous Student</p>
+        </div>
+      </div>
+      <div id="msgScroll"></div>
+      <div id="chatInputArea">
+        <button class="action-btn" id="btnMic">🎤</button>
+        <div class="input-wrap">
+          <input id="msgInput" type="text" placeholder="Message" />
+          <button class="action-btn" id="btnAttach">📎</button>
+        </div>
+        <button class="send-btn" id="btnSend">➤</button>
         <input type="file" id="fileInput" class="hide" />
       </div>
+    </div>
+
+    <!-- CGPA CALCULATOR -->
+    <section class="page" id="page-calculator">
+      <div class="section-title" style="margin-top:0">GPA Calculator</div>
+      <div class="card" style="background:var(--bg-card);padding:16px;border-radius:16px;margin-bottom:16px">
+        <div class="field">
+          <label>Grading Scale</label>
+          <select id="scaleSel" style="width:100%;padding:12px;border-radius:8px;background:var(--bg);border:1px solid var(--border);color:var(--text)">
+            <option value="5">5.0 Scale (A=5, B=4, C=3, D=2, E=1, F=0)</option>
+            <option value="4">4.0 Scale (A=4, B=3, C=2, D=1, F=0)</option>
+          </select>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="field"><label>Prev CGPA</label><input id="prevCGPA" type="number" placeholder="0.00" style="width:100%;padding:12px;border-radius:8px;background:var(--bg);border:1px solid var(--border);color:var(--text)" /></div>
+          <div class="field"><label>Prev Units</label><input id="prevUnits" type="number" placeholder="0" style="width:100%;padding:12px;border-radius:8px;background:var(--bg);border:1px solid var(--border);color:var(--text)" /></div>
+        </div>
+      </div>
+
+      <div class="section-title">Current Semester</div>
+      <div id="courseList" style="margin-bottom:16px"></div>
+      <button class="btn outline" id="btnAddCourse" style="margin-bottom:20px">+ Add Course</button>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+        <div class="stat" style="background:var(--bg-card);padding:16px;border-radius:12px;text-align:center;border:1px solid var(--border)">
+          <b id="statCGPA" style="display:block;font-size:24px;color:var(--brand)">0.00</b><span style="font-size:11px;color:var(--text-muted)">CGPA</span>
+        </div>
+        <div class="stat" style="background:var(--bg-card);padding:16px;border-radius:12px;text-align:center;border:1px solid var(--border)">
+          <b id="statUnits" style="display:block;font-size:24px;color:var(--brand)">0</b><span style="font-size:11px;color:var(--text-muted)">Units</span>
+        </div>
+      </div>
+
+      <button class="btn" id="btnSaveSem">💾 Save Semester</button>
+      <div class="section-title">Saved Semesters</div>
+      <div id="semList"></div>
+    </section>
+
+    <!-- PROFILE / ADMIN / ETC -->
+    <section class="page" id="page-profile">
+      <div class="section-title" style="margin-top:0">Profile</div>
+      <div class="card" style="background:var(--bg-card);padding:20px;border-radius:16px;text-align:center;margin-bottom:16px">
+        <img id="profAvatar" class="avatar" style="width:80px;height:80px;border-radius:50%;margin:0 auto 12px" />
+        <h3 id="profName" style="margin:0">User</h3>
+        <p id="profEmail" style="color:var(--text-muted);font-size:13px;margin:4px 0 8px"></p>
+        <span class="pill" id="profRole" style="background:var(--brand);color:#fff;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700">Student</span>
+      </div>
+      <div class="field"><label>Display Name</label><input id="profNameInput" style="width:100%;padding:12px;border-radius:8px;background:var(--bg-card);border:1px solid var(--border);color:var(--text)" /></div>
+      <button class="btn" id="btnSaveProfile">Save Profile</button>
+      <button class="btn outline" id="btnLogout" style="margin-top:20px;color:var(--err);border-color:var(--err)">Sign Out</button>
     </section>
 
     <section class="page" id="page-admin">
-      <div class="card"><h3>🛡️ Super Admin Panel</h3></div>
-      <div class="card"><h3>Users</h3><div id="adminUsers" class="loading"><span class="spinner"></span>Loading…</div></div>
-      <div class="card"><h3>Groups</h3><div id="adminGroups" class="loading"><span class="spinner"></span>Loading…</div></div>
-      <div class="card"><h3>Question bank</h3><input type="file" id="qUpload" accept=".csv,.json" class="mini" /><button class="btn" id="btnQImport" style="margin-top:12px">Import questions</button><div id="qImportOut" style="margin-top:10px"></div></div>
-      <div class="card"><h3>📢 Send App-Wide Announcement</h3><div class="field"><input id="announceInput" class="mini" placeholder="Type your announcement here..." /></div><button class="btn" id="btnSendAnnounce">Send Announcement</button></div>
-      <div class="card"><h3>App settings</h3>
-        <div class="row between" style="padding:10px 0;border-bottom:1px solid var(--line)"><span>AI tutor enabled</span><input type="checkbox" id="setAI" /></div>
-        <div class="row between" style="padding:10px 0;border-bottom:1px solid var(--line)"><span>Dictionary enabled</span><input type="checkbox" id="setDict" /></div>
-        <div class="row between" style="padding:10px 0"><span>Group chat enabled</span><input type="checkbox" id="setChat" /></div>
-        <button class="btn" id="btnSaveSettings" style="margin-top:12px">Save settings</button>
-      </div>
+      <div class="section-title" style="margin-top:0">Admin Panel</div>
+      <div id="adminUsers" class="loading">Loading...</div>
     </section>
 
-    <section class="page" id="page-profile">
-      <div class="card" style="text-align:center"><img id="profAvatar" class="avatar" style="width:90px;height:90px;margin:0 auto 14px" /><h3 id="profName">Your name</h3><p class="sub" id="profEmail"></p><span class="pill brand" id="profRole">Student</span></div>
-      <div class="card"><h3>Profile</h3><div class="field"><label>Display name</label><input id="profNameInput" class="mini" /></div><div class="field"><label>Profile picture URL</label><input id="profPhotoInput" class="mini" /></div><button class="btn" id="btnSaveProfile">Save profile</button></div>
-      <div class="card"><h3>Privacy & Notifications</h3>
-        <div class="row between" style="padding:10px 0;border-bottom:1px solid var(--line)"><span>Show last seen</span><input type="checkbox" id="setLastSeen" /></div>
-        <div class="row between" style="padding:10px 0;border-bottom:1px solid var(--line)"><span>Show online status</span><input type="checkbox" id="setOnline" /></div>
-        <div class="row between" style="padding:10px 0"><span>Enable notifications</span><input type="checkbox" id="setNotif" /></div>
-      </div>
-      <button class="btn danger" id="btnLogout">Sign out</button>
-    </section>
+    <section class="page" id="page-leaderboard"><div class="section-title">Leaderboard</div><div id="lbList">Loading...</div></section>
+    <section class="page" id="page-games"><div class="section-title">Games</div><p>Coming soon...</p></section>
+    <section class="page" id="page-dictionary"><div class="section-title">Dictionary</div><p>Coming soon...</p></section>
+    <section class="page" id="page-questions"><div class="section-title">Question Bank</div><p>Coming soon...</p></section>
+
   </main>
 
+  <!-- BOTTOM NAV -->
   <nav>
     <button data-nav="dashboard" class="active"><span class="ic">🏠</span>Home</button>
-    <button data-nav="calculator"><span class="ic">🧮</span>GPA</button>
-    <button data-nav="tutor"><span class="ic">🤖</span>Tutor</button>
-    <button data-nav="chat"><span class="ic">💬</span>Chat</button>
-    <button data-nav="questions"><span class="ic">📝</span>Bank</button>
-    <button data-nav="profile"><span class="ic">👤</span>Me</button>
+    <button data-nav="practice"><span class="ic">📝</span>Practice</button>
+    <button data-nav="tutor"><span class="ic">🤖</span>AI Tutor</button>
+    <button data-nav="chat"><span class="ic">💬</span>Groups</button>
+    <button data-nav="profile"><span class="ic">👤</span>More</button>
   </nav>
 </div>
 
 <div id="toast" class="toast"></div>
-<div id="notifBanner" class="notif-banner"><img id="notifImg" src="" alt="avatar" style="width:36px;height:36px;border-radius:50%;border:2px solid var(--brand);" /><div class="notif-text" style="flex:1;min-width:0"><div id="notifTitle" class="notif-title" style="font-size:13px;font-weight:800;color:var(--brand);margin-bottom:2px;">New Message</div><div id="notifBody" class="notif-body" style="font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Hello there!</div></div></div>
-<div id="notifPanel" class="hide" style="position:fixed;top:70px;right:16px;width:calc(100% - 32px);max-width:380px;background:var(--card-solid);border:1px solid var(--line-strong);border-radius:16px;box-shadow:var(--shadow);z-index:9998;max-height:80vh;overflow-y:auto;">
-  <div style="padding:14px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;"><h3 style="margin:0;font-size:16px;">Notifications</h3><button id="btnCloseNotif" style="color:var(--muted);font-size:20px;">&times;</button></div>
-  <div id="notifList" style="padding:8px;"></div>
-</div>
-
-<script type="module">
+  <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword,
@@ -294,6 +598,7 @@ import {
   query, orderBy, limit, onSnapshot, serverTimestamp, getDocs
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+/* ================= CONFIG ================= */
 const firebaseConfig = {
   apiKey: "AIzaSyBalfqEksKXbrcfVCqrrWkILx_V7up25Xs",
   authDomain: "smart-learn-hub-73667.firebaseapp.com",
@@ -303,9 +608,8 @@ const firebaseConfig = {
   messagingSenderId: "165458065701",
   appId: "1:165458065701:web:08a1bcfac2ae286b9502cc"
 };
-
 const SUPER_ADMIN_EMAIL = "gbaraneeleeleebari4@gmail.com";
-const AI_ENDPOINT = "https://gbaraneeleeleebari4--1fb7caf2c99a11f1ad4c1607ee4eb77e.web.val.run"; // Your Val Town URL
+const AI_ENDPOINT = "https://gbaraneeleeleebari4--1fb7caf2c99a11f1ad4c1607ee4eb77e.web.val.run";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -315,6 +619,7 @@ const $ = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
 const esc = (v) => String(v ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
+/* ================= UI HELPERS ================= */
 function toast(msg, type = "") {
   const t = $("#toast");
   t.textContent = msg;
@@ -328,19 +633,32 @@ function showPage(name) {
   const el = $("#page-" + name);
   if (el) el.classList.add("on");
   $$("nav button").forEach(b => b.classList.toggle("active", b.dataset.nav === name));
-  const titles = { dashboard:["Dashboard","Welcome back"], calculator:["GPA Calculator","Semester & CGPA"], tutor:["AI Tutor","Ask any academic question"], dictionary:["Dictionary","Words & phrases"], questions:["Question Bank","Practice & mock exams"], games:["Games","Learn while playing"], leaderboard:["Leaderboard","Top students"], chat:["Messages","Groups & private chats"], admin:["Super Admin","Full control"], profile:["Profile","Your account"] };
-  const t = titles[name] || ["Smart CGPA Plus",""];
-  $("#hdrTitle").textContent = t[0];
-  $("#hdrSub").textContent = t[1];
+  
+  // Hide/show bottom nav for AI Tutor to give it full screen
+  if (name === "tutor") {
+    document.querySelector("nav").style.display = "none";
+    $("#page-tutor").style.display = "flex";
+  } else {
+    document.querySelector("nav").style.display = "flex";
+    $("#page-tutor").style.display = "none";
+  }
   $("#main").scrollTop = 0;
 }
 
 document.addEventListener("click", (e) => {
   const nav = e.target.closest("[data-nav]");
-  if (nav) return showPage(nav.dataset.nav);
-  const go = e.target.closest("[data-go]");
-  if (go) return showPage(go.dataset.go);
+  if (nav) {
+    showPage(nav.dataset.nav);
+    if (nav.dataset.nav === "profile") $("#sideMenu").classList.remove("open");
+    return;
+  }
 });
+
+/* ================= SPLASH & THEME ================= */
+setTimeout(() => {
+  $("#splashScreen").classList.add("fade-out");
+  setTimeout(() => $("#splashScreen").style.display = "none", 400);
+}, 2000);
 
 const savedTheme = localStorage.getItem("theme") || "dark";
 document.documentElement.setAttribute("data-theme", savedTheme);
@@ -353,11 +671,16 @@ $("#btnTheme").onclick = () => {
   $("#btnTheme").textContent = nxt === "dark" ? "🌙" : "☀️";
 };
 
+/* ================= MENU ================= */
+$("#btnOpenMenu").onclick = () => $("#sideMenu").classList.add("open");
+$("#btnCloseMenu").onclick = () => $("#sideMenu").classList.remove("open");
+
+/* ================= AUTH ================= */
 $("#tabLogin").onclick = () => { $("#tabLogin").classList.add("active"); $("#tabSignup").classList.remove("active"); $("#loginForm").classList.remove("hide"); $("#signupForm").classList.add("hide"); };
 $("#tabSignup").onclick = () => { $("#tabSignup").classList.add("active"); $("#tabLogin").classList.remove("active"); $("#signupForm").classList.remove("hide"); $("#loginForm").classList.add("hide"); };
 
-function authMsg(id, text, type = "err") { const el = $(id); el.textContent = text; el.className = "msg " + type; }
-function authHide(id) { $(id).className = "msg hide"; }
+function authMsg(id, text, type = "err") { const el = $(id); el.textContent = text; el.className = "msg " + type; el.classList.remove("hide"); }
+function authHide(id) { $(id).classList.add("hide"); }
 
 $("#btnLogin").onclick = async () => {
   authHide("#authMsg");
@@ -372,7 +695,6 @@ $("#btnSignup").onclick = async () => {
   authHide("#suMsg");
   const name = $("#suName").value.trim(), email = $("#suEmail").value.trim(), pass = $("#suPass").value;
   if (!name || !email || !pass) return authMsg("#suMsg", "Fill in every field.");
-  if (pass.length < 6) return authMsg("#suMsg", "Password must be at least 6 characters.");
   $("#btnSignup").innerHTML = '<span class="spinner"></span>';
   try {
     const cred = await createUserWithEmailAndPassword(auth, email, pass);
@@ -388,23 +710,15 @@ $("#btnGoogle").onclick = async () => {
     const result = await signInWithPopup(auth, provider);
     await ensureUserDoc(result.user, result.user.displayName || "Student");
   } catch (e) { 
-    if (e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request') return;
-    authMsg("#authMsg", prettyAuthError(e)); 
+    if (e.code !== 'auth/popup-closed-by-user') authMsg("#authMsg", prettyAuthError(e)); 
   }
-};
-
-$("#btnForgot").onclick = async () => {
-  const email = $("#loginEmail").value.trim();
-  if (!email) return authMsg("#authMsg", "Type your email first, then tap again.");
-  try { await sendPasswordResetEmail(auth, email); authMsg("#authMsg", "Reset link sent. Check your inbox.", "ok"); }
-  catch (e) { authMsg("#authMsg", prettyAuthError(e)); }
 };
 
 function prettyAuthError(e) {
   const m = (e && e.code) || "";
-  if (m.includes("invalid-credential") || m.includes("wrong-password")) return "Wrong email or password.";
-  if (m.includes("user-not-found")) return "No account found with that email.";
-  if (m.includes("email-already-in-use")) return "That email is already registered.";
+  if (m.includes("invalid-credential")) return "Wrong email or password.";
+  if (m.includes("user-not-found")) return "No account found.";
+  if (m.includes("email-already-in-use")) return "Email already registered.";
   return (e && e.message) || "Something went wrong.";
 }
 
@@ -414,267 +728,240 @@ async function ensureUserDoc(user, name) {
   const isSuper = user.email === SUPER_ADMIN_EMAIL;
   if (!snap.exists()) {
     await setDoc(ref, {
-      uid: user.uid, email: user.email || "", displayName: name || "Student", photoURL: user.photoURL || "",
-      role: isSuper ? "superadmin" : "student", createdAt: serverTimestamp(), online: true, lastSeen: serverTimestamp(),
-      privacy: { showLastSeen: true, showOnline: true }, notif: { enabled: true }
+      uid: user.uid, email: user.email, displayName: name || "Student", photoURL: user.photoURL || "",
+      role: isSuper ? "superadmin" : "student", createdAt: serverTimestamp(), online: true
     });
-  } else if (isSuper && snap.data().role !== "superadmin") {
-    await updateDoc(ref, { role: "superadmin" });
   }
 }
 
-function defaultAvatar(name = "U") {
-  const ch = (name || "U").trim().charAt(0).toUpperCase();
-  return "data:image/svg+xml;utf8," + encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80'><rect width='100%' height='100%' rx='40' fill='%235b8dff'/><text x='50%' y='54%' font-size='38' fill='white' text-anchor='middle' font-family='Arial' dominant-baseline='middle'>${ch}</text></svg>`);
-}
-
-let ME = null, userUnsub = null;
+/* ================= SESSION ================= */
+let ME = null;
 
 onAuthStateChanged(auth, async (user) => {
-  if (userUnsub) { userUnsub(); userUnsub = null; }
   if (!user) {
     ME = null;
     $("#app").classList.remove("on");
-    $("#authScreen").style.display = "flex";
-    $("#btnLogin").textContent = "Sign in";
-    $("#btnSignup").textContent = "Create account";
+    $("#authScreen").classList.remove("hide");
     return;
   }
-  $("#authScreen").style.display = "none";
+  $("#authScreen").classList.add("hide");
   $("#app").classList.add("on");
-  await ensureUserDoc(user, user.displayName || "Student");
-
-  userUnsub = onSnapshot(doc(db, "users", user.uid), (snap) => {
-    if (!snap.exists()) return;
+  
+  const snap = await getDoc(doc(db, "users", user.uid));
+  if (snap.exists()) {
     ME = snap.data();
-    $("#hdrAvatar").src = ME.photoURL || defaultAvatar(ME.displayName);
-    $("#dashName").textContent = "Hello, " + (ME.displayName || "Student") + " 👋";
-    $("#dashRole").textContent = ME.role === "superadmin" ? "Super Admin" : "Student";
-    $("#profName").textContent = ME.displayName || "Student";
-    $("#profEmail").textContent = ME.email;
-    $("#profAvatar").src = ME.photoURL || defaultAvatar(ME.displayName);
-    $("#profRole").textContent = ME.role === "superadmin" ? "Super Admin" : "Student";
-    $("#profNameInput").value = ME.displayName || "";
-    $("#profPhotoInput").value = ME.photoURL || "";
-    $("#setLastSeen").checked = !!(ME.privacy && ME.privacy.showLastSeen);
-    $("#setOnline").checked = !!(ME.privacy && ME.privacy.showOnline);
-    $("#setNotif").checked = !!(ME.notif && ME.notif.enabled);
-
-    if (ME.role === "superadmin" && !document.querySelector("[data-nav='admin']")) {
-      const b = document.createElement("button");
-      b.dataset.nav = "admin"; b.innerHTML = '<span class="ic">🛡️</span>Admin';
-      document.querySelector("nav").appendChild(b);
-    }
-    if (ME.role === "superadmin") { loadAdminUsers(); loadAdminGroups(); loadAdminSettings(); }
-    loadCalculator(); loadQuizHistory(); loadLeaderboard(); loadRooms(); loadSavedWords(); loadQuestionSubjects();
-  });
-
-  await updateDoc(doc(db, "users", user.uid), { online: true, lastSeen: serverTimestamp() });
+    updateUI(ME);
+  }
 });
 
+function updateUI(me) {
+  $("#menuName").textContent = me.displayName;
+  $("#menuEmail").textContent = me.email;
+  $("#menuAvatar").src = me.photoURL || defaultAvatar(me.displayName);
+  $("#profName").textContent = me.displayName;
+  $("#profEmail").textContent = me.email;
+  $("#profAvatar").src = me.photoURL || defaultAvatar(me.displayName);
+  $("#profRole").textContent = me.role === "superadmin" ? "Super Admin" : "Student";
+  $("#profNameInput").value = me.displayName;
+
+  if (me.role === "superadmin") {
+    $("#menuAdmin").style.display = "flex";
+    loadAdmin();
+  }
+}
+
+function defaultAvatar(name) {
+  const ch = (name || "U").charAt(0).toUpperCase();
+  return "data:image/svg+xml;utf8," + encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80'><rect width='100%' height='100%' rx='40' fill='%235c7cfa'/><text x='50%' y='55%' font-size='40' fill='white' text-anchor='middle' font-family='Arial' dominant-baseline='middle'>${ch}</text></svg>`);
+}
+
+$("#btnLogout").onclick = () => { signOut(auth); location.reload(); };
 $("#btnSaveProfile").onclick = async () => {
   if (!ME) return;
-  const name = $("#profNameInput").value.trim(), photo = $("#profPhotoInput").value.trim();
-  await updateDoc(doc(db, "users", ME.uid), { displayName: name, photoURL: photo });
-  if (auth.currentUser) await updateProfile(auth.currentUser, { displayName: name, photoURL: photo });
-  toast("Profile saved", "ok");
-};
-$("#setLastSeen").onchange = $("#setOnline").onchange = () => { if (ME) updateDoc(doc(db, "users", ME.uid), { privacy: { showLastSeen: $("#setLastSeen").checked, showOnline: $("#setOnline").checked } }); };
-$("#setNotif").onchange = () => { if (ME) updateDoc(doc(db, "users", ME.uid), { notif: { enabled: $("#setNotif").checked } }); };
-
-$("#btnLogout").onclick = async () => {
-  if (ME) await updateDoc(doc(db, "users", ME.uid), { online: false, lastSeen: serverTimestamp() });
-  await signOut(auth);
-  localStorage.removeItem("tutorHistory");
-  tutorHistory = [];
-  toast("Signed out");
+  const name = $("#profNameInput").value.trim();
+  await updateDoc(doc(db, "users", ME.uid), { displayName: name });
+  if (auth.currentUser) await updateProfile(auth.currentUser, { displayName: name });
+  toast("Profile saved");
+  updateUI({ ...ME, displayName: name });
 };
 
-const SCALES = { 5:{A:5,B:4,C:3,D:2,E:1,F:0}, 4:{A:4,B:3,C:2,D:1,F:0}, 7:{A:7,B:6,C:5,D:4,E:3,F:0} };
-let currentCourses = [];
+/* ================= AI TUTOR ================= */
+let tutorHistory = [];
+
+function renderTutor() {
+  const box = $("#chatBox");
+  if (!tutorHistory.length) {
+    box.innerHTML = `<div class="chat-msg ai"><p>Hello! I'm your AI Tutor. What would you like to learn today?</p></div>`;
+    return;
+  }
+  box.innerHTML = tutorHistory.map(m => `
+    <div class="chat-msg ${m.role === 'user' ? 'user' : 'ai'}">
+      <p>${esc(m.content)}</p>
+      ${m.role === 'ai' ? `<div class="msg-actions"><button>📋 Copy</button><button>💾 Save to deck</button></div>` : ''}
+    </div>
+  `).join("");
+  box.scrollTop = box.scrollHeight;
+}
+
+async function askTutor(text) {
+  if (!text.trim()) return;
+  tutorHistory.push({ role: "user", content: text });
+  renderTutor();
+  $("#tutorInput").value = "";
+  
+  const think = document.createElement("div");
+  think.className = "chat-msg ai";
+  think.innerHTML = '<span class="spinner"></span> Thinking...';
+  $("#chatBox").appendChild(think);
+  $("#chatBox").scrollTop = $("#chatBox").scrollHeight;
+
+  try {
+    const res = await fetch(AI_ENDPOINT, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messages: tutorHistory.slice(-10) })
+    });
+    const data = await res.json();
+    tutorHistory.push({ role: "assistant", content: data.reply || "No response." });
+    think.remove();
+    renderTutor();
+  } catch (e) {
+    think.innerHTML = '<p style="color:var(--err)">AI is unavailable. Please try again.</p>';
+  }
+}
+
+$("#btnTutorSend").onclick = () => askTutor($("#tutorInput").value);
+$("#tutorInput").addEventListener("keydown", (e) => { if (e.key === "Enter") askTutor($("#tutorInput").value); });
+$("#btnAiNew").onclick = () => { tutorHistory = []; renderTutor(); };
+
+/* ================= CHAT ROOM ================= */
+let currentRoom = null, roomUnsub = null;
+
+$$(".group-item").forEach(item => {
+  item.onclick = () => {
+    currentRoom = item.dataset.group;
+    $("#roomTitle").textContent = item.querySelector('h3').textContent;
+    $("#chatRoom").classList.remove("hide");
+    loadMessages();
+  };
+});
+
+$("#btnChatBack").onclick = () => {
+  $("#chatRoom").classList.add("hide");
+  if (roomUnsub) roomUnsub();
+};
+
+function loadMessages() {
+  if (roomUnsub) roomUnsub();
+  const q = query(collection(db, "groups", currentRoom, "messages"), orderBy("createdAt", "asc"), limit(50));
+  roomUnsub = onSnapshot(q, (snap) => {
+    const box = $("#msgScroll");
+    box.innerHTML = snap.docs.map(d => {
+      const m = d.data();
+      const mine = m.uid === ME.uid;
+      return `<div class="chat-bubble ${mine ? 'mine' : 'theirs'}">
+        ${!mine ? `<div class="sender">${esc(m.name)}</div>` : ''}
+        ${esc(m.text)}
+        <div class="time">${m.createdAt ? new Date(m.createdAt.seconds * 1000).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : ''}</div>
+      </div>`;
+    }).join("");
+    box.scrollTop = box.scrollHeight;
+  });
+}
+
+$("#btnSend").onclick = async () => {
+  const text = $("#msgInput").value.trim();
+  if (!text || !currentRoom || !ME) return;
+  $("#msgInput").value = "";
+  await addDoc(collection(db, "groups", currentRoom, "messages"), {
+    text: text, uid: ME.uid, name: ME.displayName, createdAt: serverTimestamp()
+  });
+};
+$("#msgInput").addEventListener("keydown", (e) => { if (e.key === "Enter") $("#btnSend").click(); });
+
+// Placeholder for Voice & Upload
+$("#btnMic").onclick = () => toast("Voice note recording coming soon!");
+$("#btnAttach").onclick = () => $("#fileInput").click();
+$("#fileInput").onchange = () => toast("File uploads coming soon!");
+
+/* ================= CGPA CALCULATOR ================= */
+const SCALES = { 5: { A:5, B:4, C:3, D:2, E:1, F:0 }, 4: { A:4, B:3, C:2, D:1, F:0 } };
+let courses = [];
 
 function renderCourses() {
   const wrap = $("#courseList");
-  if (!currentCourses.length) { wrap.innerHTML = `<div class="empty"><span class="big">📚</span>No courses yet.</div>`; return; }
-  const scale = SCALES[$("#scaleSel").value];
-  const opts = Object.keys(scale).map(g => `<option value="${g}"${g==='A'?' selected':''}>${g}</option>`).join("");
-  wrap.innerHTML = currentCourses.map((c, i) => `<div class="row" style="margin-bottom:8px;gap:6px"><input class="mini" placeholder="Course" value="${esc(c.name)}" data-i="${i}" data-k="name" style="flex:2" /><input class="mini" placeholder="Units" value="${esc(c.units)}" data-i="${i}" data-k="units" style="width:64px" /><select class="mini" data-i="${i}" data-k="grade" style="width:64px">${opts}</select><button class="icon-btn" data-del="${i}">✕</button></div>`).join("");
-  wrap.querySelectorAll("[data-i]").forEach(el => {
-    if (el.dataset.k === "grade") el.value = currentCourses[el.dataset.i].grade;
-    el.oninput = el.onchange = () => { currentCourses[el.dataset.i][el.dataset.k] = el.value; updateLiveGPA(); };
-  });
-  wrap.querySelectorAll("[data-del]").forEach(b => { b.onclick = () => { currentCourses.splice(+b.dataset.del, 1); renderCourses(); updateLiveGPA(); }; });
-  updateLiveGPA();
+  if (!courses.length) { wrap.innerHTML = '<div style="color:var(--text-muted);font-size:14px;padding:12px">No courses added yet.</div>'; return; }
+  const opts = Object.keys(SCALES[$("#scaleSel").value]).map(g => `<option value="${g}">${g}</option>`).join("");
+  
+  wrap.innerHTML = courses.map((c, i) => `
+    <div style="background:var(--bg-card);padding:12px;border-radius:12px;margin-bottom:8px;border:1px solid var(--border)">
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <input placeholder="Course Name" value="${esc(c.name)}" oninput="updateCourse(${i}, 'name', this.value)" style="flex:1;padding:10px;border-radius:8px;background:var(--bg);border:1px solid var(--border);color:var(--text)" />
+        <input type="number" placeholder="Units" value="${esc(c.units)}" oninput="updateCourse(${i}, 'units', this.value)" style="width:70px;padding:10px;border-radius:8px;background:var(--bg);border:1px solid var(--border);color:var(--text)" />
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <select onchange="updateCourse(${i}, 'grade', this.value)" style="padding:8px;border-radius:8px;background:var(--bg);border:1px solid var(--border);color:var(--text)">
+          ${opts.replace(`value="${c.grade}"`, `value="${c.grade}" selected`)}
+        </select>
+        <button onclick="removeCourse(${i})" style="color:var(--err);font-size:18px">✕</button>
+      </div>
+    </div>
+  `).join("");
+  calculateGPA();
 }
 
-function computeGPA(courses, scaleKey) {
-  const scale = SCALES[scaleKey]; let pts = 0, units = 0;
-  courses.forEach(c => { const u = Number(c.units) || 0; pts += u * (scale[c.grade] || 0); units += u; });
-  return { gpa: units ? pts / units : 0, units: units };
-}
-function updateLiveGPA() {
-  const r = computeGPA(currentCourses, $("#scaleSel").value);
-  const pC = parseFloat($("#prevCGPA").value) || 0, pU = parseFloat($("#prevUnits").value) || 0;
-  const total = r.units + pU, cgpa = total ? ((pC * pU) + (r.gpa * r.units)) / total : r.gpa;
+window.updateCourse = (i, key, val) => { courses[i][key] = val; calculateGPA(); };
+window.removeCourse = (i) => { courses.splice(i, 1); renderCourses(); };
+
+function calculateGPA() {
+  let pts = 0, units = 0;
+  const scale = SCALES[$("#scaleSel").value];
+  courses.forEach(c => {
+    const u = Number(c.units) || 0;
+    pts += u * (scale[c.grade] || 0);
+    units += u;
+  });
+  const gpa = units ? pts / units : 0;
+  
+  const pC = parseFloat($("#prevCGPA").value) || 0;
+  const pU = parseFloat($("#prevUnits").value) || 0;
+  const totalUnits = units + pU;
+  const cgpa = totalUnits ? ((pC * pU) + (gpa * units)) / totalUnits : gpa;
+
   $("#statCGPA").textContent = cgpa.toFixed(2);
-  $("#statUnits").textContent = total;
+  $("#statUnits").textContent = totalUnits;
 }
-$("#scaleSel").onchange = () => { renderCourses(); updateLiveGPA(); };
-$("#prevCGPA").oninput = $("#prevUnits").oninput = updateLiveGPA;
-$("#btnAddCourse").onclick = () => { currentCourses.push({ name:"", units:"", grade:"A" }); renderCourses(); };
-$("#btnClearSem").onclick = () => { currentCourses = []; renderCourses(); };
+
+$("#scaleSel").onchange = () => renderCourses();
+$("#prevCGPA").oninput = $("#prevUnits").oninput = calculateGPA;
+$("#btnAddCourse").onclick = () => { courses.push({ name: "", units: "", grade: "A" }); renderCourses(); };
 
 $("#btnSaveSem").onclick = async () => {
-  if (!ME || !currentCourses.length) return toast("Add at least one course.", "err");
-  const r = computeGPA(currentCourses, $("#scaleSel").value);
-  const semName = prompt("Semester name", "Semester " + (Date.now() % 1000));
-  if (!semName) return;
-  await addDoc(collection(db, "users", ME.uid, "semesters"), { name: semName, scale: $("#scaleSel").value, courses: currentCourses, gpa: r.gpa, units: r.units, createdAt: serverTimestamp() });
-  toast("Saved", "ok"); currentCourses = []; renderCourses(); loadCalculator();
+  if (!ME || !courses.length) return toast("Add some courses first");
+  const scale = SCALES[$("#scaleSel").value];
+  let pts = 0, units = 0;
+  courses.forEach(c => { const u = Number(c.units) || 0; pts += u * (scale[c.grade] || 0); units += u; });
+  const gpa = units ? pts / units : 0;
+
+  await addDoc(collection(db, "users", ME.uid, "semesters"), { name: "Semester", courses, gpa, units, createdAt: serverTimestamp() });
+  toast("Semester saved!");
+  courses = []; renderCourses();
 };
 
-async function loadCalculator() {
-  if (!ME) return;
-  const snap = await getDocs(query(collection(db, "users", ME.uid, "semesters"), orderBy("createdAt", "asc")));
-  let pts = 0, units = 0; const list = $("#semList");
-  if (snap.empty) { list.innerHTML = `<div class="empty">No semesters saved.</div>`; $("#statSem").textContent = "0"; return; }
-  let html = "";
-  snap.forEach(d => {
-    const s = d.data(); pts += s.gpa * s.units; units += s.units;
-    html += `<div style="padding:12px;border:1px solid var(--line);border-radius:12px;margin-bottom:10px"><div class="row between"><b>${esc(s.name)}</b><span class="pill brand">GPA ${s.gpa.toFixed(2)}</span></div></div>`;
-  });
-  list.innerHTML = html;
-  $("#statCGPA").textContent = (units ? pts / units : 0).toFixed(2);
-  $("#statUnits").textContent = units;
-  $("#statSem").textContent = snap.size;
-}
-
-$("#btnGoal").onclick = () => {
-  const target = parseFloat($("#goalCGPA").value), nUnits = parseFloat($("#goalUnits").value);
-  const cur = parseFloat($("#goalCur").value) || (parseFloat($("#statCGPA").textContent) || 0), done = parseFloat($("#statUnits").textContent) || 0;
-  if (!target || !nUnits) return toast("Fill in target and units.", "err");
-  const need = ((target * (done + nUnits)) - (cur * done)) / nUnits;
-  const out = $("#goalOut"); out.classList.remove("hide");
-  out.className = "msg " + (need > 5 ? "err" : "ok");
-  out.textContent = need > 5 ? "Not possible." : need <= 0 ? "Already above target!" : `You need a GPA of ${need.toFixed(2)}.`;
-};
-
-let tutorHistory = JSON.parse(localStorage.getItem("tutorHistory") || "[]");
-function renderTutor() {
-  const box = $("#chatBox");
-  if (!tutorHistory.length) { box.innerHTML = `<div class="empty">Ask me anything.</div>`; return; }
-  box.innerHTML = tutorHistory.map(m => `<div style="align-self:${m.role === "user" ? "flex-end" : "flex-start"};max-width:88%;background:${m.role === "user" ? "var(--brand)" : "var(--card-solid)"};color:${m.role === "user" ? "#fff" : "var(--text)"};border:1px solid var(--line-strong);border-radius:14px;padding:12px;font-size:14px;white-space:pre-wrap">${esc(m.content)}</div>`).join("");
-  box.scrollTop = box.scrollHeight;
-}
-async function askTutor(text) {
-  if (!text.trim()) return;
-  tutorHistory.push({ role: "user", content: text }); renderTutor(); localStorage.setItem("tutorHistory", JSON.stringify(tutorHistory.slice(-40)));
-  $("#tutorInput").value = "";
-  const think = document.createElement("div"); think.innerHTML = '<span class="spinner"></span> Thinking…'; $("#chatBox").appendChild(think);
-  try {
-    const res = await fetch(AI_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ messages: tutorHistory.slice(-10) }) });
-    const data = await res.json();
-    tutorHistory.push({ role: "assistant", content: data.reply || "No response" });
-    localStorage.setItem("tutorHistory", JSON.stringify(tutorHistory.slice(-40))); think.remove(); renderTutor();
-  } catch (e) { think.innerHTML = `<span style="color:var(--err)">AI unavailable.</span>`; setTimeout(() => think.remove(), 2500); }
-}
-$("#btnTutorSend").onclick = () => askTutor($("#tutorInput").value);
-$("#tutorInput").addEventListener("keydown", (e) => { if (e.key === "Enter") askTutor($("#tutorInput").value); });
-$("#btnNewChat").onclick = () => { tutorHistory = []; localStorage.removeItem("tutorHistory"); renderTutor(); };
-renderTutor();
-
-let savedWords = JSON.parse(localStorage.getItem("savedWords") || "[]");
-function loadSavedWords() { $("#dictSaved").innerHTML = savedWords.map(w => `<span class="pill brand" style="margin:4px">${esc(w)}</span>`).join("") || "No saved words."; }
-async function searchWord() {
-  const word = $("#dictInput").value.trim(); if (!word) return;
-  $("#dictResult").innerHTML = `<div class="loading"><span class="spinner"></span>Searching…</div>`;
-  try {
-    const r = await fetch("https://api.dictionaryapi.dev/api/v2/entries/en/" + word); const data = await r.json(); const e = data[0];
-    let html = `<div class="card"><h3>${esc(e.word)}</h3><button class="pill brand" onclick="savedWords.push('${e.word}');localStorage.setItem('savedWords',JSON.stringify(savedWords));loadSavedWords();">⭐ Save</button>`;
-    e.meanings.forEach(m => { html += `<p><b>${m.partOfSpeech}</b>: ${esc(m.definitions[0].definition)}</p>`; });
-    $("#dictResult").innerHTML = html + `</div>`;
-  } catch { $("#dictResult").innerHTML = `<div class="card">Word not found.</div>`; }
-}
-$("#btnDictSearch").onclick = searchWord;
-
-async function loadQuestionSubjects() {
-  const snap = await getDocs(collection(db, "questions")); const subs = new Set();
-  snap.forEach(d => { if(d.data().subject) subs.add(d.data().subject); });
-  $("#qSubject").innerHTML = [...subs].map(s => `<option>${esc(s)}</option>`).join("") || `<option value="">No questions yet</option>`;
-}
-let QUIZ = {};
-$("#btnStartQuiz").onclick = async () => {
-  const subj = $("#qSubject").value; if (!subj) return toast("No questions available", "err");
-  const snap = await getDocs(query(collection(db, "questions"), limit(100)));
-  let pool = []; snap.forEach(d => { if(d.data().subject === subj) pool.push(d.data()); });
-  pool.sort(() => Math.random() - 0.5); QUIZ = { q: pool.slice(0, parseInt($("#qCount").value)), i: 0, score: 0 };
-  renderQuestion();
-};
-function renderQuestion() {
-  if (QUIZ.i >= QUIZ.q.length) return finishQuiz();
-  const q = QUIZ.q[QUIZ.i];
-  $("#quizArea").innerHTML = `<div class="card"><p>${esc(q.question)}</p><div class="grid">${["A","B","C","D"].map(L => `<button class="btn ghost" onclick="answerQ('${L}','${q.answer}')">${L}. ${esc(q["option"+L] || "")}</button>`).join("")}</div></div>`;
-}
-function answerQ(pick, ans) { if (pick === ans) QUIZ.score++; QUIZ.i++; renderQuestion(); }
-function finishQuiz() { $("#quizArea").innerHTML = `<div class="card"><h3>Score: ${QUIZ.score}/${QUIZ.q.length}</h3><button class="btn" onclick="$('#btnStartQuiz').click()">Retry</button></div>`; }
-function loadQuizHistory() {}
-
-async function loadLeaderboard() {
-  const snap = await getDocs(collection(db, "quizResults")); let rows = [];
-  snap.forEach(d => rows.push(d.data())); rows.sort((a,b) => b.pct - a.pct);
-  $("#lbList").innerHTML = rows.length ? rows.slice(0,20).map((u,i) => `<div class="row between" style="padding:10px;border-bottom:1px solid var(--line)"><b>#${i+1} ${esc(u.name)}</b><span class="pill brand">${u.pct}%</span></div>`).join("") : "No scores yet.";
-}
-
-async function loadRooms() {
-  const snap = await getDocs(collection(db, "groups")); const rooms = [];
-  snap.forEach(d => rooms.push({ id: d.id, data: d.data() }));
-  $("#roomList").innerHTML = rooms.map(r => `<div class="card" onclick="openRoom('${r.id}','${esc(r.data.name)}')"><b>${esc(r.data.name)}</b></div>`).join("") || "No chats.";
-}
-let roomUnsub = null;
-async function openRoom(id, name) {
-  $("#chatHome").classList.add("hide"); $("#chatRoom").classList.remove("hide"); $("#roomTitle").textContent = name;
-  if (roomUnsub) roomUnsub();
-  roomUnsub = onSnapshot(query(collection(db, "groups", id, "messages"), limit(50)), snap => {
-    $("#msgScroll").innerHTML = snap.docs.map(d => `<div style="align-self:${d.data().uid===ME.uid?'flex-end':'flex-start'};background:var(--card-solid);padding:8px;border-radius:8px;margin-bottom:4px">${esc(d.data().text)}</div>`).join("");
-  });
-}
-$("#btnChatBack").onclick = () => { if(roomUnsub) roomUnsub(); $("#chatHome").classList.remove("hide"); $("#chatRoom").classList.add("hide"); };
-$("#btnSend").onclick = async () => {
-  const text = $("#msgInput").value.trim(); if (!text || !$("#roomTitle").textContent) return;
-  $("#msgInput").value = "";
-  await addDoc(collection(db, "groups", "default", "messages"), { text, uid: ME.uid, name: ME.displayName, createdAt: serverTimestamp() });
-};
-
-async function loadAdminUsers() {
+/* ================= ADMIN ================= */
+async function loadAdmin() {
   const snap = await getDocs(collection(db, "users"));
-  $("#adminUsers").innerHTML = `<table>` + snap.docs.map(d => `<tr><td>${esc(d.data().displayName)}</td><td>${esc(d.data().role)}</td></tr>`).join("") + `</table>`;
+  $("#adminUsers").innerHTML = snap.docs.map(d => {
+    const u = d.data();
+    return `<div style="background:var(--bg-card);padding:12px;border-radius:12px;margin-bottom:8px;display:flex;align-items:center;gap:12px">
+      <img src="${u.photoURL || defaultAvatar(u.displayName)}" style="width:36px;height:36px;border-radius:50%" />
+      <div><b style="font-size:14px">${esc(u.displayName)}</b><br><span style="font-size:12px;color:var(--text-muted)">${esc(u.email)}</span></div>
+    </div>`;
+  }).join("");
 }
-async function loadAdminGroups() {
-  const snap = await getDocs(collection(db, "groups"));
-  $("#adminGroups").innerHTML = snap.docs.map(d => `<div>${esc(d.data().name)}</div>`).join("");
-}
-async function loadAdminSettings() {}
 
-let allNotifs = [], unreadCount = 0;
-function showInAppNotification(title, body) {
-  if (ME && ME.notif && ME.notif.enabled === false) return;
-  const b = $("#notifBanner"); $("#notifTitle").textContent = title; $("#notifBody").textContent = body;
-  b.classList.add("show"); setTimeout(() => b.classList.remove("show"), 4000);
-  allNotifs.unshift({ title, body, read: false }); unreadCount++;
-  $("#notifBadge").textContent = unreadCount; $("#notifBadge").classList.remove("hide");
-}
-$("#btnNotifBell").onclick = () => $("#notifPanel").classList.toggle("hide");
-$("#btnCloseNotif").onclick = () => $("#notifPanel").classList.add("hide");
-
-$("#btnSendAnnounce").onclick = async () => {
-  const text = $("#announceInput").value.trim(); if (!text) return;
-  await setDoc(doc(db, "appSettings", "announcements"), { text, timestamp: Date.now() });
-  $("#announceInput").value = ""; toast("Sent", "ok");
-};
-
-onSnapshot(doc(db, "appSettings", "announcements"), snap => {
-  if (snap.exists() && Date.now() - snap.data().timestamp < 5000) showInAppNotification("📢 Announcement", snap.data().text);
-});
+/* ================= INIT ================= */
+renderCourses();
 </script>
 </body>
 </html>
+  
