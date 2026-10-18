@@ -3,128 +3,147 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-<meta name="theme-color" content="#090a0f" />
+<meta name="theme-color" content="#0f1733" />
 <title>Smart CGPA Plus</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>" />
 <style>
+/* ================= THEME TOKENS ================= */
 :root{
-  --bg:#090a0f; --bg-card:#13151c; --bg-hover:#1c1f2b;
-  --text:#ffffff; --text-muted:#8b92a5;
-  --brand:#5c7cfa; --brand-dark:#4c6ef5;
-  --accent:#12b886; --err:#fa5252; --warn:#fcc419;
-  --border:#212433; --nav-bg:rgba(9,10,15,0.95);
-  --radius:16px; --shadow:0 8px 24px rgba(0,0,0,0.4);
+  --bg-1:#0f1a3d; --bg-2:#1a2a5e; --bg-3:#0a1230;
+  --bg:#0f1733; --card:rgba(28,40,80,.85); --card-solid:#1c2850; --card-2:#243461;
+  --line:rgba(120,150,255,.18); --line-strong:rgba(120,150,255,.35);
+  --text:#f2f5ff; --text-2:#c9d3f5; --muted:#8ba0d4;
+  --brand:#5b8dff; --brand-2:#8b5cff; --brand-3:#4dd4ff;
+  --ok:#38d39f; --warn:#ffb84d; --err:#ff5d6c; --chatbg:#101a38;
+  --bubble-me:#005c4b; --bubble-them:#202c33;
+  --shadow-sm:0 2px 8px rgba(0,0,0,.25); --shadow:0 10px 30px rgba(0,0,0,.4);
+  --shadow-glow:0 0 40px rgba(91,141,255,.35);
+  --radius:16px; --radius-lg:22px;
 }
 [data-theme="light"]{
-  --bg:#f8f9fa; --bg-card:#ffffff; --bg-hover:#f1f3f5;
-  --text:#212529; --text-muted:#868e96;
-  --border:#e9ecef; --nav-bg:rgba(255,255,255,0.95);
-  --shadow:0 8px 24px rgba(0,0,0,0.08);
+  --bg-1:#eef2ff; --bg-2:#e2e9ff; --bg-3:#f5f7ff; --bg:#f2f5ff;
+  --card:rgba(255,255,255,.92); --card-solid:#ffffff; --card-2:#f2f5ff;
+  --line:rgba(60,90,180,.14); --line-strong:rgba(60,90,180,.28);
+  --text:#0d1530; --text-2:#2a3a68; --muted:#5a6785;
+  --brand:#3a6bff; --brand-2:#7a4cff; --brand-3:#00b8d4;
+  --ok:#0ea37a; --warn:#d97706; --err:#e11d48; --chatbg:#efeae2;
+  --bubble-me:#d9fdd3; --bubble-them:#ffffff;
+  --shadow-sm:0 2px 8px rgba(20,40,100,.08); --shadow:0 10px 30px rgba(20,40,100,.14);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;padding:0;height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;overscroll-behavior:none;-webkit-font-smoothing:antialiased}
-button,input,select,textarea{font:inherit;color:inherit}
+html,body{margin:0;padding:0;height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,system-ui,sans-serif;overscroll-behavior:none;-webkit-font-smoothing:antialiased;letter-spacing:-.01em}
+button,input,select,textarea{font:inherit;color:inherit;letter-spacing:inherit}
 button{cursor:pointer;border:none;background:none}
+a{color:var(--brand);text-decoration:none}
 .hide{display:none !important}
 
-/* SPLASH */
-#splash{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.4s ease}
+/* ================= SPLASH SCREEN ================= */
+#splash{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .4s ease}
 #splash.fade-out{opacity:0;pointer-events:none}
-.splash-logo{width:80px;height:80px;border-radius:24px;background:linear-gradient(135deg,var(--brand),var(--brand-dark));display:grid;place-items:center;font-size:40px;margin-bottom:20px;box-shadow:0 10px 30px rgba(92,124,250,0.3)}
-.splash-text{font-size:22px;font-weight:800;letter-spacing:-0.5px;margin-bottom:8px}
-.splash-sub{color:var(--text-muted);font-size:13px}
-.spinner{width:24px;height:24px;border:3px solid var(--border);border-top-color:var(--brand);border-radius:50%;animation:spin 0.8s linear infinite;display:inline-block;margin-top:30px}
+.splash-logo{width:80px;height:80px;border-radius:24px;background:linear-gradient(135deg,var(--brand),var(--brand-2));display:grid;place-items:center;font-size:40px;margin-bottom:20px;box-shadow:0 10px 30px rgba(91,141,255,.4)}
+.splash-text{font-size:24px;font-weight:800;letter-spacing:-.5px;margin-bottom:8px}
+.splash-sub{color:var(--muted);font-size:13px}
+.spinner{width:24px;height:24px;border:3px solid var(--line);border-top-color:var(--brand);border-radius:50%;animation:spin .8s linear infinite;display:inline-block;margin-top:30px}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* AUTH */
-#authScreen{min-height:100%;display:flex;align-items:center;justify-content:center;padding:24px}
-.auth-card{width:100%;max-width:400px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow)}
-.brand{display:flex;align-items:center;gap:12px;margin-bottom:24px}
-.brand .logo{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,var(--brand),var(--brand-dark));display:grid;place-items:center;font-size:24px}
-.brand h1{font-size:20px;margin:0;font-weight:800}
-.brand p{margin:2px 0 0;color:var(--text-muted);font-size:12px}
-.tabs{display:flex;gap:6px;background:var(--bg-hover);padding:4px;border-radius:12px;margin-bottom:20px}
-.tabs button{flex:1;padding:10px;border-radius:8px;color:var(--text-muted);font-weight:600;font-size:14px;transition:all 0.2s}
-.tabs button.active{background:var(--bg-card);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,0.2)}
-.field{margin-bottom:16px}
-.field label{display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px;font-weight:600}
-.field input,.field select{width:100%;padding:14px;border-radius:12px;border:1px solid var(--border);background:var(--bg);font-size:15px;outline:none}
-.field input:focus{border-color:var(--brand)}
-.btn{width:100%;padding:14px;border-radius:12px;font-weight:700;font-size:15px;background:var(--brand);color:#fff;margin-bottom:12px;transition:transform 0.1s}
-.btn:active{transform:scale(0.98)}
-.btn.outline{background:transparent;border:1px solid var(--border);color:var(--text)}
-.btn.google{background:#fff;color:#000;display:flex;align-items:center;justify-content:center;gap:10px}
-.divider{display:flex;align-items:center;gap:10px;color:var(--text-muted);font-size:12px;margin:16px 0}
-.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--border)}
-.msg{font-size:13px;margin-top:12px;padding:10px;border-radius:8px;text-align:center;font-weight:500}
-.msg.err{background:rgba(250,82,82,0.1);color:var(--err)}
-.msg.ok{background:rgba(18,184,134,0.1);color:var(--accent)}
+/* ================= AUTH SCREEN ================= */
+#authScreen{min-height:100%;display:flex;align-items:center;justify-content:center;padding:24px;background:radial-gradient(1000px 600px at 15% -10%, rgba(91,141,255,.45), transparent 60%),radial-gradient(900px 500px at 110% 10%, rgba(139,92,255,.40), transparent 55%),linear-gradient(160deg, var(--bg-1), var(--bg-3))}
+.auth-card{position:relative;width:100%;max-width:420px;background:var(--card);backdrop-filter:blur(24px);border:1px solid var(--line-strong);border-radius:var(--radius-lg);padding:32px 28px 28px;box-shadow:var(--shadow)}
+.brand{display:flex;align-items:center;gap:14px;margin-bottom:8px}
+.brand .logo{width:54px;height:54px;border-radius:16px;background:linear-gradient(135deg, var(--brand), var(--brand-2) 60%, var(--brand-3));display:grid;place-items:center;font-size:26px;box-shadow:0 8px 24px rgba(91,141,255,.5)}
+.brand h1{font-size:21px;margin:0;letter-spacing:-.4px;font-weight:800}
+.brand p{margin:2px 0 0;color:var(--muted);font-size:12.5px;font-weight:500}
+.tabs{display:flex;gap:6px;background:rgba(255,255,255,.06);padding:5px;border-radius:14px;margin:22px 0 8px;border:1px solid var(--line)}
+.tabs button{flex:1;padding:10px;border-radius:10px;color:var(--muted);font-weight:700;font-size:14px;transition:all .2s}
+.tabs button.active{background:linear-gradient(135deg, var(--brand), var(--brand-2));color:#fff;box-shadow:0 6px 16px rgba(91,141,255,.45)}
+.field{margin:14px 0}
+.field label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:7px;font-weight:700;text-transform:uppercase}
+.field input,.field select{width:100%;padding:13px 15px;border-radius:12px;border:1px solid var(--line-strong);background:rgba(255,255,255,.05);outline:none;font-size:15px;color:var(--text)}
+.field input:focus{border-color:var(--brand);background:rgba(91,141,255,.08)}
+.btn{width:100%;padding:14px;border-radius:13px;font-weight:800;font-size:15px;background:linear-gradient(135deg, var(--brand), var(--brand-2));color:#fff;margin-top:10px;transition:transform .12s;box-shadow:0 8px 22px rgba(91,141,255,.4)}
+.btn:active{transform:scale(.985)}
+.btn.ghost{background:rgba(255,255,255,.08);color:var(--text);border:1px solid var(--line-strong);box-shadow:var(--shadow-sm)}
+.btn.danger{background:linear-gradient(135deg, #ff5d6c, #d92646)}
+.btn.google{background:#fff;color:#1f1f1f;display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid #dadce0;font-weight:700}
+.divider{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:12px;margin:18px 0 6px;font-weight:600}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line-strong)}
+.msg{font-size:13.5px;margin-top:14px;padding:11px 14px;border-radius:11px;text-align:center;font-weight:500}
+.msg.err{background:rgba(255,93,108,.14);color:#ffb4bd;border:1px solid rgba(255,93,108,.35)}
+.msg.ok{background:rgba(56,211,159,.14);color:#a8f0d5;border:1px solid rgba(56,211,159,.35)}
 
-/* APP SHELL */
-#app{display:none;height:100%;flex-direction:column;padding-bottom:70px}
+/* ================= APP SHELL ================= */
+#app{display:none;height:100%;flex-direction:column;background:var(--bg)}
 #app.on{display:flex}
-header{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:12px;padding:16px 20px;background:var(--bg);border-bottom:1px solid var(--border)}
-header .menu-btn{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--bg-hover);font-size:18px}
-header .title-area{flex:1;display:flex;align-items:center;gap:8px}
-header .title-area b{font-size:18px;font-weight:800;color:var(--text)}
-header .icon-btn{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--bg-hover);font-size:18px;position:relative}
-main{flex:1;overflow-y:auto;padding:20px}
-.page{display:none;animation:fade 0.3s ease}
+header{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--card-solid);backdrop-filter:blur(20px);border-bottom:1px solid var(--line)}
+header .logo{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg, var(--brand), var(--brand-2));display:grid;place-items:center;font-size:20px}
+header .titles{flex:1;min-width:0}
+header .titles b{display:block;font-size:16px;font-weight:800}
+header .titles span{font-size:11.5px;color:var(--muted)}
+.icon-btn{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:rgba(255,255,255,.08);border:1px solid var(--line-strong);font-size:18px;color:var(--text)}
+.avatar{width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid var(--brand)}
+main{flex:1;overflow-y:auto;padding:18px;padding-bottom:100px}
+.page{display:none;animation:fade .28s ease}
 .page.on{display:block}
-@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
 /* BOTTOM NAV */
-nav{position:fixed;bottom:0;left:0;right:0;z-index:40;display:flex;align-items:center;justify-content:space-around;background:var(--nav-bg);backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:8px 10px;padding-bottom:calc(8px + env(safe-area-inset-bottom))}
-nav button{display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--text-muted);font-size:10px;font-weight:600;padding:6px 12px;border-radius:10px}
+nav{position:fixed;bottom:0;left:0;right:0;z-index:40;display:flex;background:var(--card-solid);border-top:1px solid var(--line);padding:8px 6px;padding-bottom:calc(8px + env(safe-area-inset-bottom))}
+nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 2px;color:var(--muted);font-size:10.5px;font-weight:700;border-radius:12px}
 nav button.active{color:var(--brand)}
-nav button .ic{font-size:22px;margin-bottom:2px}
+nav button .ic{font-size:20px;margin-bottom:2px}
 
-/* CARDS & UI */
-.section-title{font-size:14px;font-weight:700;color:var(--text-muted);margin:24px 0 12px 0;text-transform:uppercase;display:flex;justify-content:space-between}
-.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px}
-.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
-.stat-box{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center}
-.stat-box b{display:block;font-size:28px;color:var(--brand);font-weight:800}
-.stat-box span{font-size:11px;color:var(--text-muted);text-transform:uppercase;font-weight:700}
+/* ================= CARDS & UI ================= */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-bottom:16px}
+.card h3{margin:0 0 6px;font-size:17px;font-weight:800}
+.card .sub{color:var(--muted);font-size:13px;margin:0 0 14px;font-weight:500}
+.grid{display:grid;gap:12px}
+.grid.k2{grid-template-columns:1fr 1fr}
+.grid.k3{grid-template-columns:repeat(3,1fr)}
+.stat{background:linear-gradient(135deg, rgba(91,141,255,.14), rgba(139,92,255,.10));border:1px solid var(--line-strong);border-radius:14px;padding:16px 12px;text-align:center}
+.stat b{display:block;font-size:24px;font-weight:800;color:var(--brand)}
+.stat span{font-size:10.5px;color:var(--muted);text-transform:uppercase;font-weight:700}
+.row{display:flex;align-items:center;gap:10px}
+.row.between{justify-content:space-between}
+input.mini,select.mini{padding:10px 12px;border-radius:10px;border:1px solid var(--line-strong);background:rgba(255,255,255,.05);font-size:14px;width:100%;color:var(--text);outline:none}
 
-/* CHAT & AI */
-#aiHeader{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border);background:var(--bg-card)}
-#aiHeader .avatar{width:44px;height:44px;border-radius:50%;background:rgba(92,124,250,0.1);color:var(--brand);display:grid;place-items:center;font-size:24px}
-#aiHeader h2{margin:0;font-size:16px;font-weight:800}
-#aiHeader p{margin:2px 0 0;font-size:12px;color:var(--text-muted)}
-#chatBox{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px}
-.chat-msg{max-width:85%;font-size:14px;line-height:1.5;padding:16px;border-radius:16px}
-.chat-msg.user{align-self:flex-end;background:var(--brand);color:#fff;border-bottom-right-radius:4px}
-.chat-msg.ai{align-self:flex-start;background:var(--bg-card);border:1px solid var(--border);border-bottom-left-radius:4px}
-#aiInputArea{padding:16px 20px;background:var(--bg);border-top:1px solid var(--border)}
-.ai-input-box{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:12px}
-.ai-input-box input{width:100%;background:transparent;border:none;outline:none;font-size:15px;padding:8px 0;color:var(--text)}
-.ai-input-tools{display:flex;align-items:center;gap:8px;margin-top:8px}
-.ai-input-tools button.tool{width:32px;height:32px;border-radius:50%;background:var(--bg-hover);display:grid;place-items:center;font-size:16px}
-.ai-input-tools .send-btn{margin-left:auto;width:36px;height:36px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:18px}
-
-/* WHATSAPP CHAT ROOM */
-#chatRoom{position:fixed;inset:0;z-index:60;background:var(--bg);display:flex;flex-direction:column}
-#chatRoomHeader{display:flex;align-items:center;gap:12px;padding:16px;background:var(--bg-card);border-bottom:1px solid var(--border)}
-#chatRoomHeader .back{font-size:20px;padding:8px}
+/* ================= WHATSAPP CHAT ================= */
+#chatRoom{position:fixed;inset:0;z-index:60;background:var(--chatbg);display:flex;flex-direction:column}
+#chatRoomHeader{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--card-solid);border-bottom:1px solid var(--line)}
 #chatRoomHeader .info{flex:1}
-#chatRoomHeader .info h3{margin:0;font-size:16px;font-weight:700}
-#msgScroll{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:12px}
-.chat-bubble{max-width:80%;padding:12px 16px;border-radius:16px;font-size:14px;line-height:1.4;position:relative}
-.chat-bubble.mine{align-self:flex-end;background:var(--brand);color:#fff;border-bottom-right-radius:4px}
-.chat-bubble.theirs{align-self:flex-start;background:var(--bg-card);border:1px solid var(--border);border-bottom-left-radius:4px}
+#chatRoomHeader .info h3{margin:0;font-size:15px;font-weight:700}
+#chatRoomHeader .info p{margin:2px 0 0;font-size:11.5px;color:var(--muted)}
+#msgScroll{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:8px}
+.chat-bubble{max-width:82%;padding:10px 14px;border-radius:14px;font-size:14px;line-height:1.4;position:relative}
+.chat-bubble.mine{align-self:flex-end;background:var(--bubble-me);color:#fff;border-bottom-right-radius:4px}
+.chat-bubble.theirs{align-self:flex-start;background:var(--bubble-them);border:1px solid var(--line);border-bottom-left-radius:4px}
 .chat-bubble .sender{font-size:11px;color:var(--brand);font-weight:700;margin-bottom:4px}
 .chat-bubble.mine .sender{color:rgba(255,255,255,0.8)}
 .chat-bubble .time{font-size:10px;opacity:0.7;text-align:right;margin-top:4px}
-#chatInputArea{padding:12px;background:var(--bg-card);border-top:1px solid var(--border);display:flex;align-items:center;gap:8px}
-#chatInputArea .input-wrap{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:24px;display:flex;align-items:center;padding:4px 8px}
+#chatInputArea{padding:10px;background:var(--card-solid);border-top:1px solid var(--line);display:flex;align-items:center;gap:8px}
+#chatInputArea .input-wrap{flex:1;background:var(--bg);border:1px solid var(--line);border-radius:24px;display:flex;align-items:center;padding:4px 8px}
 #chatInputArea .input-wrap input{flex:1;background:transparent;border:none;outline:none;padding:8px;font-size:14px;color:var(--text)}
-#chatInputArea .action-btn{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-size:18px;color:var(--text-muted)}
+#chatInputArea .action-btn{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-size:18px;color:var(--muted)}
 #chatInputArea .send-btn{width:44px;height:44px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:18px}
 
-/* TOAST */
-.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--bg-card);color:var(--text);padding:12px 20px;border-radius:12px;font-size:13px;font-weight:600;box-shadow:var(--shadow);z-index:200;opacity:0;transition:opacity 0.3s;pointer-events:none;border:1px solid var(--border)}
+/* ================= AI TUTOR ================= */
+#page-tutor{padding:0;display:none;flex-direction:column;height:100%}
+#aiHeader{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--line);background:var(--card-solid)}
+#aiHeader .avatar{width:44px;height:44px;border-radius:50%;background:rgba(91,141,255,.1);color:var(--brand);display:grid;place-items:center;font-size:24px}
+#chatBox{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px}
+.chat-msg{max-width:85%;font-size:14px;line-height:1.5;padding:16px;border-radius:16px}
+.chat-msg.user{align-self:flex-end;background:var(--brand);color:#fff;border-bottom-right-radius:4px}
+.chat-msg.ai{align-self:flex-start;background:var(--card-solid);border:1px solid var(--line);border-bottom-left-radius:4px}
+#aiInputArea{padding:16px 20px;background:var(--bg);border-top:1px solid var(--line)}
+.ai-input-box{background:var(--card-solid);border:1px solid var(--line);border-radius:16px;padding:12px}
+.ai-input-box input{width:100%;background:transparent;border:none;outline:none;font-size:15px;padding:8px 0;color:var(--text)}
+.ai-input-tools{display:flex;align-items:center;gap:8px;margin-top:8px}
+.ai-input-tools .send-btn{margin-left:auto;width:36px;height:36px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:18px}
+
+/* NOTIFICATIONS & UTILS */
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--card-solid);color:var(--text);padding:12px 20px;border-radius:12px;font-size:13px;font-weight:600;box-shadow:var(--shadow);z-index:200;opacity:0;transition:opacity 0.3s;pointer-events:none;border:1px solid var(--line)}
 .toast.on{opacity:1}
+.notif-banner{position:fixed;top:-100px;left:50%;transform:translateX(-50%);width:90%;max-width:400px;background:var(--card-solid);border:1px solid var(--brand);border-radius:14px;padding:12px 16px;box-shadow:0 10px 25px rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;gap:12px;transition:top 0.4s ease}
+.notif-banner.show{top:16px}
 </style>
 </head>
 <body>
@@ -151,7 +170,7 @@ nav button .ic{font-size:22px;margin-bottom:2px}
       <div class="field"><label>Email</label><input id="loginEmail" type="email" placeholder="you@example.com" /></div>
       <div class="field"><label>Password</label><input id="loginPass" type="password" placeholder="••••••••" /></div>
       <button class="btn" id="btnLogin">Sign in</button>
-      <button class="btn outline" id="btnForgot" style="margin-top:8px">Forgot password?</button>
+      <button class="btn ghost" id="btnForgot" style="margin-top:10px">Forgot password?</button>
       <div class="divider">or</div>
       <button class="btn google" id="btnGoogle">
         <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.5l6.7-6.7C35.6 2.4 30.2 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.8 6.1C12.3 13.2 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4 6.9-10 6.9-17.5z"/><path fill="#FBBC05" d="M10.4 28.7c-.5-1.4-.8-2.9-.8-4.7s.3-3.3.8-4.7l-7.8-6.1C1 16.4 0 20.1 0 24s1 7.6 2.6 10.8l7.8-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2.1 1.4-4.8 2.2-8.4 2.2-6.3 0-11.7-3.7-13.6-9.1l-7.8 6.1C6.5 42.6 14.6 48 24 48z"/></svg>
@@ -169,57 +188,50 @@ nav button .ic{font-size:22px;margin-bottom:2px}
   </div>
 </div>
 
-<!-- ================= SIDE MENU ================= -->
-<div id="sideMenu" class="hide" style="position:fixed;inset:0;z-index:100;background:var(--bg-card);display:flex;flex-direction:column;padding:20px;">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-    <h2 style="margin:0;font-size:18px">Menu</h2>
-    <button id="btnCloseMenu" style="font-size:20px">✕</button>
-  </div>
-  <div class="menu-item" data-nav="dashboard">🏠 Dashboard</div>
-  <div class="menu-item" data-nav="calculator">🧮 CGPA Calculator</div>
-  <div class="menu-item" data-nav="tutor">🤖 AI Tutor</div>
-  <div class="menu-item" data-nav="chat">💬 Study Groups</div>
-  <div class="menu-item" data-nav="admin" id="menuAdmin" style="display:none;color:var(--brand)">🛡️ Admin Panel</div>
-  
-  <div style="margin-top:auto;border-top:1px solid var(--border);padding-top:20px">
-    <div style="display:flex;align-items:center;gap:12px">
-      <img id="menuAvatar" style="width:40px;height:40px;border-radius:50%;background:var(--brand)" />
-      <div><b id="menuName" style="display:block;font-size:14px"></b><span id="menuEmail" style="font-size:12px;color:var(--text-muted)"></span></div>
-    </div>
-    <button class="btn outline" id="btnLogout" style="margin-top:16px;color:var(--err);border-color:var(--err)">Sign Out</button>
-  </div>
-</div>
-
 <!-- ================= APP SHELL ================= -->
 <div id="app">
   <header>
-    <button class="menu-btn" id="btnOpenMenu">☰</button>
-    <div class="title-area"><b>Smart CGPA</b></div>
+    <div class="logo">🎓</div>
+    <div class="titles"><b id="hdrTitle">Dashboard</b><span id="hdrSub">Welcome back</span></div>
     <button class="icon-btn" id="btnTheme">🌙</button>
+    <img class="avatar" id="hdrAvatar" alt="" />
   </header>
 
   <main id="main">
     
     <!-- DASHBOARD -->
     <section class="page on" id="page-dashboard">
-      <div class="card" style="background:linear-gradient(135deg, rgba(92,124,250,0.2), rgba(0,0,0,0));border-color:var(--brand)">
-        <h2 style="margin:0 0 8px 0;font-size:20px" id="dashName">Hello 👋</h2>
-        <p style="margin:0;color:var(--text-muted);font-size:13px">Ready to boost your grades today?</p>
+      <div class="card"><div class="row between"><div><h3 id="dashName">Hello 👋</h3><p class="sub" style="margin:0">Let's track your academic progress.</p></div><span class="stat" id="dashRole" style="padding:6px 12px;font-size:11px">Student</span></div></div>
+      <div class="grid k3">
+        <div class="stat"><b id="statCGPA">0.00</b><span>CGPA</span></div>
+        <div class="stat"><b id="statUnits">0</b><span>Units</span></div>
+        <div class="stat"><b id="statSem">0</b><span>Semesters</span></div>
       </div>
-      
-      <div class="section-title">Overview</div>
-      <div class="stat-grid">
-        <div class="stat-box"><b id="dashCGPA">0.00</b><span>CGPA</span></div>
-        <div class="stat-box"><b id="dashUnits">0</b><span>Units</span></div>
+      <div class="card" style="margin-top:16px">
+        <h3>Quick actions</h3>
+        <div class="grid k2" style="margin-top:10px">
+          <button class="btn ghost" data-go="calculator">🧮 Calculator</button>
+          <button class="btn ghost" data-go="tutor">🤖 AI Tutor</button>
+          <button class="btn ghost" data-go="chat">💬 Groups</button>
+          <button class="btn ghost" data-go="games">🎮 Games</button>
+        </div>
       </div>
+      <div class="card"><h3>Academic feedback</h3><p class="sub" id="feedback" style="margin:0">Add your first semester to see feedback.</p></div>
+    </section>
 
-      <div class="section-title">Quick Actions</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <button class="card" data-nav="tutor" style="text-align:left;margin:0"><h3 style="margin:0 0 4px 0">🤖 AI Tutor</h3><p style="margin:0;font-size:12px;color:var(--text-muted)">Ask anything</p></button>
-        <button class="card" data-nav="calculator" style="text-align:left;margin:0"><h3 style="margin:0 0 4px 0">🧮 Calculator</h3><p style="margin:0;font-size:12px;color:var(--text-muted)">Calculate GPA</p></button>
-        <button class="card" data-nav="chat" style="text-align:left;margin:0"><h3 style="margin:0 0 4px 0">💬 Groups</h3><p style="margin:0;font-size:12px;color:var(--text-muted)">Study together</p></button>
-        <button class="card" data-nav="questions" style="text-align:left;margin:0"><h3 style="margin:0 0 4px 0">📝 Exams</h3><p style="margin:0;font-size:12px;color:var(--text-muted)">Practice tests</p></button>
+    <!-- CALCULATOR -->
+    <section class="page" id="page-calculator">
+      <div class="card"><h3>Grading scale</h3><select id="scaleSel" class="mini"><option value="5">5-point Scale</option><option value="4">4-point Scale</option></select></div>
+      <div class="card"><h3>Previous record</h3><div class="grid k2">
+        <div class="field" style="margin:0"><label>Prev CGPA</label><input id="prevCGPA" type="number" step="0.01" class="mini" placeholder="0.00" /></div>
+        <div class="field" style="margin:0"><label>Prev Units</label><input id="prevUnits" type="number" class="mini" placeholder="0" /></div>
+      </div></div>
+      <div class="card">
+        <div class="row between"><div><h3>Current semester</h3></div><button class="icon-btn" id="btnAddCourse">＋</button></div>
+        <div id="courseList" style="margin-top:14px"></div>
+        <div class="grid k2" style="margin-top:10px"><button class="btn" id="btnSaveSem">💾 Save</button><button class="btn ghost" id="btnClearSem">Clear</button></div>
       </div>
+      <div class="card"><h3>Saved semesters</h3><div id="semList"></div></div>
     </section>
 
     <!-- AI TUTOR -->
@@ -230,38 +242,28 @@ nav button .ic{font-size:22px;margin-bottom:2px}
         <button class="icon-btn" id="btnAiNew" style="margin-left:auto;background:var(--brand);color:#fff">+</button>
       </div>
       <div id="chatBox">
-        <div class="chat-msg ai"><p>Hello! I'm your AI Tutor. I can help you with Maths, English, Sciences, and more. What would you like to learn today?</p></div>
+        <div class="chat-msg ai"><p>Hello! I'm your AI Tutor. What would you like to learn today?</p></div>
       </div>
       <div id="aiInputArea">
         <div class="ai-input-box">
           <input id="tutorInput" type="text" placeholder="Ask anything..." />
-          <div class="ai-input-tools">
-            <button class="send-btn" id="btnTutorSend">➤</button>
-          </div>
+          <div class="ai-input-tools"><button class="send-btn" id="btnTutorSend">➤</button></div>
         </div>
       </div>
     </section>
 
-    <!-- STUDY GROUPS -->
+    <!-- CHAT LIST -->
     <section class="page" id="page-chat">
-      <div class="section-title" style="margin-top:0">Study Groups</div>
-      <div style="display:flex;flex-direction:column;gap:12px">
-        <div class="card group-item" data-group="biology" style="display:flex;align-items:center;gap:16px;margin:0;cursor:pointer">
-          <div style="font-size:24px;background:var(--bg-hover);padding:12px;border-radius:12px">🧬</div>
-          <div><h3 style="margin:0;font-size:15px">Biology Room</h3><p style="margin:2px 0 0;font-size:12px;color:var(--text-muted)">Ask questions freely</p></div>
-        </div>
-        <div class="card group-item" data-group="maths" style="display:flex;align-items:center;gap:16px;margin:0;cursor:pointer">
-          <div style="font-size:24px;background:var(--bg-hover);padding:12px;border-radius:12px">📐</div>
-          <div><h3 style="margin:0;font-size:15px">Maths Room</h3><p style="margin:2px 0 0;font-size:12px;color:var(--text-muted)">Solve problems together</p></div>
-        </div>
-      </div>
+      <div class="card" style="margin-bottom:16px"><div class="row between"><div><h3>💬 Study Groups</h3><p class="sub" style="margin:0">Public rooms</p></div><button class="icon-btn" id="btnNewGroup">＋</button></div></div>
+      <div id="roomList"></div>
     </section>
 
     <!-- CHAT ROOM (Overlay) -->
     <div id="chatRoom" class="hide">
       <div id="chatRoomHeader">
-        <button class="back" id="btnChatBack">←</button>
-        <div class="info"><h3 id="roomTitle">Room</h3><p>Anonymous</p></div>
+        <button class="icon-btn" id="btnChatBack">←</button>
+        <div class="info"><h3 id="roomTitle">Room</h3><p id="roomSub">Public Group</p></div>
+        <button class="icon-btn" id="btnRoomInfo">⋮</button>
       </div>
       <div id="msgScroll"></div>
       <div id="chatInputArea">
@@ -275,445 +277,26 @@ nav button .ic{font-size:22px;margin-bottom:2px}
       </div>
     </div>
 
-    <!-- CALCULATOR -->
-    <section class="page" id="page-calculator">
-      <div class="section-title" style="margin-top:0">CGPA Calculator</div>
-      <div class="card">
-        <div class="field"><label>Scale</label><select id="scaleSel"><option value="5">5.0 Scale</option><option value="4">4.0 Scale</option></select></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-          <div class="field"><label>Prev CGPA</label><input id="prevCGPA" type="number" placeholder="0.00" /></div>
-          <div class="field"><label>Prev Units</label><input id="prevUnits" type="number" placeholder="0" /></div>
-        </div>
+    <!-- GAMES -->
+    <section class="page" id="page-games">
+      <div class="card"><h3>🎮 Games</h3><p class="sub">Test your knowledge</p></div>
+      <div class="grid k2">
+        <button class="card" id="gameSpeed" style="text-align:left"><h3>⚡ Speed Quiz</h3><p class="sub" style="margin:0">10 questions in 60s</p></button>
+        <button class="card" id="gameStreak" style="text-align:left"><h3>🔥 Streak Master</h3><p class="sub" style="margin:0">Answer until you miss</p></button>
       </div>
-      <div id="courseList"></div>
-      <button class="btn outline" id="btnAddCourse" style="margin-bottom:20px">+ Add Course</button>
-      <div class="stat-grid">
-        <div class="stat-box"><b id="statCGPA">0.00</b><span>CGPA</span></div>
-        <div class="stat-box"><b id="statUnits">0</b><span>Units</span></div>
-      </div>
-      <button class="btn" id="btnSaveSem">💾 Save Semester</button>
-      <div class="section-title">Saved</div>
-      <div id="semList"></div>
+      <div id="gameArea"></div>
     </section>
-
-    <!-- ADMIN -->
-    <section class="page" id="page-admin">
-      <div class="section-title" style="margin-top:0">Admin Panel</div>
-      <div id="adminUsers" class="loading">Loading...</div>
-      <button class="btn" id="btnAnnounce" style="margin-top:20px">📢 Send Announcement</button>
-    </section>
-
-    <section class="page" id="page-profile"><div class="section-title">Profile</div><p>Profile settings</p></section>
-    <section class="page" id="page-questions"><div class="section-title">Questions</div><p>Question bank</p></section>
 
   </main>
 
   <nav>
     <button data-nav="dashboard" class="active"><span class="ic">🏠</span>Home</button>
     <button data-nav="calculator"><span class="ic">🧮</span>GPA</button>
-    <button data-nav="tutor"><span class="ic">🤖</span>AI Tutor</button>
+    <button data-nav="tutor"><span class="ic">🤖</span>Tutor</button>
     <button data-nav="chat"><span class="ic">💬</span>Chat</button>
+    <button data-nav="games"><span class="ic">🎮</span>Games</button>
   </nav>
 </div>
 
 <div id="toast" class="toast"></div>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {
-  getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword,
-  signOut, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail, updateProfile
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {
-  getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc, collection, addDoc,
-  query, orderBy, limit, onSnapshot, serverTimestamp, getDocs
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-/* ================= CONFIG ================= */
-const firebaseConfig = {
-  apiKey: "AIzaSyBalfqEksKXbrcfVCqrrWkILx_V7up25Xs",
-  authDomain: "smart-learn-hub-73667.firebaseapp.com",
-  databaseURL: "https://smart-learn-hub-73667-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "smart-learn-hub-73667",
-  storageBucket: "smart-learn-hub-73667.firebasestorage.app",
-  messagingSenderId: "165458065701",
-  appId: "1:165458065701:web:08a1bcfac2ae286b9502cc"
-};
-const SUPER_ADMIN_EMAIL = "gbaraneeleeleebari4@gmail.com";
-const AI_ENDPOINT = "https://gbaraneeleeleebari4--1fb7caf2c99a11f1ad4c1607ee4eb77e.web.val.run";
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-const $ = (s) => document.querySelector(s);
-const $$ = (s) => [...document.querySelectorAll(s)];
-const esc = (v) => String(v ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-
-/* ================= UI HELPERS ================= */
-function toast(msg, type = "") {
-  const t = $("#toast");
-  t.textContent = msg;
-  t.className = "toast on " + type;
-  clearTimeout(t._t);
-  t._t = setTimeout(() => t.className = "toast " + type, 2800);
-}
-
-function showPage(name) {
-  $$(".page").forEach(p => p.classList.remove("on"));
-  const el = $("#page-" + name);
-  if (el) el.classList.add("on");
-  $$("nav button").forEach(b => b.classList.toggle("active", b.dataset.nav === name));
-  $("#main").scrollTop = 0;
-  
-  if (name === "tutor") {
-    document.querySelector("nav").style.display = "none";
-    $("#page-tutor").style.display = "flex";
-  } else {
-    document.querySelector("nav").style.display = "flex";
-    $("#page-tutor").style.display = "none";
-  }
-}
-
-document.addEventListener("click", (e) => {
-  const nav = e.target.closest("[data-nav]");
-  if (nav) {
-    showPage(nav.dataset.nav);
-    if ($("#sideMenu").classList.contains("hide") === false) $("#sideMenu").classList.add("hide");
-    return;
-  }
-});
-
-/* ================= SPLASH & THEME ================= */
-setTimeout(() => {
-  $("#splash").classList.add("fade-out");
-  setTimeout(() => $("#splash").style.display = "none", 400);
-}, 2000);
-
-const savedTheme = localStorage.getItem("theme") || "dark";
-document.documentElement.setAttribute("data-theme", savedTheme);
-$("#btnTheme").textContent = savedTheme === "dark" ? "🌙" : "☀️";
-$("#btnTheme").onclick = () => {
-  const cur = document.documentElement.getAttribute("data-theme");
-  const nxt = cur === "dark" ? "light" : "dark";
-  document.documentElement.setAttribute("data-theme", nxt);
-  localStorage.setItem("theme", nxt);
-  $("#btnTheme").textContent = nxt === "dark" ? "🌙" : "☀️";
-};
-
-/* ================= MENU ================= */
-$("#btnOpenMenu").onclick = () => $("#sideMenu").classList.remove("hide");
-$("#btnCloseMenu").onclick = () => $("#sideMenu").classList.add("hide");
-
-/* ================= AUTH ================= */
-$("#tabLogin").onclick = () => { $("#tabLogin").classList.add("active"); $("#tabSignup").classList.remove("active"); $("#loginForm").classList.remove("hide"); $("#signupForm").classList.add("hide"); };
-$("#tabSignup").onclick = () => { $("#tabSignup").classList.add("active"); $("#tabLogin").classList.remove("active"); $("#signupForm").classList.remove("hide"); $("#loginForm").classList.add("hide"); };
-
-function authMsg(id, text, type = "err") { const el = $(id); el.textContent = text; el.className = "msg " + type; el.classList.remove("hide"); }
-function authHide(id) { $(id).classList.add("hide"); }
-
-$("#btnLogin").onclick = async () => {
-  authHide("#authMsg");
-  const email = $("#loginEmail").value.trim(), pass = $("#loginPass").value;
-  if (!email || !pass) return authMsg("#authMsg", "Enter email and password.");
-  $("#btnLogin").innerHTML = '<span class="spinner"></span>';
-  try { await signInWithEmailAndPassword(auth, email, pass); }
-  catch (e) { authMsg("#authMsg", prettyAuthError(e)); $("#btnLogin").textContent = "Sign in"; }
-};
-
-$("#btnSignup").onclick = async () => {
-  authHide("#suMsg");
-  const name = $("#suName").value.trim(), email = $("#suEmail").value.trim(), pass = $("#suPass").value;
-  if (!name || !email || !pass) return authMsg("#suMsg", "Fill in every field.");
-  $("#btnSignup").innerHTML = '<span class="spinner"></span>';
-  try {
-    const cred = await createUserWithEmailAndPassword(auth, email, pass);
-    await updateProfile(cred.user, { displayName: name });
-    await ensureUserDoc(cred.user, name);
-  } catch (e) { authMsg("#suMsg", prettyAuthError(e)); $("#btnSignup").textContent = "Create account"; }
-};
-
-$("#btnGoogle").onclick = async () => {
-  authHide("#authMsg");
-  try {
-    const provider = new GoogleAuthProvider();
-    const result = await signInWithPopup(auth, provider);
-    await ensureUserDoc(result.user, result.user.displayName || "Student");
-  } catch (e) { 
-    if (e.code !== 'auth/popup-closed-by-user') authMsg("#authMsg", prettyAuthError(e)); 
-  }
-};
-
-function prettyAuthError(e) {
-  const m = (e && e.code) || "";
-  if (m.includes("invalid-credential")) return "Wrong email or password.";
-  if (m.includes("user-not-found")) return "No account found.";
-  if (m.includes("email-already-in-use")) return "Email already registered.";
-  return (e && e.message) || "Something went wrong.";
-}
-
-async function ensureUserDoc(user, name) {
-  const ref = doc(db, "users", user.uid);
-  const snap = await getDoc(ref);
-  const isSuper = user.email === SUPER_ADMIN_EMAIL;
-  if (!snap.exists()) {
-    await setDoc(ref, {
-      uid: user.uid, email: user.email, displayName: name || "Student", photoURL: user.photoURL || "",
-      role: isSuper ? "superadmin" : "student", createdAt: serverTimestamp(), online: true
-    });
-  }
-}
-
-/* ================= SESSION ================= */
-let ME = null;
-
-onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    ME = null;
-    $("#app").classList.remove("on");
-    $("#authScreen").classList.remove("hide");
-    return;
-  }
-  $("#authScreen").classList.add("hide");
-  $("#app").classList.add("on");
-  
-  const snap = await getDoc(doc(db, "users", user.uid));
-  if (snap.exists()) {
-    ME = snap.data();
-    updateUI(ME);
-  }
-});
-
-function updateUI(me) {
-  $("#menuName").textContent = me.displayName;
-  $("#menuEmail").textContent = me.email;
-  $("#menuAvatar").src = me.photoURL || defaultAvatar(me.displayName);
-  $("#dashName").textContent = "Hello, " + me.displayName.split(" ")[0] + " 👋";
-
-  if (me.role === "superadmin") {
-    $("#menuAdmin").style.display = "block";
-    loadAdmin();
-  }
-}
-
-function defaultAvatar(name) {
-  const ch = (name || "U").charAt(0).toUpperCase();
-  return "data:image/svg+xml;utf8," + encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80'><rect width='100%' height='100%' rx='40' fill='%235c7cfa'/><text x='50%' y='55%' font-size='40' fill='white' text-anchor='middle' font-family='Arial' dominant-baseline='middle'>${ch}</text></svg>`);
-}
-
-$("#btnLogout").onclick = () => { signOut(auth); location.reload(); };
-
-/* ================= AI TUTOR ================= */
-let tutorHistory = [];
-
-function renderTutor() {
-  const box = $("#chatBox");
-  if (!tutorHistory.length) {
-    box.innerHTML = `<div class="chat-msg ai"><p>Hello! I'm your AI Tutor. What would you like to learn today?</p></div>`;
-    return;
-  }
-  box.innerHTML = tutorHistory.map(m => `
-    <div class="chat-msg ${m.role === 'user' ? 'user' : 'ai'}">
-      <p>${esc(m.content)}</p>
-    </div>
-  `).join("");
-  box.scrollTop = box.scrollHeight;
-}
-
-async function askTutor(text) {
-  if (!text.trim()) return;
-  tutorHistory.push({ role: "user", content: text });
-  renderTutor();
-  $("#tutorInput").value = "";
-  
-  const think = document.createElement("div");
-  think.className = "chat-msg ai";
-  think.innerHTML = '<span class="spinner"></span> Thinking...';
-  $("#chatBox").appendChild(think);
-  $("#chatBox").scrollTop = $("#chatBox").scrollHeight;
-
-  try {
-    const res = await fetch(AI_ENDPOINT, {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages: tutorHistory.slice(-10) })
-    });
-    const data = await res.json();
-    tutorHistory.push({ role: "assistant", content: data.reply || "No response." });
-    think.remove();
-    renderTutor();
-  } catch (e) {
-    think.innerHTML = '<p style="color:var(--err)">AI is unavailable. Please try again.</p>';
-  }
-}
-
-$("#btnTutorSend").onclick = () => askTutor($("#tutorInput").value);
-$("#tutorInput").addEventListener("keydown", (e) => { if (e.key === "Enter") askTutor($("#tutorInput").value); });
-$("#btnAiNew").onclick = () => { tutorHistory = []; renderTutor(); };
-
-/* ================= CHAT ROOM & NOTIFICATIONS ================= */
-let currentRoom = null, roomUnsub = null;
-
-$$(".group-item").forEach(item => {
-  item.onclick = () => {
-    currentRoom = item.dataset.group;
-    $("#roomTitle").textContent = item.querySelector('h3').textContent;
-    $("#chatRoom").classList.remove("hide");
-    loadMessages();
-  };
-});
-
-$("#btnChatBack").onclick = () => {
-  $("#chatRoom").classList.add("hide");
-  if (roomUnsub) roomUnsub();
-};
-
-function loadMessages() {
-  if (roomUnsub) roomUnsub();
-  const q = query(collection(db, "groups", currentRoom, "messages"), orderBy("createdAt", "asc"), limit(50));
-  roomUnsub = onSnapshot(q, (snap) => {
-    const box = $("#msgScroll");
-    
-    // In-App Notification for new messages
-    snap.docChanges().forEach(change => {
-      if (change.type === "added") {
-        const m = change.doc.data();
-        if (m.uid !== ME.uid && (Date.now() - (m.createdAt?.toMillis() || 0) < 5000)) {
-          showNotification(m.name, m.text);
-        }
-      }
-    });
-
-    box.innerHTML = snap.docs.map(d => {
-      const m = d.data();
-      const mine = m.uid === ME.uid;
-      return `<div class="chat-bubble ${mine ? 'mine' : 'theirs'}">
-        ${!mine ? `<div class="sender">${esc(m.name)}</div>` : ''}
-        ${esc(m.text)}
-        <div class="time">${m.createdAt ? new Date(m.createdAt.seconds * 1000).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : ''}</div>
-      </div>`;
-    }).join("");
-    box.scrollTop = box.scrollHeight;
-  });
-}
-
-$("#btnSend").onclick = async () => {
-  const text = $("#msgInput").value.trim();
-  if (!text || !currentRoom || !ME) return;
-  $("#msgInput").value = "";
-  await addDoc(collection(db, "groups", currentRoom, "messages"), {
-    text: text, uid: ME.uid, name: ME.displayName, createdAt: serverTimestamp()
-  });
-};
-$("#msgInput").addEventListener("keydown", (e) => { if (e.key === "Enter") $("#btnSend").click(); });
-
-// Voice & File Uploads (Placeholder working UI)
-$("#btnMic").onclick = () => toast("Voice note recording activated!");
-$("#btnAttach").onclick = () => $("#fileInput").click();
-$("#fileInput").onchange = () => toast("File attached successfully!");
-
-// Notification System (Top Banner)
-function showNotification(title, body) {
-  const banner = document.createElement("div");
-  banner.style.cssText = "position:fixed;top:20px;left:50%;transform:translateX(-50%);background:var(--bg-card);border:1px solid var(--brand);border-radius:12px;padding:12px 20px;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.5);width:90%;max-width:400px;transition:opacity 0.3s";
-  banner.innerHTML = `<b style="display:block;font-size:14px;color:var(--brand);margin-bottom:4px">${esc(title)}</b><span style="font-size:13px">${esc(body)}</span>`;
-  document.body.appendChild(banner);
-  setTimeout(() => { banner.style.opacity = "0"; setTimeout(() => banner.remove(), 300); }, 4000);
-}
-
-/* ================= CGPA CALCULATOR ================= */
-const SCALES = { 5: { A:5, B:4, C:3, D:2, E:1, F:0 }, 4: { A:4, B:3, C:2, D:1, F:0 } };
-let courses = [];
-
-function renderCourses() {
-  const wrap = $("#courseList");
-  if (!courses.length) { wrap.innerHTML = '<div style="color:var(--text-muted);font-size:14px;padding:12px">No courses added.</div>'; return; }
-  const opts = Object.keys(SCALES[$("#scaleSel").value]).map(g => `<option value="${g}">${g}</option>`).join("");
-  
-  wrap.innerHTML = courses.map((c, i) => `
-    <div style="background:var(--bg-card);padding:12px;border-radius:12px;margin-bottom:8px;border:1px solid var(--border)">
-      <div style="display:flex;gap:8px;margin-bottom:8px">
-        <input placeholder="Course Name" value="${esc(c.name)}" oninput="updateCourse(${i}, 'name', this.value)" style="flex:1;padding:10px;border-radius:8px;background:var(--bg);border:1px solid var(--border);color:var(--text)" />
-        <input type="number" placeholder="Units" value="${esc(c.units)}" oninput="updateCourse(${i}, 'units', this.value)" style="width:70px;padding:10px;border-radius:8px;background:var(--bg);border:1px solid var(--border);color:var(--text)" />
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <select onchange="updateCourse(${i}, 'grade', this.value)" style="padding:8px;border-radius:8px;background:var(--bg);border:1px solid var(--border);color:var(--text)">
-          ${opts.replace(`value="${c.grade}"`, `value="${c.grade}" selected`)}
-        </select>
-        <button onclick="removeCourse(${i})" style="color:var(--err);font-size:18px">✕</button>
-      </div>
-    </div>
-  `).join("");
-  calculateGPA();
-}
-
-window.updateCourse = (i, key, val) => { courses[i][key] = val; calculateGPA(); };
-window.removeCourse = (i) => { courses.splice(i, 1); renderCourses(); };
-
-function calculateGPA() {
-  let pts = 0, units = 0;
-  const scale = SCALES[$("#scaleSel").value];
-  courses.forEach(c => {
-    const u = Number(c.units) || 0;
-    pts += u * (scale[c.grade] || 0);
-    units += u;
-  });
-  const gpa = units ? pts / units : 0;
-  
-  const pC = parseFloat($("#prevCGPA").value) || 0;
-  const pU = parseFloat($("#prevUnits").value) || 0;
-  const totalUnits = units + pU;
-  const cgpa = totalUnits ? ((pC * pU) + (gpa * units)) / totalUnits : gpa;
-
-  $("#statCGPA").textContent = cgpa.toFixed(2);
-  $("#statUnits").textContent = totalUnits;
-  $("#dashCGPA").textContent = cgpa.toFixed(2);
-  $("#dashUnits").textContent = totalUnits;
-}
-
-$("#scaleSel").onchange = () => renderCourses();
-$("#prevCGPA").oninput = $("#prevUnits").oninput = calculateGPA;
-$("#btnAddCourse").onclick = () => { courses.push({ name: "", units: "", grade: "A" }); renderCourses(); };
-
-$("#btnSaveSem").onclick = async () => {
-  if (!ME || !courses.length) return toast("Add some courses first");
-  const scale = SCALES[$("#scaleSel").value];
-  let pts = 0, units = 0;
-  courses.forEach(c => { const u = Number(c.units) || 0; pts += u * (scale[c.grade] || 0); units += u; });
-  const gpa = units ? pts / units : 0;
-
-  await addDoc(collection(db, "users", ME.uid, "semesters"), { name: "Semester", courses, gpa, units, createdAt: serverTimestamp() });
-  toast("Semester saved!");
-  courses = []; renderCourses();
-};
-
-/* ================= ADMIN ================= */
-async function loadAdmin() {
-  const snap = await getDocs(collection(db, "users"));
-  $("#adminUsers").innerHTML = snap.docs.map(d => {
-    const u = d.data();
-    return `<div style="background:var(--bg-card);padding:12px;border-radius:12px;margin-bottom:8px;display:flex;align-items:center;gap:12px">
-      <img src="${u.photoURL || defaultAvatar(u.displayName)}" style="width:36px;height:36px;border-radius:50%" />
-      <div><b style="font-size:14px">${esc(u.displayName)}</b><br><span style="font-size:12px;color:var(--text-muted)">${esc(u.email)}</span></div>
-    </div>`;
-  }).join("");
-}
-
-$("#btnAnnounce").onclick = async () => {
-  const text = prompt("Enter announcement message:");
-  if (text) {
-    await setDoc(doc(db, "appSettings", "announcements"), { text, timestamp: Date.now() });
-    toast("Announcement sent!");
-  }
-};
-
-// Listen for Admin Announcements
-onSnapshot(doc(db, "appSettings", "announcements"), snap => {
-  if (snap.exists() && Date.now() - snap.data().timestamp < 5000) {
-    showNotification("📢 Admin Announcement", snap.data().text);
-  }
-});
-
-/* ================= INIT ================= */
-renderCourses();
-</script>
-</body>
-</html>
+<div id="notifBanner" class="notif-banner"><div style="font-size:20px">🔔</div><div style="flex:1"><div id="notifTitle" style="font-size:13px;font-weight:800;color:var(--brand)">New Message</div><div id="notifBody" style="font-size:12px;color:var(--muted)">Hello</div></div></div>
