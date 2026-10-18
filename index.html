@@ -421,6 +421,117 @@ document.addEventListener('change', (e) => {
 document.addEventListener('input', (e) => {
   if (e.target.id === 'calc-prevcgpa' || e.target.id === 'calc-prevunits') calculateGPA();
 });
+  /* ================= GAMES & QUESTION BANK ================= */
+window.startGame = async () => {
+  try {
+    const snap = await getDocs(query(collection(db, "questions"), limit(10)));
+    if (snap.empty) return alert("No questions in the database yet. Admin needs to upload them.");
+    
+    let questions = [];
+    snap.forEach(d => questions.push(d.data()));
+    
+    const pageDash = document.getElementById('page-dash');
+    pageDash.innerHTML = `
+      <h3>⚡ Speed Quiz</h3>
+      <div class="card" style="margin-top:12px" id="game-box">
+        <div id="game-progress" style="color:var(--muted);font-size:12px;margin-bottom:10px">Question 1 of ${questions.length}</div>
+        <h4 id="game-q" style="margin-bottom:16px"></h4>
+        <div id="game-opts"></div>
+      </div>
+    `;
+    
+    let currentQ = 0, score = 0;
+    const renderQ = () => {
+      if (currentQ >= questions.length) {
+        pageDash.innerHTML = `
+          <h3>Game Over!</h3>
+          <div class="card" style="text-align:center;margin-top:12px">
+            <h1 style="color:var(--brand);font-size:40px;margin:10px 0">${score} / ${questions.length}</h1>
+            <button onclick="saveGameScore(${score})">Save to Leaderboard</button>
+            <button onclick="nav('dash', document.querySelector('nav button'))" style="background:transparent;border:1px solid var(--line);color:var(--muted)">Back to Home</button>
+          </div>
+        `;
+        return;
+      }
+      const q = questions[currentQ];
+      document.getElementById('game-progress').innerText = `Question ${currentQ + 1} of ${questions.length}`;
+      document.getElementById('game-q').innerText = q.question;
+      
+      const opts = ["A", "B", "C", "D"];
+      document.getElementById('game-opts').innerHTML = opts.map(o => {
+        const text = q['option' + o] || q[o] || "";
+        return `<button onclick="answerQ('${o}', '${q.correct}')" style="text-align:left;background:var(--card);border:1px solid var(--line)">${o}. ${text}</button>`;
+      }).join('');
+    };
+    
+    window.answerQ = (choice, correct) => {
+      if (choice === correct) score++;
+      currentQ++;
+      renderQ();
+    };
+    renderQ();
+  } catch(e) { alert("Error loading game: " + e.message); }
+};
+
+window.saveGameScore = async (score) => {
+  await addDoc(collection(db, "leaderboard"), { name: ME.email.split('@')[0], score, createdAt: serverTimestamp() });
+  alert("Score saved to leaderboard!");
+  nav('rank', document.querySelectorAll('nav button')[3]);
+};
+
+/* ================= ADMIN PANEL ================= */
+window.openAdmin = () => {
+  if (ME.role !== "admin") return alert("Only the Super Admin can access this.");
+  
+  const pageDash = document.getElementById('page-dash');
+  pageDash.innerHTML = `
+    <h3>🛡️ Admin Panel</h3>
+    
+    <div class="card" style="margin-top:12px">
+      <h4>📢 Send Announcement</h4>
+      <input id="admin-announce" placeholder="Type announcement..." style="margin-top:10px" />
+      <button onclick="sendAnnounce()" style="margin-top:10px">Send to All</button>
+    </div>
+    
+    <div class="card">
+      <h4>📝 Upload Question</h4>
+      <p style="color:var(--muted);font-size:12px;margin-bottom:10px">Format: {"subject":"Maths", "question":"What is 2+2?", "optionA":"3", "optionB":"4", "optionC":"5", "optionD":"6", "correct":"B"}</p>
+      <textarea id="admin-json" placeholder='Paste JSON here...' style="width:100%;height:100px;padding:10px;border-radius:10px;background:rgba(0,0,0,0.2);border:1px solid var(--line);color:white;outline:none;margin-bottom:10px"></textarea>
+      <button onclick="uploadQuestion()">Upload</button>
+    </div>
+    
+    <button onclick="nav('dash', document.querySelector('nav button'))" style="background:transparent;border:1px solid var(--line);color:var(--muted)">Back to Home</button>
+  `;
+};
+
+window.sendAnnounce = async () => {
+  const text = document.getElementById('admin-announce').value;
+  if (!text) return;
+  await addDoc(collection(db, "announcements"), { text, createdAt: serverTimestamp() });
+  alert("Announcement sent!");
+};
+
+window.uploadQuestion = async () => {
+  try {
+    const json = document.getElementById('admin-json').value;
+    const q = JSON.parse(json);
+    await addDoc(collection(db, "questions"), q);
+    alert("Question uploaded successfully!");
+    document.getElementById('admin-json').value = "";
+  } catch(e) { alert("Invalid JSON format. Please check your brackets and quotes."); }
+};
+
+// Listen for live announcements
+onSnapshot(query(collection(db, "announcements"), orderBy("createdAt", "desc"), limit(1)), (snap) => {
+  if (!snap.empty) {
+    const msg = snap.docs[0].data().text;
+    // Only show if it's recent (last 10 seconds)
+    const time = snap.docs[0].data().createdAt;
+    if (time && (Date.now() - time.toMillis() < 10000)) {
+      alert("📢 ANNOUNCEMENT:\n\n" + msg);
+    }
+  }
+});
 </script>
 </body>
 </html>
