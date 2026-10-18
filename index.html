@@ -370,7 +370,7 @@ document.addEventListener("click", (e) => {
 });
 
 /* ================= SPLASH & THEME ================= */
-setTimeout(() => { $("#splash").classList.add("fade-out"); setTimeout(() => $("#splash").style.display = "none", 400); }, 2000);
+
 const savedTheme = localStorage.getItem("theme") || "dark";
 document.documentElement.setAttribute("data-theme", savedTheme);
 $("#btnTheme").textContent = savedTheme === "dark" ? "🌙" : "☀️";
