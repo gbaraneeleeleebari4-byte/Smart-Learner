@@ -317,7 +317,314 @@ input.mini,select.mini{padding:10px 12px;border-radius:10px;border:1px solid var
 </div>
 
 <script>
-// JavaScript comes in Part 3.
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword,
+  signOut, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail, updateProfile
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc, collection, addDoc,
+  query, orderBy, limit, onSnapshot, serverTimestamp, getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* ================= CONFIG ================= */
+const firebaseConfig = {
+  apiKey: "AIzaSyBalfqEksKXbrcfVCqrrWkILx_V7up25Xs",
+  authDomain: "smart-learn-hub-73667.firebaseapp.com",
+  databaseURL: "https://smart-learn-hub-73667-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "smart-learn-hub-73667",
+  storageBucket: "smart-learn-hub-73667.firebasestorage.app",
+  messagingSenderId: "165458065701",
+  appId: "1:165458065701:web:08a1bcfac2ae286b9502cc"
+};
+const SUPER_ADMIN_EMAIL = "gbaraneeleeleebari4@gmail.com";
+const AI_ENDPOINT = "https://gbaraneeleeleebari4--1fb7caf2c99a11f1ad4c1607ee4eb77e.web.val.run";
+const CLOUDINARY_CLOUD_NAME = "bj3niwog"; 
+const CLOUDINARY_PRESET = "smart_cgpa_preset";
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => [...document.querySelectorAll(s)];
+const esc = (v) => String(v ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* ================= UI HELPERS ================= */
+function toast(msg, type = "") {
+  const t = $("#toast"); t.textContent = msg; t.className = "toast on " + type;
+  clearTimeout(t._t); t._t = setTimeout(() => t.className = "toast " + type, 2800);
+}
+function showPage(name) {
+  $$(".page").forEach(p => p.classList.remove("on"));
+  const el = $("#page-" + name); if (el) el.classList.add("on");
+  $$("nav button").forEach(b => b.classList.toggle("active", b.dataset.nav === name));
+  $("#main").scrollTop = 0;
+  if (name === "tutor") { document.querySelector("nav").style.display = "none"; $("#page-tutor").style.display = "flex"; }
+  else { document.querySelector("nav").style.display = "flex"; $("#page-tutor").style.display = "none"; }
+}
+document.addEventListener("click", (e) => {
+  const nav = e.target.closest("[data-nav]"); if (nav) return showPage(nav.dataset.nav);
+  const go = e.target.closest("[data-go]"); if (go) return showPage(go.dataset.go);
+});
+
+/* ================= SPLASH & THEME ================= */
+setTimeout(() => { $("#splash").classList.add("fade-out"); setTimeout(() => $("#splash").style.display = "none", 400); }, 2000);
+const savedTheme = localStorage.getItem("theme") || "dark";
+document.documentElement.setAttribute("data-theme", savedTheme);
+$("#btnTheme").textContent = savedTheme === "dark" ? "🌙" : "☀️";
+$("#btnTheme").onclick = () => {
+  const cur = document.documentElement.getAttribute("data-theme");
+  const nxt = cur === "dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", nxt);
+  localStorage.setItem("theme", nxt); $("#btnTheme").textContent = nxt === "dark" ? "🌙" : "☀️";
+};
+
+/* ================= AUTH ================= */
+$("#tabLogin").onclick = () => { $("#tabLogin").classList.add("active"); $("#tabSignup").classList.remove("active"); $("#loginForm").classList.remove("hide"); $("#signupForm").classList.add("hide"); };
+$("#tabSignup").onclick = () => { $("#tabSignup").classList.add("active"); $("#tabLogin").classList.remove("active"); $("#signupForm").classList.remove("hide"); $("#loginForm").classList.add("hide"); };
+function authMsg(id, text, type = "err") { const el = $(id); el.textContent = text; el.className = "msg " + type; el.classList.remove("hide"); }
+function authHide(id) { $(id).classList.add("hide"); }
+
+$("#btnLogin").onclick = async () => {
+  authHide("#authMsg");
+  const email = $("#loginEmail").value.trim(), pass = $("#loginPass").value;
+  if (!email || !pass) return authMsg("#authMsg", "Enter email and password.");
+  $("#btnLogin").innerHTML = '<span class="spinner"></span>';
+  try { await signInWithEmailAndPassword(auth, email, pass); }
+  catch (e) { authMsg("#authMsg", prettyAuthError(e)); $("#btnLogin").textContent = "Sign in"; }
+};
+$("#btnSignup").onclick = async () => {
+  authHide("#suMsg");
+  const name = $("#suName").value.trim(), email = $("#suEmail").value.trim(), pass = $("#suPass").value;
+  if (!name || !email || !pass) return authMsg("#suMsg", "Fill in every field.");
+  $("#btnSignup").innerHTML = '<span class="spinner"></span>';
+  try { const cred = await createUserWithEmailAndPassword(auth, email, pass); await updateProfile(cred.user, { displayName: name }); await ensureUserDoc(cred.user, name); }
+  catch (e) { authMsg("#suMsg", prettyAuthError(e)); $("#btnSignup").textContent = "Create account"; }
+};
+$("#btnGoogle").onclick = async () => {
+  authHide("#authMsg");
+  try { const provider = new GoogleAuthProvider(); const result = await signInWithPopup(auth, provider); await ensureUserDoc(result.user, result.user.displayName || "Student"); }
+  catch (e) { if (e.code !== 'auth/popup-closed-by-user') authMsg("#authMsg", prettyAuthError(e)); }
+};
+$("#btnForgot").onclick = async () => {
+  const email = $("#loginEmail").value.trim();
+  if (!email) return authMsg("#authMsg", "Type your email first.");
+  try { await sendPasswordResetEmail(auth, email); authMsg("#authMsg", "Reset link sent.", "ok"); }
+  catch (e) { authMsg("#authMsg", prettyAuthError(e)); }
+};
+function prettyAuthError(e) {
+  const m = (e && e.code) || "";
+  if (m.includes("invalid-credential")) return "Wrong email or password.";
+  if (m.includes("user-not-found")) return "No account found.";
+  if (m.includes("email-already-in-use")) return "Email already registered.";
+  return (e && e.message) || "Something went wrong.";
+}
+async function ensureUserDoc(user, name) {
+  const ref = doc(db, "users", user.uid); const snap = await getDoc(ref);
+  const isSuper = user.email === SUPER_ADMIN_EMAIL;
+  if (!snap.exists()) {
+    await setDoc(ref, { uid: user.uid, email: user.email, displayName: name || "Student", photoURL: user.photoURL || "", role: isSuper ? "superadmin" : "student", createdAt: serverTimestamp(), online: true });
+  }
+}
+
+/* ================= SESSION ================= */
+let ME = null;
+onAuthStateChanged(auth, async (user) => {
+  if (!user) { ME = null; $("#app").classList.remove("on"); $("#authScreen").classList.remove("hide"); return; }
+  $("#authScreen").classList.add("hide"); $("#app").classList.add("on");
+  const snap = await getDoc(doc(db, "users", user.uid));
+  if (snap.exists()) { ME = snap.data(); updateUI(ME); }
+});
+function updateUI(me) {
+  $("#dashName").textContent = "Hello, " + me.displayName.split(" ")[0] + " 👋";
+  $("#dashRole").textContent = me.role === "superadmin" ? "Super Admin" : "Student";
+  $("#hdrAvatar").src = me.photoURL || defaultAvatar(me.displayName);
+  loadCalculator(); loadRooms(); loadLeaderboard();
+}
+function defaultAvatar(name) { const ch = (name || "U").charAt(0).toUpperCase(); return "data:image/svg+xml;utf8," + encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80'><rect width='100%' height='100%' rx='40' fill='%235c7cfa'/><text x='50%' y='55%' font-size='40' fill='white' text-anchor='middle' font-family='Arial' dominant-baseline='middle'>${ch}</text></svg>`); }
+
+/* ================= AI TUTOR ================= */
+let tutorHistory = [];
+function renderTutor() {
+  const box = $("#chatBox");
+  if (!tutorHistory.length) { box.innerHTML = `<div class="chat-msg ai"><p>Hello! I'm your AI Tutor. What would you like to learn today?</p></div>`; return; }
+  box.innerHTML = tutorHistory.map(m => `<div class="chat-msg ${m.role === 'user' ? 'user' : 'ai'}"><p>${esc(m.content)}</p></div>`).join("");
+  box.scrollTop = box.scrollHeight;
+}
+async function askTutor(text) {
+  if (!text.trim()) return;
+  tutorHistory.push({ role: "user", content: text }); renderTutor(); $("#tutorInput").value = "";
+  const think = document.createElement("div"); think.className = "chat-msg ai"; think.innerHTML = '<span class="spinner"></span> Thinking...';
+  $("#chatBox").appendChild(think); $("#chatBox").scrollTop = $("#chatBox").scrollHeight;
+  try {
+    const res = await fetch(AI_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ messages: tutorHistory.slice(-10) }) });
+    const data = await res.json(); tutorHistory.push({ role: "assistant", content: data.reply || "No response." }); think.remove(); renderTutor();
+  } catch (e) { think.innerHTML = '<p style="color:var(--err)">AI is unavailable.</p>'; }
+}
+$("#btnTutorSend").onclick = () => askTutor($("#tutorInput").value);
+$("#tutorInput").addEventListener("keydown", (e) => { if (e.key === "Enter") askTutor($("#tutorInput").value); });
+$("#btnAiNew").onclick = () => { tutorHistory = []; renderTutor(); };
+
+/* ================= WHATSAPP CHAT & UPLOADS ================= */
+let currentRoom = null, roomUnsub = null;
+let mediaRecorder = null, audioChunks = [];
+
+function loadRooms() {
+  onSnapshot(collection(db, "groups"), (snap) => {
+    const list = $("#roomList");
+    if (snap.empty) { list.innerHTML = '<div class="card"><div class="empty">No groups yet. Tap + to create one.</div></div>'; return; }
+    list.innerHTML = snap.docs.map(d => `<div class="card" style="cursor:pointer" onclick="openRoom('${d.id}','${esc(d.data().name)}')"><div class="row"><h3>${esc(d.data().name)}</h3></div><p class="sub" style="margin:0">Public Group</p></div>`).join("");
+  });
+}
+window.openRoom = (id, name) => {
+  currentRoom = id; $("#roomTitle").textContent = name; $("#chatRoom").classList.remove("hide");
+  if (roomUnsub) roomUnsub();
+  const q = query(collection(db, "groups", id, "messages"), orderBy("createdAt", "asc"), limit(50));
+  roomUnsub = onSnapshot(q, (snap) => {
+    const box = $("#msgScroll");
+    box.innerHTML = snap.docs.map(d => {
+      const m = d.data(); const mine = m.uid === ME.uid;
+      let content = "";
+      if (m.type === "image") content = `<img src="${m.text}" style="max-width:100%;border-radius:8px;margin-top:4px" />`;
+      else if (m.type === "audio") content = `<audio controls src="${m.text}" style="max-width:100%;margin-top:4px"></audio>`;
+      else if (m.type === "sticker") content = `<div class="sticker">${m.text}</div>`;
+      else content = esc(m.text);
+      return `<div class="chat-bubble ${mine ? 'mine' : 'theirs'}" data-id="${d.id}" data-uid="${m.uid}" data-type="${m.type || 'text'}" data-text="${esc(m.text)}" oncontextmenu="openMsgMenu(event, this); return false;">
+        ${!mine ? `<div class="sender">${esc(m.name)}</div>` : ''}${content}
+        <div class="time">${m.createdAt ? new Date(m.createdAt.seconds * 1000).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : ''}</div>
+      </div>`;
+    }).join("");
+    box.scrollTop = box.scrollHeight;
+  });
+};
+$("#btnChatBack").onclick = () => { $("#chatRoom").classList.add("hide"); if (roomUnsub) roomUnsub(); };
+$("#btnNewGroup").onclick = async () => { const name = prompt("Enter group name:"); if (name) { await addDoc(collection(db, "groups"), { name, owner: ME.uid, createdAt: serverTimestamp() }); } };
+
+async function uploadToCloudinary(file) {
+  const formData = new FormData(); formData.append("file", file); formData.append("upload_preset", CLOUDINARY_PRESET);
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`, { method: "POST", body: formData });
+  const data = await res.json(); return data.secure_url;
+}
+
+$("#btnSend").onclick = async () => {
+  const text = $("#msgInput").value.trim(); if (!text || !currentRoom || !ME) return;
+  $("#msgInput").value = "";
+  await addDoc(collection(db, "groups", currentRoom, "messages"), { text, uid: ME.uid, name: ME.displayName, type: "text", createdAt: serverTimestamp() });
+};
+$("#msgInput").addEventListener("keydown", (e) => { if (e.key === "Enter") $("#btnSend").click(); });
+
+$("#btnAttach").onclick = () => $("#fileInput").click();
+$("#fileInput").onchange = async (e) => {
+  const file = e.target.files[0]; if (!file || !currentRoom || !ME) return;
+  toast("Uploading...");
+  try {
+    const url = await uploadToCloudinary(file);
+    await addDoc(collection(db, "groups", currentRoom, "messages"), { text: url, uid: ME.uid, name: ME.displayName, type: "image", createdAt: serverTimestamp() });
+    toast("Sent!");
+  } catch (err) { toast("Upload failed", "err"); }
+  e.target.value = "";
+};
+
+$("#btnMic").onclick = async () => {
+  if (mediaRecorder && mediaRecorder.state === "recording") { mediaRecorder.stop(); $("#btnMic").style.color = "var(--muted)"; return; }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    mediaRecorder = new MediaRecorder(stream); audioChunks = [];
+    mediaRecorder.ondataavailable = (e) => audioChunks.push(e.data);
+    mediaRecorder.onstop = async () => {
+      const audioBlob = new Blob(audioChunks, { type: 'audio/webm' }); toast("Sending voice note...");
+      try {
+        const url = await uploadToCloudinary(audioBlob);
+        await addDoc(collection(db, "groups", currentRoom, "messages"), { text: url, uid: ME.uid, name: ME.displayName, type: "audio", createdAt: serverTimestamp() });
+        toast("Voice note sent!");
+      } catch (err) { toast("Upload failed", "err"); }
+      stream.getTracks().forEach(track => track.stop());
+    };
+    mediaRecorder.start(); $("#btnMic").style.color = "var(--err)"; toast("Recording... tap mic to stop");
+  } catch (err) { toast("Microphone permission denied", "err"); }
+};
+
+/* ================= MESSAGE MENU & STICKERS ================= */
+let activeMsgEl = null;
+window.openMsgMenu = (e, el) => {
+  e.preventDefault(); activeMsgEl = el;
+  $("#msgMenu").classList.remove("hide");
+  if (el.dataset.uid !== ME.uid && ME.role !== "superadmin") { $("#btnDeleteMsg").style.display = "none"; } 
+  else { $("#btnDeleteMsg").style.display = "flex"; }
+};
+$("#btnCloseMenu").onclick = () => { $("#msgMenu").classList.add("hide"); activeMsgEl = null; };
+$("#msgMenu").onclick = (e) => { if (e.target.id === "msgMenu") { $("#msgMenu").classList.add("hide"); activeMsgEl = null; } };
+
+$("#btnCopyMsg").onclick = () => {
+  if (activeMsgEl) { navigator.clipboard.writeText(activeMsgEl.dataset.text); toast("Copied!"); }
+  $("#msgMenu").classList.add("hide");
+};
+$("#btnDeleteMsg").onclick = async () => {
+  if (activeMsgEl && currentRoom) { await deleteDoc(doc(db, "groups", currentRoom, "messages", activeMsgEl.dataset.id)); toast("Deleted"); }
+  $("#msgMenu").classList.add("hide");
+};
+$("#btnStickerMsg").onclick = () => { $("#msgMenu").classList.add("hide"); $("#stickerModal").classList.remove("hide"); };
+
+const STICKERS = ["😂","❤️","🔥","👍","😭","🙏","🎉","💯","😎","😍","🤔","👏","🥳","😡","🤯","👀"];
+$("#stickerGrid").innerHTML = STICKERS.map(s => `<span onclick="sendSticker('${s}')">${s}</span>`).join("");
+window.sendSticker = async (sticker) => {
+  if (!currentRoom || !ME) return;
+  await addDoc(collection(db, "groups", currentRoom, "messages"), { text: sticker, uid: ME.uid, name: ME.displayName, type: "sticker", createdAt: serverTimestamp() });
+  $("#stickerModal").classList.add("hide");
+};
+
+/* ================= CALCULATOR ================= */
+const SCALES = { 5: { A:5, B:4, C:3, D:2, E:1, F:0 }, 4: { A:4, B:3, C:2, D:1, F:0 } };
+let courses = [];
+function renderCourses() {
+  const wrap = $("#courseList"); if (!courses.length) { wrap.innerHTML = '<div class="empty">No courses added.</div>'; return; }
+  const opts = Object.keys(SCALES[$("#scaleSel").value]).map(g => `<option value="${g}">${g}</option>`).join("");
+  wrap.innerHTML = courses.map((c, i) => `<div class="card" style="padding:12px;margin-bottom:8px"><div class="row" style="margin-bottom:8px"><input placeholder="Course" value="${esc(c.name)}" oninput="updateCourse(${i}, 'name', this.value)" class="mini" style="flex:2" /><input type="number" placeholder="Units" value="${esc(c.units)}" oninput="updateCourse(${i}, 'units', this.value)" class="mini" style="width:70px" /></div><div class="row between"><select onchange="updateCourse(${i}, 'grade', this.value)" class="mini" style="width:80px">${opts.replace(`value="${c.grade}"`, `value="${c.grade}" selected`)}</select><button onclick="removeCourse(${i})" style="color:var(--err);font-size:18px">✕</button></div></div>`).join("");
+  calculateGPA();
+}
+window.updateCourse = (i, k, v) => { courses[i][k] = v; calculateGPA(); };
+window.removeCourse = (i) => { courses.splice(i, 1); renderCourses(); };
+function calculateGPA() {
+  let pts = 0, units = 0; const scale = SCALES[$("#scaleSel").value];
+  courses.forEach(c => { const u = Number(c.units) || 0; pts += u * (scale[c.grade] || 0); units += u; });
+  const gpa = units ? pts / units : 0;
+  const pC = parseFloat($("#prevCGPA").value) || 0, pU = parseFloat($("#prevUnits").value) || 0, totalUnits = units + pU;
+  const cgpa = totalUnits ? ((pC * pU) + (gpa * units)) / totalUnits : gpa;
+  $("#statCGPA").textContent = cgpa.toFixed(2); $("#statUnits").textContent = totalUnits;
+}
+$("#scaleSel").onchange = () => renderCourses(); $("#prevCGPA").oninput = $("#prevUnits").oninput = calculateGPA;
+$("#btnAddCourse").onclick = () => { courses.push({ name: "", units: "", grade: "A" }); renderCourses(); };
+$("#btnClearSem").onclick = () => { courses = []; renderCourses(); };
+$("#btnSaveSem").onclick = async () => {
+  if (!ME || !courses.length) return toast("Add courses first");
+  let pts = 0, units = 0; const scale = SCALES[$("#scaleSel").value];
+  courses.forEach(c => { const u = Number(c.units) || 0; pts += u * (scale[c.grade] || 0); units += u; });
+  await addDoc(collection(db, "users", ME.uid, "semesters"), { name: "Semester", courses, gpa: units ? pts / units : 0, units, createdAt: serverTimestamp() });
+  toast("Saved!"); courses = []; renderCourses();
+};
+function loadCalculator() { renderCourses(); }
+
+/* ================= GAMES & LEADERBOARD ================= */
+$("#gameSpeed").onclick = () => toast("Game started! (Requires questions in database)");
+$("#gameStreak").onclick = () => toast("Game started! (Requires questions in database)");
+
+function loadLeaderboard() {
+  onSnapshot(collection(db, "leaderboard"), (snap) => {
+    const list = $("#lbList"); const items = [];
+    snap.forEach(d => items.push(d.data()));
+    items.sort((a, b) => b.score - a.score);
+    if (!items.length) { list.innerHTML = '<div class="empty">No scores yet. Play a game to start!</div>'; return; }
+    list.innerHTML = items.map((u, i) => `<div class="row between" style="padding:12px;border-bottom:1px solid var(--line)"><b>#${i+1} ${esc(u.name)}</b><span class="stat" style="padding:4px 8px">${u.score} pts</span></div>`).join("");
+  });
+}
+
+/* ================= INIT ================= */
+renderCourses();
+</script>
+</body>
+</html>
 </script>
 </body>
 </html> 
