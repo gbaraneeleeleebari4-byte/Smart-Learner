@@ -7,7 +7,7 @@
 <title>Smart CGPA Plus</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>" />
 <style>
-/* ================= THEME TOKENS ================= */
+/* ================= THEME & RESET ================= */
 :root{
   --bg-1:#0f1a3d; --bg-2:#1a2a5e; --bg-3:#0a1230;
   --bg:#0f1733; --card:rgba(28,40,80,.85); --card-solid:#1c2850; --card-2:#243461;
@@ -17,7 +17,6 @@
   --ok:#38d39f; --warn:#ffb84d; --err:#ff5d6c; --chatbg:#101a38;
   --bubble-me:#005c4b; --bubble-them:#202c33;
   --shadow-sm:0 2px 8px rgba(0,0,0,.25); --shadow:0 10px 30px rgba(0,0,0,.4);
-  --shadow-glow:0 0 40px rgba(91,141,255,.35);
   --radius:16px; --radius-lg:22px;
 }
 [data-theme="light"]{
@@ -36,66 +35,64 @@ button,input,select,textarea{font:inherit;color:inherit;letter-spacing:inherit}
 button{cursor:pointer;border:none;background:none}
 a{color:var(--brand);text-decoration:none}
 .hide{display:none !important}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:4px}
 
-/* ================= SPLASH SCREEN ================= */
+/* ================= SPLASH & AUTH ================= */
 #splash{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .4s ease}
 #splash.fade-out{opacity:0;pointer-events:none}
 .splash-logo{width:80px;height:80px;border-radius:24px;background:linear-gradient(135deg,var(--brand),var(--brand-2));display:grid;place-items:center;font-size:40px;margin-bottom:20px;box-shadow:0 10px 30px rgba(91,141,255,.4)}
-.splash-text{font-size:24px;font-weight:800;letter-spacing:-.5px;margin-bottom:8px}
+.splash-text{font-size:24px;font-weight:800;margin-bottom:8px}
 .splash-sub{color:var(--muted);font-size:13px}
 .spinner{width:24px;height:24px;border:3px solid var(--line);border-top-color:var(--brand);border-radius:50%;animation:spin .8s linear infinite;display:inline-block;margin-top:30px}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* ================= AUTH SCREEN ================= */
-#authScreen{min-height:100%;display:flex;align-items:center;justify-content:center;padding:24px;background:radial-gradient(1000px 600px at 15% -10%, rgba(91,141,255,.45), transparent 60%),radial-gradient(900px 500px at 110% 10%, rgba(139,92,255,.40), transparent 55%),linear-gradient(160deg, var(--bg-1), var(--bg-3))}
-.auth-card{position:relative;width:100%;max-width:420px;background:var(--card);backdrop-filter:blur(24px);border:1px solid var(--line-strong);border-radius:var(--radius-lg);padding:32px 28px 28px;box-shadow:var(--shadow)}
+#authScreen{min-height:100%;display:flex;align-items:center;justify-content:center;padding:24px;background:radial-gradient(1000px 600px at 15% -10%, rgba(91,141,255,.45), transparent 60%),linear-gradient(160deg, var(--bg-1), var(--bg-3))}
+.auth-card{position:relative;width:100%;max-width:420px;background:var(--card);backdrop-filter:blur(24px);border:1px solid var(--line-strong);border-radius:var(--radius-lg);padding:32px 28px;box-shadow:var(--shadow)}
 .brand{display:flex;align-items:center;gap:14px;margin-bottom:8px}
-.brand .logo{width:54px;height:54px;border-radius:16px;background:linear-gradient(135deg, var(--brand), var(--brand-2) 60%, var(--brand-3));display:grid;place-items:center;font-size:26px;box-shadow:0 8px 24px rgba(91,141,255,.5)}
-.brand h1{font-size:21px;margin:0;letter-spacing:-.4px;font-weight:800}
-.brand p{margin:2px 0 0;color:var(--muted);font-size:12.5px;font-weight:500}
+.brand .logo{width:54px;height:54px;border-radius:16px;background:linear-gradient(135deg, var(--brand), var(--brand-2));display:grid;place-items:center;font-size:26px}
+.brand h1{font-size:21px;margin:0;font-weight:800}
+.brand p{margin:2px 0 0;color:var(--muted);font-size:12.5px}
 .tabs{display:flex;gap:6px;background:rgba(255,255,255,.06);padding:5px;border-radius:14px;margin:22px 0 8px;border:1px solid var(--line)}
-.tabs button{flex:1;padding:10px;border-radius:10px;color:var(--muted);font-weight:700;font-size:14px;transition:all .2s}
-.tabs button.active{background:linear-gradient(135deg, var(--brand), var(--brand-2));color:#fff;box-shadow:0 6px 16px rgba(91,141,255,.45)}
+.tabs button{flex:1;padding:10px;border-radius:10px;color:var(--muted);font-weight:700;font-size:14px}
+.tabs button.active{background:linear-gradient(135deg, var(--brand), var(--brand-2));color:#fff}
 .field{margin:14px 0}
-.field label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:7px;font-weight:700;text-transform:uppercase}
-.field input,.field select{width:100%;padding:13px 15px;border-radius:12px;border:1px solid var(--line-strong);background:rgba(255,255,255,.05);outline:none;font-size:15px;color:var(--text)}
-.field input:focus{border-color:var(--brand);background:rgba(91,141,255,.08)}
-.btn{width:100%;padding:14px;border-radius:13px;font-weight:800;font-size:15px;background:linear-gradient(135deg, var(--brand), var(--brand-2));color:#fff;margin-top:10px;transition:transform .12s;box-shadow:0 8px 22px rgba(91,141,255,.4)}
+.field label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:7px;font-weight:700}
+.field input{width:100%;padding:13px 15px;border-radius:12px;border:1px solid var(--line-strong);background:rgba(255,255,255,.05);outline:none;font-size:15px;color:var(--text)}
+.field input:focus{border-color:var(--brand)}
+.btn{width:100%;padding:14px;border-radius:13px;font-weight:800;font-size:15px;background:linear-gradient(135deg, var(--brand), var(--brand-2));color:#fff;margin-top:10px;transition:transform .12s}
 .btn:active{transform:scale(.985)}
-.btn.ghost{background:rgba(255,255,255,.08);color:var(--text);border:1px solid var(--line-strong);box-shadow:var(--shadow-sm)}
-.btn.danger{background:linear-gradient(135deg, #ff5d6c, #d92646)}
+.btn.ghost{background:rgba(255,255,255,.08);color:var(--text);border:1px solid var(--line-strong)}
 .btn.google{background:#fff;color:#1f1f1f;display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid #dadce0;font-weight:700}
-.divider{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:12px;margin:18px 0 6px;font-weight:600}
+.divider{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:12px;margin:18px 0 6px}
 .divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line-strong)}
-.msg{font-size:13.5px;margin-top:14px;padding:11px 14px;border-radius:11px;text-align:center;font-weight:500}
+.msg{font-size:13.5px;margin-top:14px;padding:11px 14px;border-radius:11px;text-align:center}
 .msg.err{background:rgba(255,93,108,.14);color:#ffb4bd;border:1px solid rgba(255,93,108,.35)}
 .msg.ok{background:rgba(56,211,159,.14);color:#a8f0d5;border:1px solid rgba(56,211,159,.35)}
 
 /* ================= APP SHELL ================= */
 #app{display:none;height:100%;flex-direction:column;background:var(--bg)}
 #app.on{display:flex}
-header{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--card-solid);backdrop-filter:blur(20px);border-bottom:1px solid var(--line)}
+header{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--card-solid);border-bottom:1px solid var(--line)}
 header .logo{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg, var(--brand), var(--brand-2));display:grid;place-items:center;font-size:20px}
 header .titles{flex:1;min-width:0}
 header .titles b{display:block;font-size:16px;font-weight:800}
 header .titles span{font-size:11.5px;color:var(--muted)}
-.icon-btn{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:rgba(255,255,255,.08);border:1px solid var(--line-strong);font-size:18px;color:var(--text)}
+.icon-btn{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:rgba(255,255,255,.08);border:1px solid var(--line-strong);font-size:18px;color:var(--text);position:relative}
 .avatar{width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid var(--brand)}
 main{flex:1;overflow-y:auto;padding:18px;padding-bottom:100px}
 .page{display:none;animation:fade .28s ease}
 .page.on{display:block}
 @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-/* BOTTOM NAV */
 nav{position:fixed;bottom:0;left:0;right:0;z-index:40;display:flex;background:var(--card-solid);border-top:1px solid var(--line);padding:8px 6px;padding-bottom:calc(8px + env(safe-area-inset-bottom))}
 nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 2px;color:var(--muted);font-size:10.5px;font-weight:700;border-radius:12px}
 nav button.active{color:var(--brand)}
 nav button .ic{font-size:20px;margin-bottom:2px}
 
-/* ================= CARDS & UI ================= */
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-bottom:16px}
 .card h3{margin:0 0 6px;font-size:17px;font-weight:800}
-.card .sub{color:var(--muted);font-size:13px;margin:0 0 14px;font-weight:500}
+.card .sub{color:var(--muted);font-size:13px;margin:0 0 14px}
 .grid{display:grid;gap:12px}
 .grid.k2{grid-template-columns:1fr 1fr}
 .grid.k3{grid-template-columns:repeat(3,1fr)}
@@ -106,19 +103,26 @@ nav button .ic{font-size:20px;margin-bottom:2px}
 .row.between{justify-content:space-between}
 input.mini,select.mini{padding:10px 12px;border-radius:10px;border:1px solid var(--line-strong);background:rgba(255,255,255,.05);font-size:14px;width:100%;color:var(--text);outline:none}
 
-/* ================= WHATSAPP CHAT ================= */
+/* ================= WHATSAPP CHAT UI ================= */
 #chatRoom{position:fixed;inset:0;z-index:60;background:var(--chatbg);display:flex;flex-direction:column}
 #chatRoomHeader{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--card-solid);border-bottom:1px solid var(--line)}
 #chatRoomHeader .info{flex:1}
 #chatRoomHeader .info h3{margin:0;font-size:15px;font-weight:700}
-#chatRoomHeader .info p{margin:2px 0 0;font-size:11.5px;color:var(--muted)}
 #msgScroll{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:8px}
-.chat-bubble{max-width:82%;padding:10px 14px;border-radius:14px;font-size:14px;line-height:1.4;position:relative}
+.chat-bubble{max-width:82%;padding:10px 14px;border-radius:14px;font-size:14px;line-height:1.4;position:relative;cursor:pointer;user-select:none}
 .chat-bubble.mine{align-self:flex-end;background:var(--bubble-me);color:#fff;border-bottom-right-radius:4px}
 .chat-bubble.theirs{align-self:flex-start;background:var(--bubble-them);border:1px solid var(--line);border-bottom-left-radius:4px}
 .chat-bubble .sender{font-size:11px;color:var(--brand);font-weight:700;margin-bottom:4px}
 .chat-bubble.mine .sender{color:rgba(255,255,255,0.8)}
 .chat-bubble .time{font-size:10px;opacity:0.7;text-align:right;margin-top:4px}
+.sticker{font-size:48px;line-height:1;margin-top:4px}
+
+/* WhatsApp Long-Press Menu */
+#msgMenu{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:70;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
+#msgMenuBox{background:var(--card-solid);border:1px solid var(--line-strong);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:200px}
+#msgMenuBox button{padding:12px;border-radius:8px;background:var(--card-2);font-weight:600;display:flex;align-items:center;gap:10px}
+#msgMenuBox button.danger{color:var(--err)}
+
 #chatInputArea{padding:10px;background:var(--card-solid);border-top:1px solid var(--line);display:flex;align-items:center;gap:8px}
 #chatInputArea .input-wrap{flex:1;background:var(--bg);border:1px solid var(--line);border-radius:24px;display:flex;align-items:center;padding:4px 8px}
 #chatInputArea .input-wrap input{flex:1;background:transparent;border:none;outline:none;padding:8px;font-size:14px;color:var(--text)}
@@ -139,11 +143,17 @@ input.mini,select.mini{padding:10px 12px;border-radius:10px;border:1px solid var
 .ai-input-tools{display:flex;align-items:center;gap:8px;margin-top:8px}
 .ai-input-tools .send-btn{margin-left:auto;width:36px;height:36px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:18px}
 
-/* NOTIFICATIONS & UTILS */
-.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--card-solid);color:var(--text);padding:12px 20px;border-radius:12px;font-size:13px;font-weight:600;box-shadow:var(--shadow);z-index:200;opacity:0;transition:opacity 0.3s;pointer-events:none;border:1px solid var(--line)}
-.toast.on{opacity:1}
+/* ================= MODALS & NOTIFICATIONS ================= */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:80;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.modal-content{background:var(--card-solid);border:1px solid var(--line-strong);border-radius:var(--radius);padding:24px;width:100%;max-width:400px;max-height:80vh;overflow-y:auto}
+.sticker-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}
+.sticker-grid span{font-size:40px;text-align:center;cursor:pointer;padding:8px;border-radius:8px;transition:background 0.2s}
+.sticker-grid span:hover{background:var(--card-2)}
+
 .notif-banner{position:fixed;top:-100px;left:50%;transform:translateX(-50%);width:90%;max-width:400px;background:var(--card-solid);border:1px solid var(--brand);border-radius:14px;padding:12px 16px;box-shadow:0 10px 25px rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;gap:12px;transition:top 0.4s ease}
 .notif-banner.show{top:16px}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--card-solid);color:var(--text);padding:12px 20px;border-radius:12px;font-size:13px;font-weight:600;box-shadow:var(--shadow);z-index:200;opacity:0;transition:opacity 0.3s;pointer-events:none;border:1px solid var(--line)}
+.toast.on{opacity:1}
 </style>
 </head>
 <body>
@@ -193,6 +203,7 @@ input.mini,select.mini{padding:10px 12px;border-radius:10px;border:1px solid var
   <header>
     <div class="logo">🎓</div>
     <div class="titles"><b id="hdrTitle">Dashboard</b><span id="hdrSub">Welcome back</span></div>
+    <button class="icon-btn" id="btnNotifBell">🔔<span id="notifBadge" class="hide" style="position:absolute;top:4px;right:4px;background:var(--err);width:8px;height:8px;border-radius:50%"></span></button>
     <button class="icon-btn" id="btnTheme">🌙</button>
     <img class="avatar" id="hdrAvatar" alt="" />
   </header>
@@ -201,55 +212,19 @@ input.mini,select.mini{padding:10px 12px;border-radius:10px;border:1px solid var
     
     <!-- DASHBOARD -->
     <section class="page on" id="page-dashboard">
-      <div class="card"><div class="row between"><div><h3 id="dashName">Hello 👋</h3><p class="sub" style="margin:0">Let's track your academic progress.</p></div><span class="stat" id="dashRole" style="padding:6px 12px;font-size:11px">Student</span></div></div>
+      <div class="card"><div class="row between"><div><h3 id="dashName">Hello 👋</h3><p class="sub" style="margin:0">Let's track your progress.</p></div><span class="stat" id="dashRole" style="padding:6px 12px;font-size:11px">Student</span></div></div>
       <div class="grid k3">
         <div class="stat"><b id="statCGPA">0.00</b><span>CGPA</span></div>
         <div class="stat"><b id="statUnits">0</b><span>Units</span></div>
         <div class="stat"><b id="statSem">0</b><span>Semesters</span></div>
       </div>
-      <div class="card" style="margin-top:16px">
-        <h3>Quick actions</h3>
-        <div class="grid k2" style="margin-top:10px">
-          <button class="btn ghost" data-go="calculator">🧮 Calculator</button>
-          <button class="btn ghost" data-go="tutor">🤖 AI Tutor</button>
-          <button class="btn ghost" data-go="chat">💬 Groups</button>
-          <button class="btn ghost" data-go="games">🎮 Games</button>
-        </div>
-      </div>
-      <div class="card"><h3>Academic feedback</h3><p class="sub" id="feedback" style="margin:0">Add your first semester to see feedback.</p></div>
-    </section>
-
-    <!-- CALCULATOR -->
-    <section class="page" id="page-calculator">
-      <div class="card"><h3>Grading scale</h3><select id="scaleSel" class="mini"><option value="5">5-point Scale</option><option value="4">4-point Scale</option></select></div>
-      <div class="card"><h3>Previous record</h3><div class="grid k2">
-        <div class="field" style="margin:0"><label>Prev CGPA</label><input id="prevCGPA" type="number" step="0.01" class="mini" placeholder="0.00" /></div>
-        <div class="field" style="margin:0"><label>Prev Units</label><input id="prevUnits" type="number" class="mini" placeholder="0" /></div>
+      <div class="card" style="margin-top:16px"><h3>Quick actions</h3><div class="grid k2" style="margin-top:10px">
+        <button class="btn ghost" data-go="calculator">🧮 Calculator</button>
+        <button class="btn ghost" data-go="tutor">🤖 AI Tutor</button>
+        <button class="btn ghost" data-go="chat">💬 Groups</button>
+        <button class="btn ghost" data-go="games">🎮 Games</button>
+        <button class="btn ghost" data-go="leaderboard">🏆 Leaderboard</button>
       </div></div>
-      <div class="card">
-        <div class="row between"><div><h3>Current semester</h3></div><button class="icon-btn" id="btnAddCourse">＋</button></div>
-        <div id="courseList" style="margin-top:14px"></div>
-        <div class="grid k2" style="margin-top:10px"><button class="btn" id="btnSaveSem">💾 Save</button><button class="btn ghost" id="btnClearSem">Clear</button></div>
-      </div>
-      <div class="card"><h3>Saved semesters</h3><div id="semList"></div></div>
-    </section>
-
-    <!-- AI TUTOR -->
-    <section class="page" id="page-tutor" style="padding:0;display:none;flex-direction:column;height:100%">
-      <div id="aiHeader">
-        <div class="avatar">🧠</div>
-        <div><h2>AI Tutor</h2><p>Powered by Groq</p></div>
-        <button class="icon-btn" id="btnAiNew" style="margin-left:auto;background:var(--brand);color:#fff">+</button>
-      </div>
-      <div id="chatBox">
-        <div class="chat-msg ai"><p>Hello! I'm your AI Tutor. What would you like to learn today?</p></div>
-      </div>
-      <div id="aiInputArea">
-        <div class="ai-input-box">
-          <input id="tutorInput" type="text" placeholder="Ask anything..." />
-          <div class="ai-input-tools"><button class="send-btn" id="btnTutorSend">➤</button></div>
-        </div>
-      </div>
     </section>
 
     <!-- CHAT LIST -->
@@ -258,7 +233,7 @@ input.mini,select.mini{padding:10px 12px;border-radius:10px;border:1px solid var
       <div id="roomList"></div>
     </section>
 
-    <!-- CHAT ROOM (Overlay) -->
+    <!-- WHATSAPP CHAT ROOM -->
     <div id="chatRoom" class="hide">
       <div id="chatRoomHeader">
         <button class="icon-btn" id="btnChatBack">←</button>
@@ -277,6 +252,21 @@ input.mini,select.mini{padding:10px 12px;border-radius:10px;border:1px solid var
       </div>
     </div>
 
+    <!-- AI TUTOR -->
+    <section class="page" id="page-tutor" style="padding:0;display:none;flex-direction:column;height:100%">
+      <div id="aiHeader"><div class="avatar">🧠</div><div><h2>AI Tutor</h2><p>Powered by Groq</p></div><button class="icon-btn" id="btnAiNew" style="margin-left:auto;background:var(--brand);color:#fff">+</button></div>
+      <div id="chatBox"><div class="chat-msg ai"><p>Hello! I'm your AI Tutor. What would you like to learn today?</p></div></div>
+      <div id="aiInputArea"><div class="ai-input-box"><input id="tutorInput" type="text" placeholder="Ask anything..." /><div class="ai-input-tools"><button class="send-btn" id="btnTutorSend">➤</button></div></div></div>
+    </section>
+
+    <!-- CALCULATOR -->
+    <section class="page" id="page-calculator">
+      <div class="card"><h3>Grading scale</h3><select id="scaleSel" class="mini"><option value="5">5.0 Scale</option><option value="4">4.0 Scale</option></select></div>
+      <div class="card"><h3>Previous record</h3><div class="grid k2"><div class="field" style="margin:0"><label>Prev CGPA</label><input id="prevCGPA" type="number" step="0.01" class="mini" /></div><div class="field" style="margin:0"><label>Prev Units</label><input id="prevUnits" type="number" class="mini" /></div></div></div>
+      <div class="card"><div class="row between"><div><h3>Current semester</h3></div><button class="icon-btn" id="btnAddCourse">＋</button></div><div id="courseList" style="margin-top:14px"></div><div class="grid k2" style="margin-top:10px"><button class="btn" id="btnSaveSem">💾 Save</button><button class="btn ghost" id="btnClearSem">Clear</button></div></div>
+      <div class="card"><h3>Saved semesters</h3><div id="semList"></div></div>
+    </section>
+
     <!-- GAMES -->
     <section class="page" id="page-games">
       <div class="card"><h3>🎮 Games</h3><p class="sub">Test your knowledge</p></div>
@@ -287,6 +277,12 @@ input.mini,select.mini{padding:10px 12px;border-radius:10px;border:1px solid var
       <div id="gameArea"></div>
     </section>
 
+    <!-- LEADERBOARD -->
+    <section class="page" id="page-leaderboard">
+      <div class="card"><h3>🏆 Leaderboard</h3><p class="sub">7 PM Challenge unlocks daily</p></div>
+      <div class="card"><div id="lbList" class="loading">Loading...</div></div>
+    </section>
+
   </main>
 
   <nav>
@@ -295,8 +291,34 @@ input.mini,select.mini{padding:10px 12px;border-radius:10px;border:1px solid var
     <button data-nav="tutor"><span class="ic">🤖</span>Tutor</button>
     <button data-nav="chat"><span class="ic">💬</span>Chat</button>
     <button data-nav="games"><span class="ic">🎮</span>Games</button>
+    <button data-nav="leaderboard"><span class="ic">🏆</span>Rank</button>
   </nav>
 </div>
 
+<!-- ================= MODALS & OVERLAYS ================= -->
 <div id="toast" class="toast"></div>
 <div id="notifBanner" class="notif-banner"><div style="font-size:20px">🔔</div><div style="flex:1"><div id="notifTitle" style="font-size:13px;font-weight:800;color:var(--brand)">New Message</div><div id="notifBody" style="font-size:12px;color:var(--muted)">Hello</div></div></div>
+
+<!-- Message Action Menu -->
+<div id="msgMenu" class="hide">
+  <div id="msgMenuBox">
+    <button id="btnCopyMsg">📋 Copy</button>
+    <button id="btnStickerMsg">😀 Sticker</button>
+    <button id="btnDeleteMsg" class="danger">🗑️ Delete</button>
+    <button id="btnCloseMenu" style="background:transparent;color:var(--muted)">Cancel</button>
+  </div>
+</div>
+
+<!-- Sticker Modal -->
+<div id="stickerModal" class="modal hide">
+  <div class="modal-content">
+    <div class="row between" style="margin-bottom:16px"><h3>Stickers</h3><button onclick="document.getElementById('stickerModal').classList.add('hide')" style="font-size:20px">✕</button></div>
+    <div class="sticker-grid" id="stickerGrid"></div>
+  </div>
+</div>
+
+<script>
+// The full JavaScript will be sent in Part 3.
+</script>
+</body>
+</html>
