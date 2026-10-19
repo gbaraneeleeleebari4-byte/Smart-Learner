@@ -1,1 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Smart CGPA Plus</title>
+<style>
+  :root {
+    --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --muted: #94a3b8;
+    --brand: #3b82f6; --brand2: #8b5cf6; --border: #334155;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+  body { background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; }
+  
+  /* Splash Screen */
+  #splash { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 999; transition: opacity 0.3s; }
+  .logo { width: 80px; height: 80px; border-radius: 24px; background: linear-gradient(135deg, var(--brand), var(--brand2)); display: grid; place-items: center; font-size: 40px; margin-bottom: 20px; }
+  .spinner { width: 30px; height: 30px; border: 3px solid var(--border); border-top-color: var(--brand); border-radius: 50%; animation: spin 1s linear infinite; margin-top: 20px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
+  /* Auth Screen */
+  #auth { display: none; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 20px; }
+  .auth-box { background: var(--card); padding: 24px; border-radius: 16px; width: 100%; max-width: 400px; border: 1px solid var(--border); }
+  .tabs { display: flex; background: var(--bg); border-radius: 10px; padding: 4px; margin-bottom: 20px; }
+  .tab { flex: 1; padding: 10px; text-align: center; border-radius: 8px; font-weight: bold; cursor: pointer; color: var(--muted); }
+  .tab.active { background: var(--brand); color: white; }
+  
+  input { width: 100%; padding: 14px; margin-bottom: 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg); color: white; outline: none; font-size: 16px; }
+  button { width: 100%; padding: 14px; border-radius: 10px; border: none; background: var(--brand); color: white; font-weight: bold; font-size: 16px; margin-bottom: 10px; cursor: pointer; }
+  button.google { background: white; color: #333; display: flex; justify-content: center; align-items: center; gap: 10px; }
+  .divider { display: flex; align-items: center; color: var(--muted); margin: 15px 0; font-size: 14px; }
+  .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: var(--border); margin: 0 10px; }
+</style>
+</head>
+<body>
+
+<!-- SPLASH SCREEN -->
+<div id="splash">
+  <div class="logo">🎓</div>
+  <h2>Smart CGPA Plus</h2>
+  <div class="spinner"></div>
+</div>
+
+<!-- AUTH SCREEN -->
+<div id="auth">
+  <div class="auth-box">
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('login')" id="tab-login">Sign In</div>
+      <div class="tab" onclick="switchTab('signup')" id="tab-signup">Sign Up</div>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div id="form-login">
+      <input type="email" placeholder="Email address" />
+      <input type="password" placeholder="Password" />
+      <button>Sign In</button>
+    </div>
+
+    <!-- SIGNUP FORM -->
+    <div id="form-signup" style="display: none;">
+      <input type="text" placeholder="Full Name" />
+      <input type="email" placeholder="Email address" />
+      <input type="password" placeholder="Password" />
+      <button>Create Account</button>
+    </div>
+
+    <div class="divider">or</div>
+
+    <!-- GOOGLE LOGIN -->
+    <button class="google">
+      <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.5l6.7-6.7C35.6 2.4 30.2 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.8 6.1C12.3 13.2 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4 6.9-10 6.9-17.5z"/><path fill="#FBBC05" d="M10.4 28.7c-.5-1.4-.8-2.9-.8-4.7s.3-3.3.8-4.7l-7.8-6.1C1 16.4 0 20.1 0 24s1 7.6 2.6 10.8l7.8-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2.1 1.4-4.8 2.2-8.4 2.2-6.3 0-11.7-3.7-13.6-9.1l-7.8 6.1C6.5 42.6 14.6 48 24 48z"/></svg>
+      Continue with Google
+    </button>
+  </div>
+</div>
+
+<script>
+  // 1. Hide splash after 2 seconds
+  setTimeout(() => {
+    document.getElementById('splash').style.opacity = '0';
+    setTimeout(() => {
+      document.getElementById('splash').style.display = 'none';
+      document.getElementById('auth').style.display = 'flex';
+    }, 300);
+  }, 2000);
+
+  // 2. Switch between Sign In and Sign Up tabs
+  window.switchTab = function(type) {
+    document.getElementById('tab-login').classList.remove('active');
+    document.getElementById('tab-signup').classList.remove('active');
+    
+    document.getElementById('form-login').style.display = 'none';
+    document.getElementById('form-signup').style.display = 'none';
+
+    if (type === 'login') {
+      document.getElementById('tab-login').classList.add('active');
+      document.getElementById('form-login').style.display = 'block';
+    } else {
+      document.getElementById('tab-signup').classList.add('active');
+      document.getElementById('form-signup').style.display = 'block';
+    }
+  };
+</script>
+
+</body>
+</html>
