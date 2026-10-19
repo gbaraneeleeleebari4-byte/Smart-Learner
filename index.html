@@ -51,17 +51,17 @@
 
     <!-- LOGIN FORM -->
     <div id="form-login">
-      <input type="email" placeholder="Email address" />
-      <input type="password" placeholder="Password" />
-      <button>Sign In</button>
+      <input type="email" id="login-email" placeholder="Email address" />
+      <input type="password" id="login-pass" placeholder="Password" />
+      <button onclick="login()">Sign In</button>
     </div>
 
     <!-- SIGNUP FORM -->
-    <div id="form-signup" style="display: none;">
-      <input type="text" placeholder="Full Name" />
-      <input type="email" placeholder="Email address" />
-      <input type="password" placeholder="Password" />
-      <button>Create Account</button>
+        <div id="form-signup" style="display: none;">
+      <input type="text" id="su-name" placeholder="Full Name" />
+      <input type="email" id="su-email" placeholder="Email address" />
+      <input type="password" id="su-pass" placeholder="Password" />
+      <button onclick="signup()">Create Account</button>
     </div>
 
     <div class="divider">or</div>
