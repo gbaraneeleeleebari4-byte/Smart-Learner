@@ -100,6 +100,121 @@
       document.getElementById('form-signup').style.display = 'block';
     }
   };
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBalfqEksKXbrcfVCqrrWkILx_V7up25Xs",
+  authDomain: "smart-learn-hub-73667.firebaseapp.com",
+  projectId: "smart-learn-hub-73667",
+  storageBucket: "smart-learn-hub-73667.firebasestorage.app",
+  messagingSenderId: "165458065701",
+  appId: "1:165458065701:web:08a1bcfac2ae286b9502cc"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const ADMIN_EMAIL = "gbaraneeleeleebari4@gmail.com";
+
+// 1. Splash Screen Timer
+setTimeout(() => {
+  document.getElementById('splash').style.opacity = '0';
+  setTimeout(() => {
+    document.getElementById('splash').style.display = 'none';
+    // Only show auth if user is NOT already logged in
+    if (!auth.currentUser) document.getElementById('auth').style.display = 'flex';
+  }, 300);
+}, 2000);
+
+// 2. Tab Switching
+window.switchTab = function(type) {
+  document.getElementById('tab-login').classList.remove('active');
+  document.getElementById('tab-signup').classList.remove('active');
+  document.getElementById('form-login').style.display = 'none';
+  document.getElementById('form-signup').style.display = 'none';
+
+  if (type === 'login') {
+    document.getElementById('tab-login').classList.add('active');
+    document.getElementById('form-login').style.display = 'block';
+  } else {
+    document.getElementById('tab-signup').classList.add('active');
+    document.getElementById('form-signup').style.display = 'block';
+  }
+};
+
+// 3. Function to Create User Profile in Database
+async function ensureUserDoc(user, name) {
+  const ref = doc(db, "users", user.uid);
+  const snap = await getDoc(ref);
+  if (!snap.exists()) {
+    await setDoc(ref, {
+      uid: user.uid,
+      email: user.email,
+      displayName: name || user.email.split('@')[0],
+      role: user.email === ADMIN_EMAIL ? "admin" : "student",
+      createdAt: Date.now()
+    });
+  }
+}
+
+// 4. Auth Logic
+window.login = async () => {
+  const email = document.getElementById('login-email').value;
+  const pass = document.getElementById('login-pass').value;
+  if(!email || !pass) return alert("Enter email and password");
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+  } catch (e) { alert("Login Error: " + e.message); }
+};
+
+window.signup = async () => {
+  const name = document.getElementById('su-name').value;
+  const email = document.getElementById('su-email').value;
+  const pass = document.getElementById('su-pass').value;
+  if(!name || !email || !pass) return alert("Fill all fields");
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+    await updateProfile(cred.user, { displayName: name });
+    await ensureUserDoc(cred.user, name);
+  } catch (e) { alert("Signup Error: " + e.message); }
+};
+
+window.googleLogin = async () => {
+  try {
+    const cred = await signInWithPopup(auth, new GoogleAuthProvider());
+    await ensureUserDoc(cred.user, cred.user.displayName);
+  } catch (e) { alert("Google Error: " + e.message); }
+};
+
+window.logout = async () => {
+  await signOut(auth);
+  location.reload();
+};
+
+// 5. Listen for Auth State Changes (Login Success)
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    // User is logged in
+    document.getElementById('auth').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+    
+    // Set Name in Dashboard
+    const name = user.displayName || user.email.split('@')[0];
+    document.getElementById('dash-username').innerText = name;
+    
+    // Check if Admin
+    if (user.email === ADMIN_EMAIL) {
+      alert("Welcome Super Admin!");
+    }
+  } else {
+    // User is logged out
+    document.getElementById('auth').style.display = 'flex';
+    document.getElementById('app').style.display = 'none';
+  }
+});
 </script>
 
 </body>
