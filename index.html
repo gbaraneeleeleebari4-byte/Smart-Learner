@@ -1052,8 +1052,8 @@ function isSuperAdmin(){ return isAdminEmail(S.email); }
 function isAdmin(){ return isSuperAdmin() || (S.subAdmins || []).includes(String(S.email).trim().toLowerCase()); }
 
 function displayName(){ 
-  if (isSuperAdmin()) return S.email;
-  if (isAdmin()) return S.email;
+  if (isSuperAdmin()) return 'gbaranee leeleebari';
+  if (isAdmin()) return S.displayName || nameFromEmail(S.email || 'Admin');
   return S.displayName || nameFromEmail(S.email || 'Student');
 }
 function initials(name){
