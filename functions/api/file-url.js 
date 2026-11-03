@@ -1,16 +1,16 @@
 
+
 const BUCKET = 'my-first-bucket';
 
 async function identifyUser(request, env) {
   const h = request.headers.get('Authorization') || '';
-
   if (!h.startsWith('Bearer ')) return null;
 
   const token = h.slice(7);
 
   const apiKey =
     env.FIREBASE_WEB_API_KEY ||
-    'YOUR_FIREBASE_WEB_API_KEY';
+    'AIzaSyBalfqEksKXbrcfVCqrrWkILx_V7up25Xs';
 
   const r = await fetch(
     `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${encodeURIComponent(apiKey)}`,
@@ -26,9 +26,7 @@ async function identifyUser(request, env) {
   const d = await r.json();
   const u = d.users?.[0];
 
-  return u?.localId
-    ? { uid: u.localId, token }
-    : null;
+  return u?.localId ? { uid: u.localId, token } : null;
 }
 
 function json(data, status = 200) {
@@ -93,7 +91,8 @@ export async function onRequestPost({ request, env }) {
     );
 
     const signUrl =
-      `https://api.dbbyte.com/storage/${BUCKET}/sign/${encodeURIComponent(key)}`;
+      `https://api.dbbyte.com/storage/${BUCKET}/sign/` +
+      key.split('/').map(encodeURIComponent).join('/');
 
     const r = await fetch(signUrl, {
       method: 'POST',
@@ -104,14 +103,27 @@ export async function onRequestPost({ request, env }) {
       body: JSON.stringify({ expiresIn })
     });
 
-    const d = await r.json().catch(() => ({}));
+    const responseText = await r.text();
 
-    if (!r.ok || !d.url) {
-      console.error('DBByte signing error:', r.status, d);
+    let d = {};
+    try {
+      d = JSON.parse(responseText);
+    } catch {
+      d = {};
+    }
+
+    if (!r.ok) {
+      console.error('DBByte signing error:', r.status, responseText);
 
       return json({
-        error: d.error || 'Could not create signed URL.'
-      }, r.status || 502);
+        error: `DBByte signing failed (HTTP ${r.status}): ${d.error || responseText || 'Unknown error'}`
+      }, r.status);
+    }
+
+    if (!d.url) {
+      return json({
+        error: 'DBByte responded, but did not return a signed URL.'
+      }, 502);
     }
 
     return json({
@@ -123,7 +135,7 @@ export async function onRequestPost({ request, env }) {
     console.error('File URL error:', e);
 
     return json({
-      error: 'Could not open file.'
+      error: e.message || 'Unexpected file URL error.'
     }, 500);
   }
 }
