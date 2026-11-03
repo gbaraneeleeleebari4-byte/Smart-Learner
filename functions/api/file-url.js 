@@ -139,3 +139,8 @@ export async function onRequestPost({ request, env }) {
     }, 500);
   }
 }
+export async function onRequestGet() {
+  return new Response('File URL function is running', {
+    status: 200
+  });
+}
