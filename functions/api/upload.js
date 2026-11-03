@@ -34,7 +34,7 @@ export async function onRequestPost({request,env}){
     const up=new FormData(); up.append('file',file,key);
     const r=await fetch(`https://api.dbbyte.com/storage/${BUCKET}/upload`,{method:'POST',headers:{Authorization:`Bearer ${env.DBBYTE_API_KEY}`},body:up});
     const d=await r.json().catch(()=>({})); if(!r.ok)return json({error:d.error||'DBByte upload failed.'},r.status);
-    return json({success:true,uid:user.uid,scope,groupId,key:d.key||key,name:d.name||file.name,fileId:d.fileId||'',mimeType:d.mimeType||file.type,size:d.size||file.size});
+    return json({success:true,uid:user.uid,scope,groupId,key,name:d.name||file.name,fileId:d.fileId||'',mimeType:d.mimeType||file.type,size:d.size||file.size});
   }catch(e){console.error(e);return json({error:'Something went wrong while uploading.'},500)}
 }
 
