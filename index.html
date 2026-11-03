@@ -1442,10 +1442,44 @@ async function uploadAttachment(file, scope='private', groupId=''){
   if (!res.ok || !data.success) throw new Error(data.error || 'Upload failed.');
   return {key:data.key,name:data.name||file.name,mimeType:data.mimeType||file.type,size:data.size||file.size,fileId:data.fileId||''};
 }
-async function signedAttachmentUrl(key, groupId=''){
+async function signedAttachmentUrl(key, groupId = '') {
   const token = await currentAuthToken();
-  const res = await fetch('/api/file-url', {method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({key,groupId,expiresIn:3600})});
-  const data=await res.json().catch(()=>({})); if(!res.ok||!data.url) throw new Error(data.error||'Could not open file.'); return data.url;
+
+  if (!token) {
+    throw new Error('Please sign in again.');
+  }
+
+  const res = await fetch('/api/file-url', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + token
+    },
+    body: JSON.stringify({
+      key,
+      groupId,
+      expiresIn: 3600
+    })
+  });
+
+  const raw = await res.text();
+  let data = {};
+
+  try {
+    data = JSON.parse(raw);
+  } catch {
+    throw new Error(
+      `File-link API returned HTTP ${res.status}. Response: ${raw.slice(0, 250)}`
+    );
+  }
+
+  if (!res.ok || !data.url) {
+    throw new Error(
+      data.error || `File-link API returned HTTP ${res.status} without a URL.`
+    );
+  }
+
+  return data.url;
 }
 function clearAIAttachment(){ pendingAIAttachment=null; const p=$('ai-attachment-preview'); if(p){p.classList.remove('on');p.innerHTML='';} const i=$('ai-file-input'); if(i)i.value=''; }
 function selectAIAttachment(input){
