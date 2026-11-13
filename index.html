@@ -1388,16 +1388,7 @@ body:not(.dark){--bg:#eef2f6;--card:#ffffff;--ink:#17212b;--muted:#607080;--mute
 
 const ADMIN_EMAIL = 'gbaraneeleeleebari4@gmail.com';
 
-const AI_ENDPOINTS = [
-  {
-    url: 'https://script.google.com/macros/s/AKfycbyUv0D0CdQIQzBCJJUhXhTE39htLqVxsmmixsLjCcv7ehRKHHhNpPX6OdDCeDq1ABPmNA/exec',
-    contentType: 'text/plain;charset=utf-8'
-  },
-  {
-    url: 'https://gbaraneeleeleebari4--f9ea9e72cbc811f1b6c01607ee4eb77e.web.val.run',
-    contentType: 'application/json'
-  }
-];
+const AI_ENDPOINTS = [{ url: '/api/chat', contentType: 'application/json' }];
 const AI_TIMEOUT = 60000;
 
 const CHALLENGE_START_HOUR = 19;
@@ -2252,10 +2243,7 @@ async function startChallengeForRegistered(){
   const data = txt ? parseJSON(txt) : null;
   let arr = Array.isArray(data) ? data : (data && Array.isArray(data.questions)) ? data.questions : null;
   if (arr){
-    const valid = arr.filter(d => d && typeof d.q === 'string' && d.q.trim() &&
-      Array.isArray(d.options) && d.options.length >= 2 &&
-      typeof d.answer === 'number' && d.answer >= 0 && d.answer < d.options.length
-    ).slice(0, CHALLENGE_Q_COUNT);
+    const valid = arr.map(normalizeQuizQuestion).filter(Boolean).slice(0, CHALLENGE_Q_COUNT);
     if (valid.length > 0){
       await ref.update({
         phase: 'running', questions: valid,
@@ -2812,20 +2800,8 @@ async function callAI(messages, mode, attachments=[]){
     mode: mode || 'chat',
     system: buildSystem(mode),
     messages: requestMessages,
-    prompt: messages[messages.length-1]?.content,
-    name: displayName(),
-    email: S.email,
-    context: buildUserContext(),
-    attachments: Array.isArray(attachments) ? attachments.map(a => ({
-      key:a.key, name:a.name, mimeType:a.mimeType, size:a.size, url:a.url,
-      extractedText:a.mimeType === 'application/pdf' ? String(a.extractedText || '').slice(0,90000) : undefined,
-      pageImages:a.mimeType === 'application/pdf' ? (a.pageImages || []).slice(0,3) : undefined
-    })) : [],
-    imageInputs: Array.isArray(attachments) ? attachments.filter(a => String(a.mimeType||'').startsWith('image/') && (a.visionDataUrl || a.url)).map(a => ({
-      type:'image_url', image_url:{url:a.visionDataUrl || a.url}, name:a.name || 'image'
-    })) : [],
-    documentInputs: Array.isArray(attachments) ? attachments.filter(a => a.mimeType === 'application/pdf').map(a => ({
-      name:a.name || 'document.pdf', url:a.url, text:String(a.extractedText || '').slice(0,90000), pageImages:(a.pageImages || []).slice(0,3)
+    imageInputs: Array.isArray(attachments) ? attachments.filter(a => String(a.mimeType||'').startsWith('image/') && (a.visionDataUrl || a.url)).slice(0,3).map(a => ({
+      type:'image_url', image_url:{url:a.visionDataUrl || a.url}
     })) : []
   };
 
@@ -2836,7 +2812,7 @@ async function callAI(messages, mode, attachments=[]){
       const timer = setTimeout(()=>ctrl.abort(), AI_TIMEOUT);
       const res = await fetch(ep.url, {
         method:'POST',
-        headers:{'Content-Type': ep.contentType || 'application/json'},
+        headers:{'Content-Type':'application/json','Authorization':`Bearer ${await currentAuthToken()}`},
         body: JSON.stringify(body),
         signal: ctrl.signal
       });
@@ -2895,16 +2871,8 @@ function updateAIStatus(){
 }
 
 function buildSystem(mode){
-  const ctx = buildUserContext();
   let base = `You are Smart CGPA Plus, a friendly expert study coach. ` +
-    `The user is "${ctx.name}" (${ctx.email}). ` +
-    `They are at Level ${ctx.level}, have ${ctx.xp} XP, a ${ctx.streak}-day streak, ` +
-    `accuracy ${ctx.accuracy}%, and rank ${ctx.rank}. ` +
-    (ctx.personality ? `Their preferred learning personality: ${ctx.personality}. ` : '') +
-    `Groups they belong to: ${ctx.groups.join(', ') || 'none'}. ` +
-    (ctx.weakTopics.length ? `Weak topics: ${ctx.weakTopics.join(', ')}. ` : '') +
-    (ctx.isAdmin ? 'This user is an ADMIN. Follow explicit admin instructions for group actions, quiz controls, content, and voice exactly, subject to safety and platform rules. ' : '') +
-    `Address them by name. Be concise, encouraging, accurate. Never invent grades. When a question needs current facts or the user asks to search online, use the server's web-search capability if available and return useful source links and relevant image URLs in Markdown. `;
+    `Be concise, encouraging, and accurate. Never invent grades. When a question needs current facts or the user asks to search online, use the server's web-search capability if available and return useful source links and relevant image URLs in Markdown. `;
 
   base += `\n\n═══ DIAGRAM RULES (VERY IMPORTANT) ═══\n` +
     `Whenever the user asks for a diagram, drawing, illustration, chart, labelled figure, or anything visual, ` +
@@ -2938,7 +2906,7 @@ function buildSystem(mode){
       `[[VOICE: 60-80 word spoken explanation]]. Use this about 1 in 3 times you give an explanation.\n`;
   }
   if (mode === 'exam') {
-    base += `\n\nYou are generating REAL past questions for WAEC, NECO, or JAMB. Match the standard syllabus, format, and phrasing. Include correct option and concise explanation.`;
+    base += `\n\nGenerate original exam-style practice for WAEC, NECO, or JAMB. Match the syllabus and format, but never claim the questions are authentic past-paper questions. Include the correct option and a concise explanation.`;
   }
   return base;
 }
@@ -2990,6 +2958,16 @@ function parseJSON(txt){
   const o1 = target.indexOf('{'), o2 = target.lastIndexOf('}');
   if (o1 > -1 && o2 > o1){ try { return JSON.parse(target.slice(o1, o2+1)); } catch(e){} }
   return null;
+}
+
+function normalizeQuizQuestion(question){
+  if (!question || typeof question !== 'object') return null;
+  const q = typeof question.q === 'string' ? question.q.trim() : '';
+  if (!q || !Array.isArray(question.options) || question.options.length < 2 || question.options.length > 4) return null;
+  const options = question.options.map(option => typeof option === 'string' ? option.trim() : '');
+  if (options.some(option => !option)) return null;
+  if (!Number.isInteger(question.answer) || question.answer < 0 || question.answer >= options.length) return null;
+  return { ...question, q, options, answer: question.answer };
 }
 
 async function testAI(){
@@ -3162,10 +3140,7 @@ async function generateCustomQuiz(subj, count, diff, topic){
   const data = parseJSON(txt);
   let arr = Array.isArray(data) ? data : (data && Array.isArray(data.questions)) ? data.questions : null;
   if (!arr || !arr.length){ PQ = null; showPracticeError('AI format error', txt.slice(0,200)); return; }
-  const questions = arr.filter(d => d && typeof d.q === 'string' && d.q.trim() &&
-    Array.isArray(d.options) && d.options.length >= 2 &&
-    typeof d.answer === 'number' && d.answer >= 0 && d.answer < d.options.length
-  ).slice(0, count);
+  const questions = arr.map(normalizeQuizQuestion).filter(Boolean).slice(0, count);
   if (!questions.length){ PQ = null; showPracticeError('Invalid questions', 'AI returned unusable data.'); return; }
 
   PQ = { phase:'run', subject: subj + (topic ? ' · ' + topic : ''), questions, index:0, score:0, answers:[], locked:false };
@@ -3267,13 +3242,7 @@ async function generateQuestionsForSubject(subj, count, modeName, year, topic){
     if (!txt) return;
     const data = parseJSON(txt);
     const arr = Array.isArray(data) ? data : (data && Array.isArray(data.questions)) ? data.questions : [];
-    arr.forEach(d => {
-      if (d && typeof d.q === 'string' && d.q.trim() &&
-          Array.isArray(d.options) && d.options.length >= 2 &&
-          typeof d.answer === 'number' && d.answer >= 0 && d.answer < d.options.length){
-        questions.push(d);
-      }
-    });
+    arr.map(normalizeQuizQuestion).filter(Boolean).forEach(question => questions.push(question));
   });
   return questions.slice(0, count);
 }
@@ -3847,13 +3816,8 @@ async function handlePDFQuestionUpload(){
     if (!txt) return;
     const data = parseJSON(txt);
     const arr = Array.isArray(data) ? data : (data && Array.isArray(data.questions)) ? data.questions : [];
-    arr.forEach(d => {
-      if (d && typeof d.q === 'string' && d.q.trim() &&
-          Array.isArray(d.options) && d.options.length >= 2 &&
-          typeof d.answer === 'number' && d.answer >= 0 && d.answer < d.options.length &&
-          valid.length < numQ){
-        valid.push(d);
-      }
+    arr.map(normalizeQuizQuestion).filter(Boolean).forEach(question => {
+      if (valid.length < numQ) valid.push(question);
     });
   });
 
@@ -5080,9 +5044,7 @@ async function startChatQuiz(subject, count, topic, thresholdPct=50, countdownSe
   const data = txt ? parseJSON(txt) : null;
   let arr = Array.isArray(data) ? data : (data && Array.isArray(data.questions)) ? data.questions : null;
   if (!arr || !arr.length){ toast('⚠️ AI failed to generate quiz'); return; }
-  const valid = arr.filter(d => d && typeof d.q === 'string' && d.q.trim() &&
-    Array.isArray(d.options) && d.options.length >= 2 &&
-    typeof d.answer === 'number').slice(0, count);
+  const valid = arr.map(normalizeQuizQuestion).filter(Boolean).slice(0, count);
   if (!valid.length){ toast('Invalid quiz data'); return; }
 
   const privateCount = valid.length >= 8 ? Math.max(1, Math.floor(valid.length * 0.15)) : 0;
@@ -7245,10 +7207,10 @@ async function broadcastAIQuiz(){
   let q = null;
   if (txt){
     const data = parseJSON(txt);
-    if (data && typeof data.q === 'string' && Array.isArray(data.options)) q = data;
-    else if (data && Array.isArray(data.questions) && data.questions[0]) q = data.questions[0];
+    const candidate = Array.isArray(data) ? data[0] : data?.q ? data : data?.questions?.[0];
+    q = normalizeQuizQuestion(candidate);
   }
-  if (!q){ toast('⚠️ AI unavailable'); return; }
+  if (!q){ toast('⚠️ AI returned an invalid quiz question'); return; }
   const updates = {};
   groups.forEach(g => {
     const mid = uid();
@@ -7542,8 +7504,8 @@ async function createBattle(){
     `"answer" is zero-based integer index.`;
   const txt = await callAI([{role:'user',content:prompt}], 'quiz');
   const data = txt ? parseJSON(txt) : null;
-  const arr = Array.isArray(data) ? data : (data?.questions || []);
-  const valid = arr.filter(q => q && q.q && Array.isArray(q.options) && q.options.length >= 4 && typeof q.answer === 'number').slice(0, 5);
+  const arr = Array.isArray(data) ? data : (Array.isArray(data?.questions) ? data.questions : []);
+  const valid = arr.map(normalizeQuizQuestion).filter(Boolean).slice(0, 5);
   if (valid.length < 3){ toast('⚠️ Failed to generate questions'); return; }
 
   let code;
@@ -8291,11 +8253,9 @@ async function askDailyStudyPlan(){try{await loadStudyHub();const u=myUser(),wea
       if(i!==lastIndex||!images.length)return m;const text=typeof m.content==='string'?m.content:JSON.stringify(m.content||'');
       return {...m,content:[{type:'text',text},...images.map(a=>({type:'image_url',image_url:{url:a.visionDataUrl||a.url}}))]};
     });
-    const body={mode:mode||'chat',system:buildSystem(mode),messages:requestMessages,prompt:messages?.[lastIndex]?.content,name:displayName(),email:S.email,context:buildUserContext(),
-      attachments:list.map(a=>({key:a.key,name:a.name,mimeType:a.mimeType,size:a.size,url:a.url,extractedText:a.mimeType==='application/pdf'?String(a.extractedText||'').slice(0,90000):undefined,pageImages:a.mimeType==='application/pdf'?(a.pageImages||[]).slice(0,3):undefined})),
-      imageInputs:images.map(a=>({type:'image_url',image_url:{url:a.visionDataUrl||a.url},name:a.name||'image'})),
-      documentInputs:list.filter(a=>a.mimeType==='application/pdf').map(a=>({name:a.name||'document.pdf',url:a.url,text:String(a.extractedText||'').slice(0,90000),pageImages:(a.pageImages||[]).slice(0,3)}))};
-    let lastError='';for(const ep of AI_ENDPOINTS){let timer;try{const ctrl=new AbortController();timer=setTimeout(()=>ctrl.abort(),AI_TIMEOUT);const res=await fetch(ep.url,{method:'POST',headers:{'Content-Type':ep.contentType||'application/json'},body:JSON.stringify(body),signal:ctrl.signal});const raw=await res.text();if(!res.ok){lastError=`HTTP ${res.status} - ${raw.slice(0,180)}`;continue;}let data;try{data=JSON.parse(raw);}catch{data=raw;}if(data?.error){lastError=typeof data.error==='string'?data.error:(data.error.message||JSON.stringify(data.error));continue;}const text=extractText(data);if(!text){lastError='AI service returned an empty answer.';continue;}S.aiOk=true;updateAIStatus();return text;}catch(e){lastError=e.name==='AbortError'?'AI request timed out':e.message||String(e);console.warn('AI endpoint failed:',ep.url,lastError);}finally{clearTimeout(timer);}}
+    const body={mode:mode||'chat',system:buildSystem(mode),messages:requestMessages,
+      imageInputs:images.slice(0,3).map(a=>({type:'image_url',image_url:{url:a.visionDataUrl||a.url}}))};
+    let lastError='';for(const ep of AI_ENDPOINTS){let timer;try{const ctrl=new AbortController();timer=setTimeout(()=>ctrl.abort(),AI_TIMEOUT);const res=await fetch(ep.url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${await currentAuthToken()}`},body:JSON.stringify(body),signal:ctrl.signal});const raw=await res.text();if(!res.ok){lastError=`HTTP ${res.status} - ${raw.slice(0,180)}`;continue;}let data;try{data=JSON.parse(raw);}catch{data=raw;}if(data?.error){lastError=typeof data.error==='string'?data.error:(data.error.message||JSON.stringify(data.error));continue;}const text=extractText(data);if(!text){lastError='AI service returned an empty answer.';continue;}S.aiOk=true;updateAIStatus();return text;}catch(e){lastError=e.name==='AbortError'?'AI request timed out':e.message||String(e);console.warn('AI endpoint failed:',ep.url,lastError);}finally{clearTimeout(timer);}}
     S.aiOk=false;updateAIStatus();window.lastAIError=lastError||'AI endpoints unavailable';return null;
   };
   const buildSystemBase=buildSystem;buildSystem=function(mode){return buildSystemBase(mode)+`\n\nVISUAL AND TEACHING REQUIREMENTS: Follow the administrator's instructions and uploaded study material where applicable. Inspect every supplied image directly and describe visible objects, labels, relationships, and uncertainty; never claim an image is a string or infer only from its filename. When a diagram is requested or materially useful, produce a complete, labelled, non-empty textbook-style inline SVG (include viewBox and visible shapes/labels), followed by a plain-language explanation. For physics structures, use labelled arrows, axes, circuit components, rays, forces, or apparatus as appropriate. Give answers in well-structured headings, steps, and readable lists. If asked to create an image, return a real generated image URL/data image only when the service actually provides one; never fabricate a URL.`;};
@@ -8485,11 +8445,8 @@ async function askDailyStudyPlan(){try{await loadStudyHub();const u=myUser(),wea
   callAI=async function(messages,mode,attachments=[]){
     const list=Array.isArray(attachments)?attachments:[],images=list.filter(a=>String(a.mimeType||'').startsWith('image/')&&(a.visionDataUrl||a.url));
     const cleanMessages=(messages||[]).map(m=>({role:String(m?.role||'user'),content:typeof m?.content==='string'?m.content:Array.isArray(m?.content)?m.content.map(p=>typeof p==='string'?p:String(p?.text||'')).filter(Boolean).join('\n'):String(m?.content??'')}));
-    const last=cleanMessages.at(-1),body={mode:mode||'chat',system:buildSystem(mode),messages:cleanMessages,prompt:last?.content||'',name:displayName(),email:S.email,context:buildUserContext(),
-      attachments:list.map(a=>({key:a.key,name:a.name,mimeType:a.mimeType,size:a.size,url:a.url||'',extractedText:a.mimeType==='application/pdf'?String(a.extractedText||'').slice(0,90000):undefined,pageImages:a.mimeType==='application/pdf'?(a.pageImages||[]).slice(0,3):undefined})),
-      imageInputs:images.map(a=>({type:'image_url',image_url:{url:a.visionDataUrl||a.url},name:a.name||'image'})),
-      documentInputs:list.filter(a=>a.mimeType==='application/pdf').map(a=>({name:a.name||'document.pdf',url:a.url||'',text:String(a.extractedText||'').slice(0,90000),pageImages:(a.pageImages||[]).slice(0,3)}))};
-    let lastError='';for(const ep of AI_ENDPOINTS){let timer;try{const ctrl=new AbortController();timer=setTimeout(()=>ctrl.abort(),AI_TIMEOUT);const res=await fetch(ep.url,{method:'POST',headers:{'Content-Type':ep.contentType||'application/json'},body:JSON.stringify(body),signal:ctrl.signal});const raw=await res.text();if(!res.ok){lastError=`HTTP ${res.status} - ${raw.slice(0,180)}`;continue;}let data;try{data=JSON.parse(raw);}catch{data=raw;}if(data?.error){lastError=typeof data.error==='string'?data.error:(data.error.message||JSON.stringify(data.error));continue;}const text=extractText(data);if(!text){lastError='AI service returned an empty answer.';continue;}S.aiOk=true;updateAIStatus();return text;}catch(e){lastError=e.name==='AbortError'?'AI request timed out':e.message||String(e);}finally{clearTimeout(timer);}}S.aiOk=false;updateAIStatus();window.lastAIError=lastError||'All AI endpoints failed';return null;
+    const body={mode:mode||'chat',system:buildSystem(mode),messages:cleanMessages,imageInputs:images.slice(0,3).map(a=>({type:'image_url',image_url:{url:a.visionDataUrl||a.url}}))};
+    let lastError='';for(const ep of AI_ENDPOINTS){let timer;try{const ctrl=new AbortController();timer=setTimeout(()=>ctrl.abort(),AI_TIMEOUT);const res=await fetch(ep.url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${await currentAuthToken()}`},body:JSON.stringify(body),signal:ctrl.signal});const raw=await res.text();if(!res.ok){lastError=`HTTP ${res.status} - ${raw.slice(0,180)}`;continue;}let data;try{data=JSON.parse(raw);}catch{data=raw;}if(data?.error){lastError=typeof data.error==='string'?data.error:(data.error.message||JSON.stringify(data.error));continue;}const text=extractText(data);if(!text){lastError='AI service returned an empty answer.';continue;}S.aiOk=true;updateAIStatus();return text;}catch(e){lastError=e.name==='AbortError'?'AI request timed out':e.message||String(e);}finally{clearTimeout(timer);}}S.aiOk=false;updateAIStatus();window.lastAIError=lastError||'All AI endpoints failed';return null;
   };
   const askAIBaseRepair=askAI;
   askAI=async function(text,attachment=null){
